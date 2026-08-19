@@ -1,0 +1,16 @@
+# Binaries & logs
+cloudflared.exe
+*.log
+*.tmp
+
+# Composer dependencies
+/vendor/
+
+# OS specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.vscode/
+.idea/

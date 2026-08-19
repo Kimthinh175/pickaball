@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Bảng Xếp Hạng – Pickaball Admin</title>
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+    <link rel="stylesheet" href="css/admin.css?v=28">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-section" class="login-wrap hidden">
+    <header class="topbar">
+      <div class="topbar-in">
+        <a class="logo" href="../">
+          <img src="../public/logo.png" alt="PICKO247" />
+          <div class="spinning-ball"></div>
+        </a>
+
+        <!-- Hamburger button for mobile -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu" onclick="toggleAdminMobileMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+    <div class="login-body">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="../public/logo.png" alt="Logo">
+                <div>
+                    <span>PICKO247</span>
+                    <small>Admin Panel</small>
+                </div>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Tài khoản</label>
+                    <input type="text" id="username" placeholder="Nhập username..." required>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu..." required>
+                </div>
+                <button type="submit" class="btn" style="width:100%; justify-content:center; margin-top:8px;">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside id="sidebar" class="sidebar hidden">
+    <div class="sidebar-brand">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="../public/logo.png" alt="Logo">
+            <div class="sidebar-brand-text">
+                <span>Admin Panel</span>
+            </div>
+        </div>
+        <button class="menu-toggle" id="sidebar-menu-toggle" aria-label="Toggle Menu" onclick="toggleSidebarMenu()" style="display: none;">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <div class="sidebar-section-label">Menu chính</div>
+
+    <nav class="sidebar-nav">
+        <a id="nav-tournaments" href="./">
+            <span class="nav-icon"><i data-lucide="trophy"></i></span> Giải đấu
+        </a>
+        <a id="nav-rankings" href="rankings" class="active">
+            <span class="nav-icon">📊</span> Bảng xếp hạng
+        </a>
+    </nav>
+
+    <div class="sidebar-section-label">Hệ thống</div>
+    <nav class="sidebar-nav" style="flex:0;">
+        <a id="nav-settings" href="index.html#settings" onclick="window.location.href='index.html#settings'">
+            <span class="nav-icon"><i data-lucide="settings"></i></span> Cài đặt
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="home-link" href="../" target="_blank">
+            <span>↗</span> Ra trang chủ
+        </a>
+        <button id="btn-logout" class="btn-logout">
+            <span>⏻</span> Đăng xuất
+        </button>
+    </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main id="dashboard-section" class="main-content hidden">
+
+    <!-- Page: Bảng xếp hạng & Tuyển thủ -->
+    <div id="tab-rankings" class="tab-content active">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Bảng Xếp Hạng Tuyển Thủ</h1>
+                <p class="page-sub">Quản lý hồ sơ, điểm trình và danh sách vận động viên</p>
+            </div>
+            <button type="button" class="btn" style="background:#10b981; color:#fff;" onclick="openPlayerModal()">
+                <i data-lucide="user-plus"></i> Tạo tuyển thủ mới
+            </button>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stats-row" style="margin-bottom: 20px;">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i data-lucide="users"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-player-total">–</div>
+                    <div class="stat-label">Tổng tuyển thủ</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i data-lucide="zap"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-player-highest">–</div>
+                    <div class="stat-label">Điểm cao nhất</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i data-lucide="award"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-player-gender">–</div>
+                    <div class="stat-label">Tỷ lệ Nam / Nữ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rankings Table -->
+        <div class="card">
+            <div class="card-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <h2>Danh sách tuyển thủ</h2>
+                    <span class="text-muted" id="player-count" style="font-size:13px; font-weight:700;"></span>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <input type="text" id="search-player-admin" placeholder="Tìm kiếm tên..." style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px; width:160px;" oninput="renderPlayerRanking()">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <label style="font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap;">Giới tính:</label>
+                        <select id="filter-gender" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px;" onchange="renderPlayerRanking()">
+                            <option value="all">Tất cả</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <label style="font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap;">Sắp xếp:</label>
+                        <select id="sort-players" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px;" onchange="renderPlayerRanking()">
+                            <option value="points_desc">Điểm trình (Giảm dần)</option>
+                            <option value="points_asc">Điểm trình (Tăng dần)</option>
+                            <option value="date_desc">Mới nhất (Ngày tạo)</option>
+                            <option value="date_asc">Cũ nhất (Ngày tạo)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th style="width:64px; text-align:center;">Hạng</th>
+                            <th>Tuyển thủ</th>
+                            <th>Giới tính</th>
+                            <th>Điểm trình</th>
+                            <th style="width:130px; text-align:center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-rankings-list">
+                        <tr><td colspan="5" class="text-muted" style="text-align:center; padding:24px;">Đang tải danh sách...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- ===== MODAL PLAYER FORM (ADD & EDIT) ===== -->
+<div id="modal-player-form" class="modal-overlay" style="z-index: 1060;">
+    <div class="modal-container" style="max-width: 520px;">
+        <div class="modal-header">
+            <h2 id="modal-player-title"><i data-lucide="plus"></i> Tạo tuyển thủ mới</h2>
+            <button class="modal-close" onclick="closePlayerModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+            <form id="form-player" onsubmit="submitPlayerForm(event)">
+                <input type="hidden" id="player-id-input">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Tên tuyển thủ *</label>
+                    <input type="text" id="player-name" placeholder="Ví dụ: Nguyễn Văn A" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                </div>
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Giới tính</label>
+                        <select id="player-gender" onchange="handlePlayerGenderChange()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Điểm trình *</label>
+                        <input type="number" id="player-points" step="0.01" min="0" placeholder="0.00" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Ảnh đại diện (Avatar)</label>
+                    <div style="display:flex; align-items:center; gap: 10px;">
+                        <input type="file" id="player-avatar" accept="image/*" style="padding: 6px;" onchange="previewPlayerAvatar(this)">
+                        <img id="player-avatar-preview" src="../public/favicon.svg" alt="Preview" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #e2e8f0; display: none;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between;">
+                        Thông tin cá nhân (Profile)
+                        <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Hỗ trợ in đậm (**chữ**), icon</span>
+                    </label>
+                    <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px; background: #f8fafc; border: 1px solid var(--border); border-radius: 6px;">
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🏆')" title="Cúp vàng">🏆</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🥇')" title="Huy chương Vàng">🥇</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🥈')" title="Huy chương Bạc">🥈</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🥉')" title="Huy chương Đồng">🥉</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🏓')" title="Pickleball">🏓</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🎾')" title="Tennis">🎾</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🔥')" title="Lửa">🔥</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('✨')" title="Tỏa sáng">✨</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('💪')" title="Sức mạnh">💪</button>
+                    </div>
+                    <textarea id="player-profile" rows="4" placeholder="Ví dụ:
+**Thành tích:** Vô địch giải Pickleball 2026
+**Phong cách:** Tấn công dồn dập
+🔥 Sẵn sàng giao lưu!" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); resize: vertical;"></textarea>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-ghost" onclick="closePlayerModal()">Huỷ</button>
+                    <button type="submit" class="btn" style="background:#10b981;"><i data-lucide="save"></i> Lưu thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL PLAYER PROFILE PREVIEW ===== -->
+<div id="modal-player-profile" class="modal-overlay" style="z-index: 1100;">
+    <div class="modal-container" style="max-width: 400px; overflow: hidden; padding: 0;">
+        <button class="modal-close" style="position: absolute; top: 10px; right: 10px; z-index: 10; color: #fff; background: rgba(0,0,0,0.3); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;" onclick="closePlayerProfileModal()">&times;</button>
+        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); height: 100px; position: relative;">
+            <img id="profile-avatar" src="" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        </div>
+        <div style="padding: 50px 20px 30px; text-align: center;">
+            <h2 id="profile-name" style="margin: 0; font-size: 22px; color: var(--primary);">Name</h2>
+            <div style="color: var(--muted); font-size: 13px; margin-top: 4px;" id="profile-gender">Nam</div>
+            <div style="margin-top: 16px; display: inline-block; background: #f8fafc; padding: 8px 20px; border-radius: 20px; border: 1px solid #e2e8f0; font-weight: 800; font-size: 16px; color: #f59e0b;">
+                <i data-lucide="medal"></i> <span id="profile-points">0.00</span> điểm
+            </div>
+            
+            <div id="profile-bio" style="margin-top: 24px; text-align: left; font-size: 14px; line-height: 1.6; color: var(--text); background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: pre-wrap; display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="admin-toast"></div>
+
+<script>
+function insertIconToProfile(icon) {
+    const textarea = document.getElementById('player-profile');
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    textarea.value = text.substring(0, start) + icon + text.substring(end);
+    textarea.focus();
+    textarea.selectionStart = textarea.selectionEnd = start + icon.length;
+}
+</script>
+
+<script type="module" src="js/main.js?v=28"></script>
+<script>if(window.lucide) lucide.createIcons();</script>
+</body>
+</html>

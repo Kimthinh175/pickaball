@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PICKO247 – Tin tức & Giải đấu Pickleball</title>
+    <meta
+      name="description"
+      content="Cập nhật thông tin giải đấu và bảng xếp hạng tuyển thủ Pickleball tại PICKO247."
+    />
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+    <link rel="stylesheet" href="css/style.css?v=16" />
+      <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+  <body>
+    <div class="topbar">
+      <div class="topbar-in">
+        <a class="logo" href="./">
+          <img src="public/logo.png" alt="PICKO247" />
+          <div class="spinning-ball"></div>
+        </a>
+
+        <!-- Hamburger button for mobile -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu" onclick="toggleMobileMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="topnav" id="topnav">
+          <a href="./">Bảng xếp hạng</a>
+          <a href="tournaments" class="active">Giải đấu</a>
+          <a href="minigame/" class="game-tab-btn" style="color: #ffca28; font-weight: bold; background: rgba(255,200,0,0.15); border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;">🎮 Chơi Game</a>
+          <a href="admin/">Admin</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="wrap">
+    <!-- Slider -->
+    <div class="hero-slider">
+        <div class="hero-slides" id="hero-slides">
+            <div class="hero-slide"><img src="public/banners/1.jpg" alt="Banner 1"></div>
+            <div class="hero-slide"><img src="public/banners/2.jpg" alt="Banner 2"></div>
+            <div class="hero-slide"><img src="public/banners/3.jpg" alt="Banner 3"></div>
+        </div>
+        <div class="hero-dots" id="hero-dots">
+            <button class="hero-dot active" onclick="goToSlide(0)"></button>
+            <button class="hero-dot" onclick="goToSlide(1)"></button>
+            <button class="hero-dot" onclick="goToSlide(2)"></button>
+        </div>
+        <button class="hero-nav prev" onclick="prevSlide()">&#10094;</button>
+        <button class="hero-nav next" onclick="nextSlide()">&#10095;</button>
+    </div>
+
+    <h1 class="page-title">Giải đấu nổi bật</h1>
+    <p class="page-sub">Cập nhật các giải đấu Pickleball mới nhất</p>
+
+      <div class="tour-grid" id="tournaments-list">
+        <div class="empty">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
+          Đang tải dữ liệu...
+        </div>
+      </div>
+      </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="public/logo.png" alt="Picko 247 Logo" class="footer-logo">
+        <p class="footer-slogan">Nền tảng quản lý giải đấu Pickleball hàng đầu Việt Nam!</p>
+      </div>
+      <div class="footer-info">
+        <div class="footer-item">
+          <span class="footer-icon"><i data-lucide="map-pin"></i></span>
+          <span class="footer-text">294/1 Đ.Thạnh Xuân 14, Thới An, Hồ Chí Minh, Vietnam</span>
+        </div>
+        <div class="footer-item">
+          <span class="footer-icon">🌐</span>
+          <span class="footer-text">picko247.com</span>
+        </div>
+        <div class="footer-item">
+          <span class="footer-icon">📞</span>
+          <span class="footer-text">+84 966 980 553</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copy">
+      &copy; 2026 Picko247. All rights reserved.
+    </div>
+  </footer>
+    
+    <div id="toast"></div>
+    <script type="module" src="js/main.js?v=16"></script>
+    <script>if(window.lucide) lucide.createIcons();</script>
+</body>
+</html>
+
+

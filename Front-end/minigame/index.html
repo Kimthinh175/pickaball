@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Pickaball - Game Live 2D (Offline)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+  <link rel="stylesheet" href="css/game.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Top Action Bar (Mobile-friendly Back button) -->
+  <div class="top-nav-bar">
+    <a href="../" class="back-btn">⬅️ Quay Lại</a>
+    <div class="game-title">🏓 PICKABALL 2D AI</div>
+  </div>
+
+  <div class="game-page-container">
+    
+    <!-- Top HUD (Outside Canvas) -->
+    <div class="hud-top">
+      <div class="hud-player-profile">
+        <span class="hud-avatar">🤖</span>
+        <div class="hud-info">
+          <span class="hud-title">BOT AI (SÂN TRÊN)</span>
+          <span class="hud-name">Hell Bot</span>
+        </div>
+      </div>
+      <div class="hud-center-score">
+        <span id="score-p2" class="score-p2">0</span>
+        <span class="score-divider">:</span>
+        <span id="score-p1" class="score-p1">0</span>
+      </div>
+    </div>
+
+    <div class="game-viewport">
+      <div id="serve-notification" class="serve-notification-banner" style="display: none;"></div>
+
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        <canvas id="gameCanvas" width="400" height="700"></canvas>
+
+        <!-- Overlays -->
+        <div id="start-overlay" class="canvas-overlay">
+          <div class="start-card">
+            <h2>🏓 ĐẬP BÓNG PICKLEBALL 2D</h2>
+            <p class="mode-desc">Chế độ: <strong class="mode-tag">🤖 Luyện Tập Vs AI</strong></p>
+            <p><strong><span class="mobile-only">Chạm màn hình</span><span class="desktop-only">Nhấn Phím Cách (Space)</span></strong> để bắt đầu / phát bóng.</p>
+            <p>Lướt ngang trên khu vực sân để di chuyển vợt.</p>
+            <p>Vợt sẽ <strong>tự động đỡ bóng</strong> khi bóng chạm vào.</p>
+            <button class="start-match-btn" id="start-btn">🚀 BẮT ĐẦU TRẬN ĐẤU (10 ĐIỂM)</button>
+          </div>
+        </div>
+
+        <div id="game-over-overlay" class="canvas-overlay winner-overlay" style="display: none;">
+          <div class="start-card">
+            <span class="trophy-icon">🏆</span>
+            <h2>KẾT THÚC TRẬN ĐẤU!</h2>
+            <h3 class="winner-name" id="winner-name-text">CHIẾN THẮNG: ...</h3>
+            <button class="start-match-btn" id="restart-btn">🔄 THI ĐẤU TRẬN MỚI</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom HUD (Outside Canvas) -->
+    <div class="hud-bottom">
+      <div class="hud-player-profile">
+        <div class="hud-mana-container">
+          <div id="my-mana-fill" class="mana-fill" style="width: 40%"></div>
+          <span id="my-mana-text" class="mana-text">⚡ MANA: 40%</span>
+        </div>
+        <div class="hud-info text-right" style="margin-right: 8px; margin-left: 8px;">
+          <span class="hud-title">BẠN (SÂN DƯỚI)</span>
+          <span class="hud-name">Người Chơi</span>
+        </div>
+        <span class="hud-avatar">🏓</span>
+      </div>
+      
+      <!-- Skills -->
+      <div class="skills-container">
+        <button class="skill-btn" id="btn-shield"><span class="hotkey-badge desktop-only">Q</span>🛡️<br><small>Khiên</small></button>
+        <button class="skill-btn" id="btn-drop"><span class="hotkey-badge desktop-only">W</span>🌀<br><small>Bỏ nhỏ</small></button>
+        <button class="skill-btn fire-btn" id="btn-smash"><span class="hotkey-badge desktop-only">E</span>⚡<br><small>Lốc</small></button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/engine.js"></script>
+  <script src="js/bot.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/main.js"></script>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+

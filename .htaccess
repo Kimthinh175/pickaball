@@ -1,0 +1,53 @@
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# 1. API Routes
+RewriteRule ^api/(.*)$ Back-end/index.php?endpoint=api/$1 [QSA,L]
+
+# 2. Redirect old .html or Front-end/ URLs to clean URLs (SEO & UX)
+RewriteCond %{THE_REQUEST} \s/+Front-end/admin/rankings(?:\.html)?[\s\?] [NC,OR]
+RewriteCond %{THE_REQUEST} \s/+admin/rankings\.html[\s\?] [NC]
+RewriteRule ^.*$ admin/rankings [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+Front-end/admin/(?:index\.html)?[\s\?] [NC,OR]
+RewriteCond %{THE_REQUEST} \s/+admin/index\.html[\s\?] [NC]
+RewriteRule ^.*$ admin/ [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+Front-end/tournaments(?:\.html)?[\s\?] [NC,OR]
+RewriteCond %{THE_REQUEST} \s/+tournaments\.html[\s\?] [NC]
+RewriteRule ^.*$ tournaments [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+Front-end/tournament(?:\.html)?[\s\?] [NC,OR]
+RewriteCond %{THE_REQUEST} \s/+tournament\.html[\s\?] [NC]
+RewriteRule ^.*$ tournament [QSA,R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+Front-end/index\.html[\s\?] [NC,OR]
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s\?] [NC]
+RewriteRule ^.*$ ./ [R=301,L]
+
+# Ensure /admin has trailing slash for relative assets
+RewriteRule ^admin$ admin/ [R=301,L]
+
+# 3. Admin Pretty URLs
+RewriteRule ^admin/?$ Front-end/admin/index.html [L]
+RewriteRule ^admin/tournaments/?$ Front-end/admin/index.html [L]
+RewriteRule ^admin/rankings/?$ Front-end/admin/rankings.html [L]
+
+# 4. Client Pretty URLs
+RewriteRule ^$ Front-end/index.html [L]
+RewriteRule ^tournaments/?$ Front-end/tournaments.html [L]
+RewriteRule ^tournament/?$ Front-end/tournament.html [QSA,L]
+RewriteRule ^rankings/?$ Front-end/index.html [L]
+
+# 5. Admin Asset Routing (css, js)
+RewriteRule ^admin/(css|js)/(.*)$ Front-end/admin/$1/$2 [L]
+
+# 6. Allow existing files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 7. Fallback to Front-end folder for other static files (public, css, js, etc.)
+RewriteCond $1 !^Front-end/
+RewriteCond $1 !^Back-end/
+RewriteRule ^(.*)$ Front-end/$1 [L]

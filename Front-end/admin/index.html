@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickaball Admin</title>
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+    <link rel="stylesheet" href="css/admin.css?v=28">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-section" class="login-wrap hidden">
+    <header class="topbar">
+      <div class="topbar-in">
+        <a class="logo" href="../">
+          <img src="../public/logo.png" alt="PICKO247" />
+          <div class="spinning-ball"></div>
+        </a>
+
+        <!-- Hamburger button for mobile -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu" onclick="toggleAdminMobileMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="topnav" id="topnav">
+          <a href="../">Bảng xếp hạng</a>
+          <a href="../tournaments">Giải đấu</a>
+          <a href="../minigame/" class="game-tab-btn" style="color: #ffca28; font-weight: bold; background: rgba(255,200,0,0.15); border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;">🎮 Chơi Game</a>
+          <a href="./" class="active">Admin</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="login-body">
+        <div class="login-box">
+            <div class="login-logo">
+                <div>
+                    <img src="../public/logo.png" alt="Logo">
+                </div>
+                <div>
+                    <span>PICKO247</span>
+                    <small>Admin Dashboard</small>
+                </div>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Tài khoản</label>
+                    <input type="text" id="username" placeholder="Nhập username..." required>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu..." required>
+                </div>
+                <button type="submit" class="btn" style="width:100%; justify-content:center; margin-top:8px;">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside id="sidebar" class="sidebar hidden">
+    <div class="sidebar-brand">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="../public/logo.png" alt="Logo">
+            <div class="sidebar-brand-text">
+                <span>Admin Panel</span>
+            </div>
+        </div>
+        <button class="menu-toggle" id="sidebar-menu-toggle" aria-label="Toggle Menu" onclick="toggleSidebarMenu()" style="display: none;">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <div class="sidebar-section-label">Menu chính</div>
+
+    <nav class="sidebar-nav">
+        <a id="nav-tournaments" href="./" class="active">
+            <span class="nav-icon"><i data-lucide="trophy"></i></span> Giải đấu
+        </a>
+        <a id="nav-rankings" href="rankings">
+            <span class="nav-icon">📊</span> Bảng xếp hạng
+        </a>
+    </nav>
+
+    <div class="sidebar-section-label">Hệ thống</div>
+    <nav class="sidebar-nav" style="flex:0;">
+        <a id="nav-settings" onclick="showTab('settings')">
+            <span class="nav-icon"><i data-lucide="settings"></i></span> Cài đặt
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="home-link" href="../" target="_blank">
+            <span>↗</span> Ra trang chủ
+        </a>
+        <button id="btn-logout" class="btn-logout">
+            <span>⏻</span> Đăng xuất
+        </button>
+    </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main id="dashboard-section" class="main-content hidden">
+
+    <!-- Tab: Giải đấu -->
+    <div id="tab-tournaments" class="tab-content active">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Giải đấu</h1>
+                <p class="page-sub">Quản lý toàn bộ các giải đấu trong hệ thống</p>
+            </div>
+            <button class="btn" onclick="openCreateTournamentModal()"><i data-lucide="plus"></i> Tạo giải đấu mới</button>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i data-lucide="trophy"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-total">–</div>
+                    <div class="stat-label">Tổng giải đấu</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">🔥</div>
+                <div>
+                    <div class="stat-value" id="stat-ongoing">–</div>
+                    <div class="stat-label">Đang diễn ra</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i data-lucide="check"></i></div>
+                <div>
+                    <div class="stat-value" id="stat-done">–</div>
+                    <div class="stat-label">Đã kết thúc</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tournament Grid -->
+        <div class="card">
+            <div class="card-head">
+                <h2>Danh sách giải đấu</h2>
+                <span class="text-muted" id="tournament-count"></span>
+            </div>
+            <div class="tournament-grid" id="admin-tournaments-list">
+                <p class="text-muted" style="padding: 20px;">Đang tải...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Chi tiết giải đấu -->
+    <div id="tab-tournament-detail" class="tab-content">
+        <div class="page-header" style="flex-wrap:wrap; gap:12px;">
+            <div>
+                <h1 class="page-title" id="detail-title">Chi tiết giải</h1>
+                <p class="page-sub" id="detail-sub">Quản lý các kèo đấu và trạng thái đóng tiền của giải</p>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <button class="btn btn-ghost" onclick="showTab('tournaments')">← Quay lại</button>
+                <button class="btn" onclick="openEditCurrentTournamentModal()"><i data-lucide="pencil"></i> Cập nhật thông tin</button>
+                <button class="btn" style="background:#10b981; color:#fff;" onclick="openEndTournamentModal()"><i data-lucide="flag"></i> Kết thúc giải đấu</button>
+                <button class="btn btn-danger" onclick="deleteCurrentTournament()"><i data-lucide="trash-2"></i> Xoá giải đấu</button>
+            </div>
+        </div>
+
+        <div id="tournament-results-banner" style="display:none; margin-bottom: 20px;"></div>
+
+        <!-- 1. Danh sách Đội tham gia & Thu lệ phí giải (CHÍNH) -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <h2>👥 Danh sách Đội tham gia & Lệ phí giải</h2>
+                <div id="tournament-team-stats" style="font-size:13px; font-weight:800; color:var(--muted);"></div>
+            </div>
+            <div class="card-body">
+                <div id="tournament-teams-list">
+                    <!-- Sẽ render động danh sách từng ĐỘI ở đây -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Bảng đấu (nếu có) -->
+        <div id="admin-detail-groups-section" class="card" style="display:none; margin-bottom: 20px;">
+            <div class="card-head">
+                <h2>🏆 Các Bảng đấu (Vòng bảng)</h2>
+            </div>
+            <div class="card-body" id="admin-detail-groups-list"></div>
+        </div>
+
+        <!-- 3. Sơ đồ Knockout (nếu có) -->
+        <div id="admin-detail-brackets-section" class="card" style="display:none; margin-bottom: 20px;">
+            <div class="card-head">
+                <h2>🎯 Sơ đồ thi đấu (Knockout)</h2>
+            </div>
+            <div class="card-body" id="admin-detail-brackets-list"></div>
+        </div>
+    </div>
+
+    <!-- Tab: Cài đặt -->
+    <div id="tab-settings" class="tab-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Cài đặt</h1>
+                <p class="page-sub">Tuỳ chỉnh hệ thống quản trị</p>
+            </div>
+        </div>
+        <div class="card" style="max-width:480px;">
+            <div class="card-head"><h2>🔑 Đổi mật khẩu Admin</h2></div>
+            <div class="card-body">
+                <form id="form-password">
+                    <div class="form-group">
+                        <label>Mật khẩu cũ</label>
+                        <input type="password" id="pwd-old" placeholder="Nhập mật khẩu cũ..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="pwd-new" placeholder="Nhập mật khẩu mới..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu</label>
+                        <input type="password" id="pwd-confirm" placeholder="Nhập lại mật khẩu mới..." required>
+                    </div>
+                    <button type="submit" class="btn" style="justify-content:center;">Cập nhật mật khẩu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- ===== MODAL TẠO GIẢI ĐẤU MỚI ===== -->
+<div id="modal-tournament" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 id="modal-tournament-title-text"><i data-lucide="trophy"></i> Tạo giải đấu mới</h2>
+            <button class="modal-close" onclick="closeCreateTournamentModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            
+            <!-- 1. THÔNG TIN CƠ BẢN & BANNER -->
+            <div class="form-step-section">
+                <h3 class="form-step-title"><i data-lucide="pin"></i> 1. Thông tin chung</h3>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Ngày bắt đầu</label>
+                    <input type="date" id="modal-t-start-date">
+                </div>
+                <div class="form-group">
+                    <label>Tên giải đấu *</label>
+                    <input type="text" id="modal-t-title" placeholder="VD: MMP Tour 2 - Mùa Hè Rực Lửa 2026" required>
+                </div>
+                <div class="form-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="margin-bottom:0;">Ảnh Banner giải đấu</label>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" id="btn-reposition-banner" class="btn btn-sm btn-ghost hidden" onclick="toggleRepositionBanner(event)">↕️ Chỉnh vị trí</button>
+                            <button type="button" class="btn btn-sm btn-ghost" onclick="openBannerLibraryModal()">📁 Chọn ảnh từ thư viện</button>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="modal-t-banner-selected" value="">
+                    <input type="hidden" id="modal-t-banner-position" value="50% 50%">
+                    <input type="file" id="modal-banner-file" accept="image/*" style="display:none;" onchange="handleBannerUploadFile(this)">
+                    
+                    <!-- Khung Upload Banner & Căn Chỉnh Vị Trí -->
+                    <div id="banner-upload-box" class="banner-upload-box" onclick="handleBannerBoxClick(event)" ondblclick="startRepositionBanner(event)">
+                        <img id="modal-t-banner-preview" class="banner-preview-img hidden" src="" alt="Preview Banner" style="object-position: 50% 50%;">
+                        
+                        <div id="modal-t-banner-placeholder" class="banner-upload-placeholder">
+                            <div class="upload-icon-circle">📸</div>
+                            <div class="upload-title">Nhấp vào đây để tải ảnh banner từ máy lên</div>
+                            <div class="upload-subtitle">Hỗ trợ JPG, PNG, WEBP (Khuyến nghị tỷ lệ ngang 21:8 hoặc 16:9)</div>
+                        </div>
+
+                        <!-- Thanh công cụ khi đang kéo chỉnh vị trí -->
+                        <div id="banner-reposition-bar" class="banner-reposition-bar hidden">
+                            <span>↕️ Kéo chuột lên / xuống để căn chỉnh khung nhìn</span>
+                            <button type="button" class="btn btn-sm" style="padding:4px 12px; font-size:12px;" onclick="stopRepositionBanner(event)">✓ Xong</button>
+                        </div>
+
+                        <!-- Hover overlay khi không trong chế độ kéo -->
+                        <div id="modal-t-banner-overlay" class="banner-upload-overlay hidden">
+                            <span class="upload-icon">📸</span>
+                            <span>Nhấp đúp (Double-click) hoặc bấm 'Chỉnh vị trí' để kéo ảnh</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Giới thiệu giải đấu</label>
+                    <textarea id="modal-t-desc" rows="3" placeholder="Giới thiệu về quy mô, đối tượng tham gia, địa điểm tổ chức..."></textarea>
+                </div>
+            </div>
+
+            <!-- 2. CƠ CẤU GIẢI THƯỞNG -->
+            <div class="form-step-section">
+                <h3 class="form-step-title">🎁 2. Cơ cấu giải thưởng</h3>
+                <p class="text-muted" style="margin-bottom: 12px;">Chọn thứ hạng và nhập mô tả phần thưởng tương ứng:</p>
+                <div id="prize-rows-container">
+                    <div class="prize-item-row">
+                        <select style="width: 170px;" class="prize-rank-select">
+                            <option value="Nhất (Vô địch)" selected>🥇 Nhất (Vô địch)</option>
+                            <option value="Nhì (Á quân)">🥈 Nhì (Á quân)</option>
+                            <option value="Đồng Hạng Ba">🥉 Đồng Hạng Ba</option>
+                            <option value="Khuyến khích">🎖️ Khuyến khích</option>
+                        </select>
+                        <input type="text" class="prize-desc-input" placeholder="VD: 5.000.000 VNĐ + Cúp & Huy chương" value="5.000.000 VNĐ + Cúp & Huy chương">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removePrizeRow(this)">✕</button>
+                    </div>
+                    <div class="prize-item-row">
+                        <select style="width: 170px;" class="prize-rank-select">
+                            <option value="Nhì (Á quân)" selected>🥈 Nhì (Á quân)</option>
+                            <option value="Nhất (Vô địch)">🥇 Nhất (Vô địch)</option>
+                            <option value="Đồng Hạng Ba">🥉 Đồng Hạng Ba</option>
+                            <option value="Khuyến khích">🎖️ Khuyến khích</option>
+                        </select>
+                        <input type="text" class="prize-desc-input" placeholder="VD: 3.000.000 VNĐ + Huy chương Bạc" value="3.000.000 VNĐ + Huy chương Bạc">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removePrizeRow(this)">✕</button>
+                    </div>
+                    <div class="prize-item-row">
+                        <select style="width: 170px;" class="prize-rank-select">
+                            <option value="Đồng Hạng Ba" selected>🥉 Đồng Hạng Ba</option>
+                            <option value="Nhất (Vô địch)">🥇 Nhất (Vô địch)</option>
+                            <option value="Nhì (Á quân)">🥈 Nhì (Á quân)</option>
+                            <option value="Khuyến khích">🎖️ Khuyến khích</option>
+                        </select>
+                        <input type="text" class="prize-desc-input" placeholder="VD: 1.500.000 VNĐ + Huy chương Đồng" value="1.500.000 VNĐ + Huy chương Đồng">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removePrizeRow(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-ghost mt-12" onclick="addPrizeRow()"><i data-lucide="plus"></i> Thêm hạng giải thưởng</button>
+            </div>
+
+            <!-- 3. THỂ LỆ THI ĐẤU -->
+            <div class="form-step-section">
+                <h3 class="form-step-title">📜 3. Thể lệ thi đấu</h3>
+                <div class="form-group" style="margin-bottom:0;">
+                    <textarea id="modal-t-rules" rows="4" placeholder="- Thể thức thi đấu: 1v1 đơn nam / đơn nữ&#10;- Vòng bảng: Thi đấu 1 set chạm 11 (cách 2 điểm)&#10;- Vòng loại trực tiếp: Thi đấu 3 set thắng 2 chạm 11"></textarea>
+                </div>
+            </div>
+
+            <!-- 4. DANH SÁCH ĐỘI THI ĐẤU (ĐÁNH ĐÔI 2V2) -->
+            <div class="form-step-section">
+                <h3 class="form-step-title"><i data-lucide="swords"></i> 4. Danh sách Đội thi đấu (Đánh Đôi 2v2)</h3>
+                
+                <!-- Team Creator Box -->
+                <div class="matchup-box">
+                    
+                    <!-- 2 Slots with Avatar for 1 Team -->
+                    <div class="player-slots-container" style="display:flex; flex-direction:column; gap:16px;">
+                        <strong style="color:var(--primary); font-size:12px; text-transform:uppercase;">Thành viên Đội</strong>
+                        <div style="display:flex; flex-wrap:wrap; gap:16px;">
+                            <div id="slot-p1" class="player-slot-box active" onclick="setActiveSlot(1)" style="flex:1; min-width: 250px;">
+                                <img id="slot-p1-avatar" class="slot-avatar-img" src="../public/favicon.svg" alt="Avatar">
+                                <div class="slot-info">
+                                    <div class="slot-label-small">Tuyển thủ 1 (Đang chọn)</div>
+                                    <div id="slot-p1-name" class="slot-name" style="color:var(--muted)">Chưa chọn</div>
+                                    <div id="slot-p1-pts" class="slot-pts"></div>
+                                </div>
+                            </div>
+                            <div id="slot-p2" class="player-slot-box" onclick="setActiveSlot(2)" style="flex:1; min-width: 250px;">
+                                <img id="slot-p2-avatar" class="slot-avatar-img" src="../public/favicon.svg" alt="Avatar">
+                                <div class="slot-info">
+                                    <div class="slot-label-small">Tuyển thủ 2</div>
+                                    <div id="slot-p2-name" class="slot-name" style="color:var(--muted)">Chưa chọn</div>
+                                    <div id="slot-p2-pts" class="slot-pts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search & Gender Filter for Picker -->
+                    <div class="matchup-filter-row" style="margin-top:20px;">
+                        <input type="text" id="matchup-search-player" placeholder="🔍 Tìm kiếm tuyển thủ theo tên..." oninput="renderPlayerPickerList()">
+                        <select id="matchup-filter-gender" style="width: 150px;" onchange="renderPlayerPickerList()">
+                            <option value="all">Tất cả giới tính</option>
+                            <option value="Nam">Chỉ Nam</option>
+                            <option value="Nữ">Chỉ Nữ</option>
+                        </select>
+                    </div>
+
+                    <!-- Player Picker List with Avatars -->
+                    <label style="font-size:11px; color:var(--muted); margin-bottom:6px; display:block;">Click vào tuyển thủ để gán vào ô:</label>
+                    <div id="player-picker-list" class="player-picker-dropdown">
+                        <!-- Render động tuyển thủ kèm avatar -->
+                    </div>
+
+                    <!-- Payment Status & Add Button -->
+                    <div class="inline-form" style="justify-content: space-between; margin-top:14px;">
+                        <div style="display:flex; align-items:center; gap:10px; flex:1; max-width:320px;">
+                            <label style="margin-bottom:0; font-size:13px; white-space:nowrap;">Lệ phí giải:</label>
+                            <select id="matchup-status-select" class="status-select-lg" style="width:100%;">
+                                <option value="Chưa chuyển khoản"><i data-lucide="x"></i> Chưa đóng</option>
+                                <option value="Đã chuyển khoản"><i data-lucide="check"></i> Đã đóng</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn" id="btn-add-team-to-pool" onclick="addTeamToPool()" disabled style="background:#94a3b8; border-color:#94a3b8; color:#ffffff; opacity:0.7; cursor:not-allowed;"><i data-lucide="plus"></i> Thêm Đội vào danh sách</button>
+                    </div>
+                </div>
+
+                <!-- Danh sách các cặp đấu đã tạo -->
+                <div>
+                    <label style="margin-bottom: 8px; font-weight:800;">Các Đội đã tạo (<span id="team-pool-count">0</span>):</label>
+                    <div id="team-pool-container" class="matchup-card-list">
+                        <div class="empty-placeholder" style="grid-column: 1/-1;">Chưa có đội nào được tạo. Hãy chọn 2 tuyển thủ ở trên và bấm "Thêm Đội vào danh sách".</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. BẢNG ĐẤU (GROUPS) -->
+            <div class="form-step-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px;">
+                    <h3 class="form-step-title" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">🏟️ 5. Chia bảng đấu</h3>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" class="btn btn-sm btn-ghost" style="color: var(--accent); border-color: var(--accent);" onclick="openAutoDivideModal()">🎲 Tự động chia</button>
+                        <button type="button" class="btn btn-sm btn-ghost" onclick="addNewGroupBuilder()"><i data-lucide="plus"></i> Thêm thủ công</button>
+                    </div>
+                </div>
+                <p class="text-muted" style="margin-bottom: 14px;">Gán các <strong>Đội</strong> ở mục 4 vào từng bảng đấu. Các đội trong cùng một bảng sẽ tự động được bắt cặp thi đấu vòng tròn 1 lượt với nhau.</p>
+                
+                <div id="groups-builder-container">
+                    <!-- Sẽ render động các bảng ở đây -->
+                </div>
+            </div>
+
+            <!-- 6. SƠ ĐỒ THI ĐẤU (BRACKETS) -->
+            <div class="form-step-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px;">
+                    <h3 class="form-step-title" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">🌳 6. Sơ đồ thi đấu (Knockout)</h3>
+                    <div class="bracket-btn-group" style="display:flex; gap:8px;">
+                        <button type="button" class="btn btn-sm btn-ghost" onclick="autoGenerateBracketsFromGroups()">🔄 Tự động tạo theo bảng</button>
+                        <button type="button" class="btn btn-sm btn-ghost" onclick="addNewBracketStage()"><i data-lucide="plus"></i> Thêm vòng đấu</button>
+                    </div>
+                </div>
+                <p class="text-muted" style="margin-bottom: 14px;">Thiết lập các cặp đối đầu cho vòng loại trực tiếp (Bán kết, Chung kết...). Bạn có thể tuỳ chỉnh vị trí đấu (VD: Nhất bảng A vs Nhất bảng B...):</p>
+                
+                <div id="brackets-builder-container">
+                    <!-- Sẽ render động sơ đồ thi đấu -->
+                </div>
+            </div>
+
+        </div>
+        <div id="structure-update-warning" style="display: none; padding: 12px; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; border-radius: 4px; margin-bottom: 12px;">
+            <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer; margin: 0;">
+                <input type="checkbox" id="modal-t-update-structure" style="margin-top: 3px;">
+                <div>
+                    <strong style="color: #ef4444; display: block;">Cập nhật lại danh sách đội & sơ đồ thi đấu</strong>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Cảnh báo: Nếu tích chọn, toàn bộ kết quả, tỉ số và trận đấu cũ của giải này sẽ bị xóa sạch và tạo lại từ đầu. Chỉ nên dùng khi giải chưa diễn ra.</span>
+                </div>
+            </label>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" onclick="closeCreateTournamentModal()">Huỷ</button>
+            <button type="button" class="btn" id="btn-submit-create-tournament" onclick="submitCreateTournament()"><i data-lucide="rocket"></i> Tạo giải đấu ngay</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SUB-MODAL THƯ VIỆN BANNER ===== -->
+<div id="modal-banner-library" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-container" style="max-width: 680px;">
+        <div class="modal-header">
+            <h2>📁 Thư viện ảnh Banner</h2>
+            <button class="modal-close" onclick="closeBannerLibraryModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                <span class="text-muted">Chọn một banner có sẵn bên dưới hoặc tải ảnh mới:</span>
+                <input type="file" id="modal-library-banner-file" accept="image/*" style="display:none;" onchange="handleBannerUploadFile(this)">
+                <button type="button" class="btn btn-sm" onclick="document.getElementById('modal-library-banner-file').click()">📤 Tải ảnh mới lên</button>
+            </div>
+
+            <!-- Banner Gallery Grid -->
+            <div id="banner-library-grid" class="banner-gallery-grid">
+                <!-- Render động danh sách banner -->
+            </div>
+
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+                <label style="font-size:12px; color:var(--muted); font-weight:800;">Hoặc nhập URL ảnh banner tuỳ chỉnh:</label>
+                <div class="inline-form" style="margin-top:6px;">
+                    <div style="flex:1;">
+                        <input type="text" id="modal-t-banner-custom" placeholder="https://... hoặc public/banners/..." style="padding:8px 12px;">
+                    </div>
+                    <button type="button" class="btn btn-sm" onclick="applyCustomBannerUrl()">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="padding: 12px 20px;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="closeBannerLibraryModal()">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL KẾT THÚC GIẢI ĐẤU & TRAO GIẢI ===== -->
+<div id="modal-finish-tournament" class="modal-overlay" style="z-index: 1040;">
+    <div class="modal-container" style="max-width: 650px;">
+        <div class="modal-header">
+            <h2><i data-lucide="flag"></i> Kết thúc giải đấu & Chọn kết quả chung cuộc</h2>
+            <button class="modal-close" onclick="closeEndTournamentModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+            <p class="text-muted" style="margin-bottom: 18px; font-size: 13.5px; line-height: 1.5;">
+                Vui lòng chọn đội / tuyển thủ đạt các giải theo cơ cấu giải thưởng của giải này. Khi lưu, trạng thái giải sẽ chuyển thành <strong>"Đã diễn ra"</strong> và chỉ hiển thị Kết quả chung cuộc & Giới thiệu giải ngoài Client.
+            </p>
+            <form id="form-finish-tournament" onsubmit="submitFinishTournament(event)">
+                <div id="finish-prizes-container" style="display:flex; flex-direction:column; gap:12px;">
+                    <!-- Render động các vị trí Nhất, Nhì, Ba -->
+                </div>
+                <div style="margin-top: 12px; text-align: right;">
+                    <button type="button" class="btn btn-sm" onclick="addFinishPrizeRow()" style="background: var(--panel2); color: var(--text); border: 1px solid var(--border);">+ Thêm giải thưởng</button>
+                </div>
+
+                <div style="background: var(--panel2); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-top: 16px;">
+                    <div style="font-weight: 800; font-size: 13.5px; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                        <span><i data-lucide="trending-up"></i> Quy tắc tự động tính điểm trình:</span>
+                    </div>
+                    <ul style="font-size: 12.5px; font-weight: 700; color: var(--muted); margin: 0; padding-left: 18px; line-height: 1.7;">
+                        <li><i data-lucide="award"></i> Vô địch: <strong style="color: #16a34a;">+0.15 điểm</strong></li>
+                        <li><i data-lucide="award"></i> Hạng nhì: <strong style="color: #16a34a;">+0.10 điểm</strong></li>
+                        <li><i data-lucide="award"></i> Hạng ba: <strong style="color: #16a34a;">+0.05 điểm</strong></li>
+                        <li><i data-lucide="medal"></i> Khuyến khích: <strong style="color: #16a34a;">+0.02 điểm</strong></li>
+                        <li><i data-lucide="x"></i> Tuyển thủ còn lại (vòng bảng): <strong style="color: #dc2626;">-0.05 điểm</strong></li>
+                    </ul>
+                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 10px; cursor: pointer; font-size: 13px; font-weight: 800; color: var(--primary);">
+                        <input type="checkbox" id="chk-auto-apply-points" checked style="width: 16px; height: 16px; accent-color: var(--primary);">
+                        Tự động cộng/trừ điểm trình cho các tuyển thủ tham gia giải
+                    </label>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-ghost" onclick="closeEndTournamentModal()">Huỷ</button>
+                    <button type="submit" class="btn" style="background:#10b981;"><i data-lucide="save"></i> Lưu kết quả & Kết thúc giải</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL AUTO DIVIDE GROUPS ===== -->
+<div id="modal-auto-divide" class="modal-overlay" style="z-index: 1060;">
+    <div class="modal-container" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2>🎲 Chia bảng tự động</h2>
+            <button class="modal-close" onclick="closeAutoDivideModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+            <p class="text-muted" style="margin-bottom: 18px; font-size: 13.5px; line-height: 1.5;">
+                Thuật toán sẽ tự động xáo trộn ngẫu nhiên danh sách <strong><span id="auto-divide-team-count">0</span> Đội</strong> đã tạo ở mục 4 và chia vào các bảng. Các bảng cũ sẽ bị xoá đi.
+            </p>
+            <div style="margin-bottom: 16px;">
+                <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Cách chia bảng</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label class="radio-card" style="border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="auto_divide_mode" value="by_groups" checked onchange="updateAutoDivideLabel()">
+                        <span style="font-size: 13px; font-weight: 600;">Theo số lượng bảng</span>
+                    </label>
+                    <label class="radio-card" style="border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="auto_divide_mode" value="by_teams" onchange="updateAutoDivideLabel()">
+                        <span style="font-size: 13px; font-weight: 600;">Theo số đội mỗi bảng</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+                <label id="auto-divide-count-label" style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Số lượng bảng đấu</label>
+                <input type="number" id="auto-divide-count" min="1" max="20" value="2" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; font-weight: bold; text-align: center;">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-ghost" onclick="closeAutoDivideModal()">Huỷ</button>
+                <button type="button" class="btn" style="background:var(--accent); color:#fff;" onclick="submitAutoDivide()"><i data-lucide="rocket"></i> Thực hiện bốc thăm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="admin-toast"></div>
+
+<script type="module" src="js/main.js?v=28"></script>
+    <script>if(window.lucide) lucide.createIcons();</script>
+</body>
+</html>
+
+
+
+
+
+

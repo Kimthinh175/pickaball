@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Giải đấu - Picko 247</title>
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+    <link rel="stylesheet" href="css/style.css?v=16">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-in">
+            <a class="logo" href="./">
+                <img src="public/logo.png" alt="PICKO247">
+                <div class="spinning-ball"></div>
+            </a>
+
+            <!-- Hamburger button for mobile -->
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="topnav" id="topnav">
+                <a href="./">Bảng xếp hạng</a>
+                <a href="tournaments" class="active">Giải đấu</a>
+                <a href="minigame/" class="game-tab-btn" style="color: #ffca28; font-weight: bold; background: rgba(255,200,0,0.15); border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;">🎮 Chơi Game</a>
+          <a href="admin/">Admin</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div style="margin-bottom: 24px;">
+            <a href="tournaments" style="color: var(--primary); text-decoration: none; font-weight: 800; font-family: 'Paytone One', sans-serif;">&larr; QUAY LẠI</a>
+        </div>
+        
+        <div class="neo-box" style="padding: 0; margin-bottom: 32px; position: relative;">
+            <div style="width: 100%; aspect-ratio: 21/8; border-bottom: 3px solid var(--action); border-radius: calc(var(--radius) - 3px) calc(var(--radius) - 3px) 0 0; overflow: hidden;">
+                <img id="td-banner" src="public/banners/1.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Banner">
+            </div>
+            <div style="padding: 32px; position: relative;">
+                <span id="td-status" class="badge-status" style="position: absolute; top: -16px; right: 32px; font-size: 14px; padding: 6px 20px;">...</span>
+                <div style="max-width: 800px;">
+                    <h1 class="page-title" id="td-title" style="margin-bottom: 12px;">Đang tải...</h1>
+                    <div id="td-date" style="color: var(--muted); font-size: 14px; font-weight: 700;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hiển thị khi giải đã kết thúc / đã diễn ra -->
+        <div id="td-finished-blocks" style="display: none;">
+            <div class="neo-box section" style="padding: 28px 24px; margin-bottom: 24px;">
+                <div class="section-title" style="margin-bottom: 24px; font-size: 18px; color: #0284c7; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px; font-weight: 900; color: #0f172a;">|</span> Kết quả chung cuộc
+                </div>
+                <div id="td-final-podium-wrap" class="final-podium-wrap">
+                    <!-- Sẽ render động bục vinh quang theo kết quả -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Giới thiệu giải -->
+        <div class="neo-box section" style="padding: 24px; margin-bottom: 24px;">
+            <div class="section-title" style="margin-bottom: 12px; font-size: 18px; color: #0284c7; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px; font-weight: 900; color: #0f172a;">|</span> Giới thiệu giải
+            </div>
+            <div id="td-desc" style="font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 600; line-height: 1.7; margin-bottom: 16px;">Đang tải...</div>
+
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <div style="font-weight: 800; font-size: 13px; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Thể lệ thi đấu:</div>
+                <div id="td-rules" style="margin-bottom: 16px;"></div>
+                
+                <div style="font-weight: 800; font-size: 13px; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Cơ cấu giải thưởng:</div>
+                <div id="td-prizes"></div>
+            </div>
+        </div>
+
+        <!-- Hiển thị khi giải đang/chưa diễn ra -->
+        <div id="td-ongoing-blocks">
+            <!-- 1. Danh sách Đội thi đấu (Nằm trên Bảng đấu) -->
+            <div class="neo-box section" style="padding: 24px; margin-bottom: 24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:10px;">
+                    <div class="section-title" style="margin: 0; font-size: 18px;">👥 Danh sách Đội thi đấu</div>
+                    <div id="td-teams-count" style="font-size:13px; font-weight:800; color:var(--muted);"></div>
+                </div>
+                <div id="td-teams-list" style="display:flex; flex-direction:column; gap:10px;">
+                    <div class="empty">Đang tải danh sách đội...</div>
+                </div>
+            </div>
+
+            <!-- 2. Bảng đấu -->
+            <div class="neo-box section" style="padding: 24px; margin-bottom: 24px;">
+                <div class="section-title" style="margin-bottom: 16px; font-size: 18px;">🏆 Bảng đấu</div>
+                <div id="td-groups" class="empty">Chưa tạo bảng đấu.</div>
+            </div>
+
+            <!-- 3. Sơ đồ thi đấu (Knockout) -->
+            <div class="neo-box section" style="padding: 24px; margin-bottom: 24px;">
+                <div class="section-title" style="margin-bottom: 16px; font-size: 18px;">🎯 Sơ đồ thi đấu</div>
+                <div id="td-brackets" class="empty">Chưa tạo sơ đồ thi đấu.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <img src="public/logo.png" alt="Picko 247 Logo" class="footer-logo">
+          <p class="footer-slogan">Nền tảng quản lý giải đấu Pickleball hàng đầu Việt Nam!</p>
+        </div>
+        <div class="footer-info">
+          <div class="footer-item">
+            <span class="footer-icon"><i data-lucide="map-pin"></i></span>
+            <span class="footer-text">294/1 Đ.Thạnh Xuân 14, Thới An, Hồ Chí Minh, Vietnam</span>
+          </div>
+          <div class="footer-item">
+            <span class="footer-icon">🌐</span>
+            <span class="footer-text">picko247.com</span>
+          </div>
+          <div class="footer-item">
+            <span class="footer-icon">📞</span>
+            <span class="footer-text">+84 966 980 553</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 Picko247. All rights reserved.
+      </div>
+    </footer>
+
+    <div id="toast"></div>
+    <script type="module" src="js/main.js?v=16"></script>
+    <script>if(window.lucide) lucide.createIcons();</script>
+</body>
+</html>
+
+
