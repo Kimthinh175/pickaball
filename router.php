@@ -7,6 +7,9 @@ $rootDir = __DIR__;
 
 // Helper to send correct content type for static files
 function serveFile($filePath) {
+    if (!file_exists($filePath) || !is_file($filePath)) {
+        return false;
+    }
     $ext = pathinfo($filePath, PATHINFO_EXTENSION);
     $mimes = [
         'html' => 'text/html; charset=utf-8',
@@ -40,24 +43,43 @@ if (preg_match('#^/api/(.*)$#', $uri, $matches)) {
     exit;
 }
 
-// 2. Admin Pretty URLs
-if (preg_match('#^/admin/?$#', $uri) || preg_match('#^/admin/tournaments/?$#', $uri)) {
-    serveFile($rootDir . '/Front-end/admin/index.html');
+// 2. Trailing slash redirects for sub-apps to ensure relative paths work
+if ($uri === '/admin') {
+    header("Location: /admin/", true, 301);
+    exit;
 }
-if (preg_match('#^/admin/rankings/?$#', $uri)) {
-    serveFile($rootDir . '/Front-end/admin/rankings.html');
+if ($uri === '/minigame') {
+    header("Location: /minigame/", true, 301);
+    exit;
 }
 
-// 3. Admin Assets (css, js)
-if (preg_match('#^/admin/(css|js)/(.*)$#', $uri, $m)) {
-    $target = $rootDir . '/Front-end/admin/' . $m[1] . '/' . $m[2];
+// 3. Minigame Routing
+if ($uri === '/minigame/' || $uri === '/minigame/index.html') {
+    serveFile($rootDir . '/Front-end/minigame/index.html');
+}
+if (preg_match('#^/minigame/(.*)$#', $uri, $m)) {
+    $target = $rootDir . '/Front-end/minigame/' . $m[1];
     if (file_exists($target) && is_file($target)) {
         serveFile($target);
     }
 }
 
-// 4. Client Pretty URLs
-if ($uri === '/' || $uri === '' || preg_match('#^/rankings/?$#', $uri)) {
+// 4. Admin Routing
+if ($uri === '/admin/' || $uri === '/admin/index.html' || preg_match('#^/admin/tournaments/?$#', $uri)) {
+    serveFile($rootDir . '/Front-end/admin/index.html');
+}
+if (preg_match('#^/admin/rankings/?$#', $uri)) {
+    serveFile($rootDir . '/Front-end/admin/rankings.html');
+}
+if (preg_match('#^/admin/(.*)$#', $uri, $m)) {
+    $target = $rootDir . '/Front-end/admin/' . $m[1];
+    if (file_exists($target) && is_file($target)) {
+        serveFile($target);
+    }
+}
+
+// 5. Client Pretty URLs
+if ($uri === '/' || $uri === '' || $uri === '/index.html' || preg_match('#^/rankings/?$#', $uri)) {
     serveFile($rootDir . '/Front-end/index.html');
 }
 if (preg_match('#^/tournaments/?$#', $uri)) {
@@ -67,25 +89,34 @@ if (preg_match('#^/tournament/?$#', $uri)) {
     serveFile($rootDir . '/Front-end/tournament.html');
 }
 
-// 5. Check if file exists directly under root
+// 6. Direct file checks
 $directFile = $rootDir . $uri;
 if (file_exists($directFile) && is_file($directFile)) {
     serveFile($directFile);
 }
 
-// 6. Check if file exists under Front-end
+// 7. Check if file exists under Front-end
 $frontEndFile = $rootDir . '/Front-end' . $uri;
 if (file_exists($frontEndFile) && is_file($frontEndFile)) {
     serveFile($frontEndFile);
 }
+if (is_dir($frontEndFile) && file_exists($frontEndFile . '/index.html')) {
+    serveFile($frontEndFile . '/index.html');
+}
 
-// 7. Check if file exists under public
+// 8. Check if file exists under public
 $publicFile = $rootDir . '/public' . $uri;
 if (file_exists($publicFile) && is_file($publicFile)) {
     serveFile($publicFile);
 }
 
-// 8. Check uploads
+// 9. Check Front-end/public
+$fePublicFile = $rootDir . '/Front-end/public' . $uri;
+if (file_exists($fePublicFile) && is_file($fePublicFile)) {
+    serveFile($fePublicFile);
+}
+
+// 10. Check uploads
 $uploadsFile = $rootDir . '/uploads' . $uri;
 if (file_exists($uploadsFile) && is_file($uploadsFile)) {
     serveFile($uploadsFile);
