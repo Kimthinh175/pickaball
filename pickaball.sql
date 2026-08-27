@@ -1,5 +1,5 @@
--- Pickaball Database Dump
--- Generated: 2026-08-19 09:40:56
+-- Pickaball Production Clean Database Dump
+-- Generated: 2026-08-27 17:50:14
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -28,10 +28,10 @@ CREATE TABLE `banners` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `banners` (`id`, `title`, `image_url`, `order_num`, `image_position`, `is_active`) VALUES
-('1', 'Banner Trang Giải Đấu 1', 'public/banners/1.jpg', 1, '50% 50%', 1),
-('2', 'Banner Trang Giải Đấu 2', 'public/banners/2.jpg', 2, '50% 50%', 1),
-('3', 'Banner Trang Giải Đấu 3', 'public/banners/3.jpg', 3, '50% 50%', 1);
+INSERT INTO `banners` (`id`, `title`, `image_url`, `order_num`, `image_position`, `is_active`, `created_at`, `updated_at`) VALUES
+('1', 'Banner Trang Giải Đấu 1', 'public/banners/1.jpg', '1', '50% 50%', '1', '2026-08-27 22:50:14', '2026-08-27 22:50:14'),
+('2', 'Banner Trang Giải Đấu 2', 'public/banners/2.jpg', '2', '50% 50%', '1', '2026-08-27 22:50:14', '2026-08-27 22:50:14'),
+('3', 'Banner Trang Giải Đấu 3', 'public/banners/3.jpg', '3', '50% 50%', '1', '2026-08-27 22:50:14', '2026-08-27 22:50:14');
 
 DROP TABLE IF EXISTS `matches`;
 CREATE TABLE `matches` (
@@ -54,62 +54,7 @@ CREATE TABLE `matches` (
   CONSTRAINT `matches_ibfk_2` FOREIGN KEY (`team1_p1_id`) REFERENCES `players` (`id`) ON DELETE CASCADE,
   CONSTRAINT `matches_ibfk_3` FOREIGN KEY (`team2_p1_id`) REFERENCES `players` (`id`) ON DELETE CASCADE,
   CONSTRAINT `matches_ibfk_4` FOREIGN KEY (`winner_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `matches` (`id`, `tournament_id`, `team1_p1_id`, `team1_p2_id`, `team2_p1_id`, `team2_p2_id`, `winner_id`, `created_at`, `status`, `group_id`) VALUES
-('16', '11', '1', '2', '3', '4', NULL, '2026-08-15 19:44:45', 'Chưa chuyển khoản', NULL),
-('17', '11', '5', '6', '7', '8', NULL, '2026-08-15 19:44:45', 'Đã chuyển khoản', NULL),
-('18', '12', '1', '2', '3', '4', NULL, '2026-08-15 19:44:45', 'Đã chuyển khoản', '13'),
-('19', '12', '5', '6', '7', '8', NULL, '2026-08-15 19:44:45', 'Đã chuyển khoản', '13'),
-('20', '13', '1', '2', '3', '4', NULL, '2026-08-15 20:33:37', 'Chưa chuyển khoản', '14'),
-('21', '13', '14', '12', '10', '13', NULL, '2026-08-15 20:33:37', 'Chưa chuyển khoản', '14'),
-('22', '13', '16', '11', '8', '15', NULL, '2026-08-15 20:33:37', 'Chưa chuyển khoản', '15'),
-('23', '13', '6', '5', '7', '17', NULL, '2026-08-15 20:33:37', 'Chưa chuyển khoản', '15'),
-('24', '14', '23', '5', '3', '4', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('25', '14', '23', '5', '15', '11', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('26', '14', '23', '5', '1', '2', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('27', '14', '23', '5', '22', '19', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('28', '14', '3', '4', '15', '11', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('29', '14', '3', '4', '1', '2', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('30', '14', '3', '4', '22', '19', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('31', '14', '15', '11', '1', '2', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('32', '14', '15', '11', '22', '19', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('33', '14', '1', '2', '22', '19', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '16'),
-('34', '14', '9', '6', '8', '18', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('35', '14', '9', '6', '14', '12', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('36', '14', '9', '6', '13', '16', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('37', '14', '9', '6', '7', '10', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('38', '14', '8', '18', '14', '12', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('39', '14', '8', '18', '13', '16', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('40', '14', '8', '18', '7', '10', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('41', '14', '14', '12', '13', '16', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('42', '14', '14', '12', '7', '10', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('43', '14', '13', '16', '7', '10', NULL, '2026-08-18 10:23:36', 'Chưa chuyển khoản', '17'),
-('45', '15', '5', '6', '7', '8', NULL, '2026-08-19 08:06:47', 'Chưa chuyển khoản', '18'),
-('70', '16', '32', '31', '26', '30', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '24'),
-('71', '16', '32', '31', '18', '19', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '24'),
-('72', '16', '32', '31', '3', '33', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '24'),
-('73', '16', '26', '30', '18', '19', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '24'),
-('74', '16', '26', '30', '3', '33', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '24'),
-('75', '16', '18', '19', '3', '33', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '24'),
-('76', '16', '24', '25', '13', '12', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '25'),
-('77', '16', '24', '25', '8', '6', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '25'),
-('78', '16', '24', '25', '38', '4', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '25'),
-('79', '16', '13', '12', '8', '6', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '25'),
-('80', '16', '13', '12', '38', '4', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '25'),
-('81', '16', '8', '6', '38', '4', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '25'),
-('82', '16', '35', '37', '34', '36', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '26'),
-('83', '16', '35', '37', '9', '23', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '26'),
-('84', '16', '35', '37', '16', '39', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '26'),
-('85', '16', '34', '36', '9', '23', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '26'),
-('86', '16', '34', '36', '16', '39', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '26'),
-('87', '16', '9', '23', '16', '39', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '26'),
-('88', '16', '14', '10', '15', '2', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '27'),
-('89', '16', '14', '10', '7', '5', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '27'),
-('90', '16', '14', '10', '11', '22', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '27'),
-('91', '16', '15', '2', '7', '5', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '27'),
-('92', '16', '15', '2', '11', '22', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '27'),
-('93', '16', '7', '5', '11', '22', NULL, '2026-08-19 11:49:44', 'Chưa chuyển khoản', '27');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `players`;
 CREATE TABLE `players` (
@@ -120,46 +65,7 @@ CREATE TABLE `players` (
   `gender` varchar(10) DEFAULT 'Nam',
   `profile` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `players` (`id`, `name`, `avatar`, `points`, `gender`, `profile`) VALUES
-('1', 'Trần Minh Đức', '', '6.75', 'Nam', 'Tuổi: 23\r\nThành tích: \r\n🥇 Giải nhất thành phố\r\n🏅Giải khuyến khích quốc tế'),
-('2', 'Nguyễn Văn Khang', '', '6.40', 'Nam', NULL),
-('3', 'Lê Hoàng Phúc', '', '5.90', 'Nam', NULL),
-('4', 'Phạm Quốc Bảo', '', '5.40', 'Nam', NULL),
-('5', 'Vũ Thành Long', '', '4.90', 'Nam', NULL),
-('6', 'Đỗ Anh Tuấn', '', '4.35', 'Nam', NULL),
-('7', 'Nguyễn Thị Mai Anh', '', '4.10', 'Nữ', NULL),
-('8', 'Trần Ngọc Hà', '', '3.80', 'Nữ', NULL),
-('9', 'Trúc Panda', NULL, '2.75', 'Nam', NULL),
-('10', 'Nhật Thành', NULL, '3.25', 'Nam', NULL),
-('11', 'Hưng Phát', NULL, '2.85', 'Nam', NULL),
-('12', 'Quốc Bảo 2k10', NULL, '3.10', 'Nam', NULL),
-('13', 'Nhiên MMP', NULL, '3.00', 'Nam', NULL),
-('14', 'Cẩn', NULL, '3.10', 'Nam', NULL),
-('15', 'Thành Ngô', NULL, '2.75', 'Nam', NULL),
-('16', 'Sang Cao', NULL, '2.95', 'Nam', NULL),
-('17', 'iksjdka', 'public/uploads/1786800309_1780568111_01.jpg', '-0.05', 'Nữ', NULL),
-('18', 'Nguyễn Hồng Lân', 'public/uploads/1786838479_Danh_61.jpeg', '0.00', 'Nam', NULL),
-('19', 'Thịnh', 'public/uploads/1786870404_thinh.jpg', '1.00', 'Nam', NULL),
-('22', 'Thành Ben', 'public/uploads/1786930788_1.png', '2.90', 'Nam', NULL),
-('23', 'Thịnh', 'public/uploads/1786987978_thinh.jpg', '2.00', 'Nam', '**Thành tích**: \r\n- vô địch giải abc\r\n**Giải nhì** giải xyz\r\ntest icon: :)'),
-('24', 'Lý Hoàng Nam', '', '7.85', 'Nam', 'HDIUBASIUD\r\n🥇OIJDAJSOID\r\n2🥈🥈🥈'),
-('25', 'Nguyễn Thùy Linh', '', '7.40', 'Nữ', NULL),
-('26', 'Trịnh Linh Giang', '', '6.95', 'Nam', NULL),
-('27', 'Vũ Hà Minh Đức', '', '6.80', 'Nam', NULL),
-('28', 'Savanna Lý Nguyễn', '', '6.65', 'Nữ', NULL),
-('29', 'Phạm Minh Tuấn', '', '6.50', 'Nam', NULL),
-('30', 'Trần Thụy Đan Thi', '', '6.35', 'Nữ', NULL),
-('31', 'Nguyễn Văn Phương', '', '6.20', 'Nam', NULL),
-('32', 'Đỗ Minh Quân', '', '6.10', 'Nam', NULL),
-('33', 'Huỳnh Phương Đài Trang', '', '5.95', 'Nữ', NULL),
-('34', 'Lê Quốc Khánh', '', '5.80', 'Nam', NULL),
-('35', 'Sĩ Bội Ngọc', '', '5.75', 'Nữ', NULL),
-('36', 'Trương Vinh Hiển', '', '5.60', 'Nam', NULL),
-('37', 'Ngô Hồng Hạnh', '', '5.45', 'Nữ', NULL),
-('38', 'Nguyễn Đắc Tiến', '', '5.30', 'Nam', NULL),
-('39', 'Đặng Ngọc Vinh', '', '5.15', 'Nam', NULL);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `tournament_banners`;
 CREATE TABLE `tournament_banners` (
@@ -168,17 +74,12 @@ CREATE TABLE `tournament_banners` (
   `image_url` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `tournament_banners` (`id`, `title`, `image_url`, `created_at`) VALUES
-('1', 'Banner Mẫu 1', 'public/banners/1.jpg', '2026-08-15 18:00:00'),
-('2', 'Banner Mẫu 2', 'public/banners/2.jpg', '2026-08-15 18:00:00'),
-('3', '1780568111_01', 'public/banners/banner_1786792224_441.jpg', '2026-08-15 18:10:24'),
-('4', '1780568111_01', 'public/banners/banner_1786792496_364.jpg', '2026-08-15 18:14:56'),
-('5', '1785743186743_210891810022532389_g3182398120505625826_f74f41fe127afa24859fc97b7946ab5b', 'public/banners/banner_1786800503_647.jpg', '2026-08-15 20:28:23'),
-('6', '1785743186743_210891810022532389_g3182398120505625826_f74f41fe127afa24859fc97b7946ab5b', 'public/banners/banner_1786800569_865.jpg', '2026-08-15 20:29:29'),
-('7', '1785743186743_210891810022532389_g3182398120505625826_f74f41fe127afa24859fc97b7946ab5b', 'public/banners/banner_1786800725_498.jpg', '2026-08-15 20:32:05'),
-('8', '299b259d-57e8-44aa-9d9c-b5189d10d1e1', 'public/banners/banner_1787100666_929.png', '2026-08-19 07:51:06');
+('1', 'Banner Mẫu 1', 'public/banners/1.jpg', '2026-08-27 22:50:14'),
+('2', 'Banner Mẫu 2', 'public/banners/2.jpg', '2026-08-27 22:50:14'),
+('3', 'Banner Mẫu 3', 'public/banners/3.jpg', '2026-08-27 22:50:14');
 
 DROP TABLE IF EXISTS `tournament_brackets`;
 CREATE TABLE `tournament_brackets` (
@@ -205,29 +106,7 @@ CREATE TABLE `tournament_brackets` (
   CONSTRAINT `tournament_brackets_ibfk_2` FOREIGN KEY (`team1_p1_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
   CONSTRAINT `tournament_brackets_ibfk_3` FOREIGN KEY (`team2_p1_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
   CONSTRAINT `tournament_brackets_ibfk_4` FOREIGN KEY (`winner_id`) REFERENCES `players` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `tournament_brackets` (`id`, `tournament_id`, `stage_name`, `match_order`, `team1_p1_id`, `team1_p2_id`, `team2_p1_id`, `team2_p2_id`, `slot_1_label`, `slot_2_label`, `winner_id`, `score_1`, `score_2`, `status`) VALUES
-('21', '12', 'Bán kết', '1', NULL, NULL, NULL, NULL, 'Nhất bảng A', 'Nhì bảng B', NULL, '0', '0', 'pending'),
-('22', '11', 'Bán kết', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', 'pending'),
-('23', '11', 'Bán kết', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', 'pending'),
-('24', '11', 'Chung kết', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', 'pending'),
-('25', '13', 'Bán kết', '1', NULL, NULL, NULL, NULL, 'Nhất Bảng A', 'Nhì Bảng B', NULL, '0', '0', 'pending'),
-('26', '13', 'Bán kết', '2', NULL, NULL, NULL, NULL, 'Nhất Bảng B', 'Nhì Bảng A', NULL, '0', '0', 'pending'),
-('27', '13', 'Chung kết', '1', NULL, NULL, NULL, NULL, 'Thắng BK #1', 'Thắng BK #2', NULL, '0', '0', 'pending'),
-('28', '14', 'Bán kết', '1', NULL, NULL, NULL, NULL, 'Nhất Bảng A', 'Nhì Bảng B', NULL, '0', '0', 'pending'),
-('29', '14', 'Bán kết', '2', NULL, NULL, NULL, NULL, 'Nhất Bảng B', 'Nhì Bảng A', NULL, '0', '0', 'pending'),
-('30', '14', 'Chung kết', '1', NULL, NULL, NULL, NULL, 'Thắng BK #1', 'Thắng BK #2', NULL, '0', '0', 'pending'),
-('31', '15', 'Bán kết', '1', NULL, NULL, NULL, NULL, 'Nhất Bảng A', 'Nhì Bảng B', NULL, '0', '0', 'pending'),
-('32', '15', 'Bán kết', '2', NULL, NULL, NULL, NULL, 'Nhất Bảng B', 'Nhì Bảng A', NULL, '0', '0', 'pending'),
-('33', '15', 'Chung kết', '1', NULL, NULL, NULL, NULL, 'Thắng Bán kết 1', 'Thắng Bán kết 2', NULL, '0', '0', 'pending'),
-('41', '16', 'Tứ kết', '1', NULL, NULL, NULL, NULL, 'Nhất Bảng A', 'Nhì Bảng B', NULL, '0', '0', 'pending'),
-('42', '16', 'Tứ kết', '2', NULL, NULL, NULL, NULL, 'Nhất Bảng C', 'Nhì Bảng D', NULL, '0', '0', 'pending'),
-('43', '16', 'Tứ kết', '3', NULL, NULL, NULL, NULL, 'Nhất Bảng B', 'Nhì Bảng A', NULL, '0', '0', 'pending'),
-('44', '16', 'Tứ kết', '4', NULL, NULL, NULL, NULL, 'Nhất Bảng D', 'Nhì Bảng C', NULL, '0', '0', 'pending'),
-('45', '16', 'Bán kết', '1', NULL, NULL, NULL, NULL, 'Thắng Tứ kết 1', 'Thắng Tứ kết 2', NULL, '0', '0', 'pending'),
-('46', '16', 'Bán kết', '2', NULL, NULL, NULL, NULL, 'Thắng Tứ kết 3', 'Thắng Tứ kết 4', NULL, '0', '0', 'pending'),
-('47', '16', 'Chung kết', '1', NULL, NULL, NULL, NULL, 'Thắng Bán kết 1', 'Thắng Bán kết 2', NULL, '0', '0', 'pending');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `tournament_group_members`;
 CREATE TABLE `tournament_group_members` (
@@ -247,20 +126,7 @@ CREATE TABLE `tournament_groups` (
   PRIMARY KEY (`id`),
   KEY `tournament_id` (`tournament_id`),
   CONSTRAINT `tournament_groups_ibfk_1` FOREIGN KEY (`tournament_id`) REFERENCES `tournaments` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `tournament_groups` (`id`, `tournament_id`, `name`) VALUES
-('13', '12', 'Bảng A'),
-('14', '13', 'Bảng A'),
-('15', '13', 'Bảng B'),
-('16', '14', 'Bảng A'),
-('17', '14', 'Bảng B'),
-('18', '15', 'Bảng A'),
-('19', '15', 'Bảng B'),
-('24', '16', 'Bảng A'),
-('25', '16', 'Bảng B'),
-('26', '16', 'Bảng C'),
-('27', '16', 'Bảng D');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `tournament_players`;
 CREATE TABLE `tournament_players` (
@@ -274,96 +140,6 @@ CREATE TABLE `tournament_players` (
   CONSTRAINT `tournament_players_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `tournament_players` (`tournament_id`, `player_id`, `placement`, `points_awarded`) VALUES
-('11', '1', 'Hạng ba', '0.05'),
-('11', '2', 'Hạng ba', '0.05'),
-('11', '3', 'Hạng nhì', '0.10'),
-('11', '4', 'Hạng nhì', '0.10'),
-('11', '5', 'Vòng bảng', '-0.05'),
-('11', '6', 'Vòng bảng', '-0.05'),
-('11', '7', 'Hạng ba', '0.05'),
-('11', '8', 'Hạng ba', '0.05'),
-('12', '1', NULL, '0.00'),
-('12', '2', NULL, '0.00'),
-('12', '3', NULL, '0.00'),
-('12', '4', NULL, '0.00'),
-('12', '5', NULL, '0.00'),
-('12', '6', NULL, '0.00'),
-('12', '7', NULL, '0.00'),
-('12', '8', NULL, '0.00'),
-('13', '1', 'Vô địch', '0.15'),
-('13', '2', 'Vô địch', '0.15'),
-('13', '3', 'Hạng nhì', '0.10'),
-('13', '4', 'Hạng nhì', '0.10'),
-('13', '5', 'Vòng bảng', '-0.05'),
-('13', '6', 'Vòng bảng', '-0.05'),
-('13', '7', 'Vòng bảng', '-0.05'),
-('13', '8', 'Vòng bảng', '-0.05'),
-('13', '10', 'Hạng ba', '0.05'),
-('13', '11', 'Vòng bảng', '-0.05'),
-('13', '12', 'Hạng ba', '0.05'),
-('13', '13', 'Hạng ba', '0.05'),
-('13', '14', 'Hạng ba', '0.05'),
-('13', '15', 'Vòng bảng', '-0.05'),
-('13', '16', 'Vòng bảng', '-0.05'),
-('13', '17', 'Vòng bảng', '-0.05'),
-('14', '1', NULL, '0.00'),
-('14', '2', NULL, '0.00'),
-('14', '3', NULL, '0.00'),
-('14', '4', NULL, '0.00'),
-('14', '5', NULL, '0.00'),
-('14', '6', NULL, '0.00'),
-('14', '7', NULL, '0.00'),
-('14', '8', NULL, '0.00'),
-('14', '9', NULL, '0.00'),
-('14', '10', NULL, '0.00'),
-('14', '11', NULL, '0.00'),
-('14', '12', NULL, '0.00'),
-('14', '13', NULL, '0.00'),
-('14', '14', NULL, '0.00'),
-('14', '15', NULL, '0.00'),
-('14', '16', NULL, '0.00'),
-('14', '18', NULL, '0.00'),
-('14', '19', NULL, '0.00'),
-('14', '22', NULL, '0.00'),
-('14', '23', NULL, '0.00'),
-('15', '5', NULL, '0.00'),
-('15', '6', NULL, '0.00'),
-('15', '7', NULL, '0.00'),
-('15', '8', NULL, '0.00'),
-('16', '2', NULL, '0.00'),
-('16', '3', NULL, '0.00'),
-('16', '4', NULL, '0.00'),
-('16', '5', NULL, '0.00'),
-('16', '6', NULL, '0.00'),
-('16', '7', NULL, '0.00'),
-('16', '8', NULL, '0.00'),
-('16', '9', NULL, '0.00'),
-('16', '10', NULL, '0.00'),
-('16', '11', NULL, '0.00'),
-('16', '12', NULL, '0.00'),
-('16', '13', NULL, '0.00'),
-('16', '14', NULL, '0.00'),
-('16', '15', NULL, '0.00'),
-('16', '16', NULL, '0.00'),
-('16', '18', NULL, '0.00'),
-('16', '19', NULL, '0.00'),
-('16', '22', NULL, '0.00'),
-('16', '23', NULL, '0.00'),
-('16', '24', NULL, '0.00'),
-('16', '25', NULL, '0.00'),
-('16', '26', NULL, '0.00'),
-('16', '30', NULL, '0.00'),
-('16', '31', NULL, '0.00'),
-('16', '32', NULL, '0.00'),
-('16', '33', NULL, '0.00'),
-('16', '34', NULL, '0.00'),
-('16', '35', NULL, '0.00'),
-('16', '36', NULL, '0.00'),
-('16', '37', NULL, '0.00'),
-('16', '38', NULL, '0.00'),
-('16', '39', NULL, '0.00');
-
 DROP TABLE IF EXISTS `tournament_teams`;
 CREATE TABLE `tournament_teams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -375,53 +151,7 @@ CREATE TABLE `tournament_teams` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_team` (`tournament_id`,`player1_id`,`player2_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `tournament_teams` (`id`, `tournament_id`, `player1_id`, `player2_id`, `status`, `group_id`, `created_at`) VALUES
-('1', '11', '1', '2', 'Chưa chuyển khoản', NULL, '2026-08-19 12:51:02'),
-('2', '11', '3', '4', 'Chưa chuyển khoản', NULL, '2026-08-19 12:51:02'),
-('3', '11', '5', '6', 'Chưa chuyển khoản', NULL, '2026-08-19 12:51:02'),
-('4', '11', '7', '8', 'Chưa chuyển khoản', NULL, '2026-08-19 12:51:02'),
-('5', '12', '1', '2', 'Chưa chuyển khoản', '13', '2026-08-19 12:51:02'),
-('6', '12', '3', '4', 'Chưa chuyển khoản', '13', '2026-08-19 12:51:02'),
-('7', '12', '5', '6', 'Chưa chuyển khoản', '13', '2026-08-19 12:51:02'),
-('8', '12', '7', '8', 'Chưa chuyển khoản', '13', '2026-08-19 12:51:02'),
-('9', '13', '1', '2', 'Chưa chuyển khoản', '14', '2026-08-19 12:51:02'),
-('10', '13', '3', '4', 'Chưa chuyển khoản', '14', '2026-08-19 12:51:02'),
-('11', '13', '12', '14', 'Chưa chuyển khoản', '14', '2026-08-19 12:51:02'),
-('12', '13', '10', '13', 'Chưa chuyển khoản', '14', '2026-08-19 12:51:02'),
-('13', '13', '11', '16', 'Chưa chuyển khoản', '15', '2026-08-19 12:51:02'),
-('14', '13', '8', '15', 'Chưa chuyển khoản', '15', '2026-08-19 12:51:02'),
-('15', '13', '5', '6', 'Chưa chuyển khoản', '15', '2026-08-19 12:51:02'),
-('16', '13', '7', '17', 'Chưa chuyển khoản', '15', '2026-08-19 12:51:02'),
-('17', '14', '5', '23', 'Chưa chuyển khoản', '16', '2026-08-19 12:51:02'),
-('18', '14', '3', '4', 'Chưa chuyển khoản', '16', '2026-08-19 12:51:02'),
-('20', '14', '11', '15', 'Chưa chuyển khoản', '16', '2026-08-19 12:51:02'),
-('22', '14', '1', '2', 'Chưa chuyển khoản', '16', '2026-08-19 12:51:02'),
-('24', '14', '19', '22', 'Chưa chuyển khoản', '16', '2026-08-19 12:51:02'),
-('37', '14', '6', '9', 'Chưa chuyển khoản', '17', '2026-08-19 12:51:02'),
-('38', '14', '8', '18', 'Chưa chuyển khoản', '17', '2026-08-19 12:51:02'),
-('40', '14', '12', '14', 'Chưa chuyển khoản', '17', '2026-08-19 12:51:02'),
-('42', '14', '13', '16', 'Chưa chuyển khoản', '17', '2026-08-19 12:51:02'),
-('44', '14', '7', '10', 'Chưa chuyển khoản', '17', '2026-08-19 12:51:02'),
-('57', '15', '5', '6', 'Chưa chuyển khoản', '18', '2026-08-19 12:51:02'),
-('58', '15', '7', '8', 'Chưa chuyển khoản', '18', '2026-08-19 12:51:02'),
-('59', '16', '31', '32', 'Đã chuyển khoản', '24', '2026-08-19 12:51:02'),
-('60', '16', '26', '30', 'Chưa chuyển khoản', '24', '2026-08-19 12:51:02'),
-('62', '16', '18', '19', 'Chưa chuyển khoản', '24', '2026-08-19 12:51:02'),
-('64', '16', '3', '33', 'Chưa chuyển khoản', '24', '2026-08-19 12:51:02'),
-('71', '16', '24', '25', 'Chưa chuyển khoản', '25', '2026-08-19 12:51:03'),
-('72', '16', '12', '13', 'Chưa chuyển khoản', '25', '2026-08-19 12:51:03'),
-('74', '16', '6', '8', 'Chưa chuyển khoản', '25', '2026-08-19 12:51:03'),
-('76', '16', '4', '38', 'Chưa chuyển khoản', '25', '2026-08-19 12:51:03'),
-('83', '16', '35', '37', 'Chưa chuyển khoản', '26', '2026-08-19 12:51:03'),
-('84', '16', '34', '36', 'Chưa chuyển khoản', '26', '2026-08-19 12:51:03'),
-('86', '16', '9', '23', 'Chưa chuyển khoản', '26', '2026-08-19 12:51:03'),
-('88', '16', '16', '39', 'Chưa chuyển khoản', '26', '2026-08-19 12:51:03'),
-('95', '16', '10', '14', 'Chưa chuyển khoản', '27', '2026-08-19 12:51:03'),
-('96', '16', '2', '15', 'Chưa chuyển khoản', '27', '2026-08-19 12:51:03'),
-('98', '16', '5', '7', 'Chưa chuyển khoản', '27', '2026-08-19 12:51:03'),
-('100', '16', '11', '22', 'Chưa chuyển khoản', '27', '2026-08-19 12:51:03');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `tournaments`;
 CREATE TABLE `tournaments` (
@@ -438,14 +168,6 @@ CREATE TABLE `tournaments` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `tournaments` (`id`, `title`, `description`, `created_at`, `banner`, `rules`, `prizes`, `status`, `banner_position`, `final_results`, `start_date`, `end_date`) VALUES
-('11', 'Giải Đôi Hỗn Hợp Tranh Cúp Mùa Thu', 'Giải đấu giao lưu các tay vợt xuất sắc phong trào.', '2026-08-15 19:44:45', 'public/banners/1.jpg', '- Thể thức thi đấu: 2v2 Đôi nam nữ\n- Vòng bảng: Thi đấu 1 set chạm 11 (cách 2 điểm)\n- Vòng loại trực tiếp: Thi đấu 3 set thắng 2', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"5.000.000 VNĐ + Cúp\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"3.000.000 VNĐ + Huy chương Bạc\"}]', 'Đã diễn ra', '50% 50%', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"\",\"medal\":\"🥇\",\"rank_type\":\"first\",\"team_name\":\"Trần Minh Đức \\/ Nguyễn Văn Khang\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"\",\"medal\":\"🥈\",\"rank_type\":\"second\",\"team_name\":\"Lê Hoàng Phúc \\/ Phạm Quốc Bảo\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"},{\"rank\":\"Ba\",\"reward\":\"\",\"medal\":\"🏅\",\"rank_type\":\"third\",\"team_name\":\"Trần Minh Đức \\/ Nguyễn Văn Khang\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"},{\"rank\":\"Ba\",\"reward\":\"\",\"medal\":\"🏅\",\"rank_type\":\"third\",\"team_name\":\"Nguyễn Thị Mai Anh \\/ Trần Ngọc Hà\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"}]', NULL, NULL),
-('12', 'Giải Đôi Nam Nữ PickaBall Championship 2026', 'Giải đấu khốc liệt nhất năm.', '2026-08-15 19:44:45', 'public/banners/1.jpg', '- Đánh đôi 2v2', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"10.000.000 VNĐ\"}]', 'Đang diễn ra', '50% 50%', NULL, NULL, NULL),
-('13', 'final test', 'dasdasd', '2026-08-15 20:33:37', 'public/banners/banner_1786800725_498.jpg', '- Thể thức thi đấu: 1v1 đơn nam / đơn nữ\n- Vòng bảng: Thi đấu 1 set chạm 11 (cách 2 điểm)\n- Vòng loại trực tiếp: Thi đấu 3 set thắng 2 chạm 11', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"5.000.000 VNĐ + Cúp & Huy chương\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"3.000.000 VNĐ + Huy chương Bạc\"},{\"rank\":\"Đồng Hạng Ba\",\"reward\":\"1.500.000 VNĐ + Huy chương Đồng\"},{\"rank\":\"Khuyến khích\",\"reward\":\"dasdasdasd\"}]', 'Đã diễn ra', '50% 0.0%', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"5.000.000 VNĐ + Cúp & Huy chương\",\"medal\":\"🥇\",\"rank_type\":\"first\",\"team_name\":\"Trần Minh Đức \\/ Nguyễn Văn Khang\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"3.000.000 VNĐ + Huy chương Bạc\",\"medal\":\"🥈\",\"rank_type\":\"second\",\"team_name\":\"Lê Hoàng Phúc \\/ Phạm Quốc Bảo\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"},{\"rank\":\"Hạng Ba\",\"reward\":\"1.500.000 VNĐ + Huy chương Đồng\",\"medal\":\"🥉\",\"rank_type\":\"third\",\"team_name\":\"Cẩn \\/ Quốc Bảo 2k10\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"},{\"rank\":\"H\",\"reward\":\"dasdasdasd\",\"medal\":\"🥉\",\"rank_type\":\"third\",\"team_name\":\"Nhật Thành \\/ Nhiên MMP\",\"player_1_avatar\":\"\",\"player_2_avatar\":\"\"}]', NULL, NULL),
-('14', 'MiniTour 247 Mùa thu 2026', 'Trình 4.5 đôi Nam', '2026-08-18 10:23:36', 'public/banners/banner_1786800503_647.jpg', '- Thể thức thi đấu: dôi Nam\n- Vòng bảng: Thi đấu 1 set chạm 11 (cách 2 điểm)\n- Vòng loại trực tiếp: Thi đấu 3 set thắng 2 chạm 11', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"5.000.000 VNĐ + Cúp & Huy chương\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"3.000.000 VNĐ + Huy chương Bạc\"},{\"rank\":\"Đồng Hạng Ba\",\"reward\":\"1.500.000 VNĐ + Huy chương Đồng\"}]', 'Sắp diễn ra', '50% 50%', NULL, '2026-08-18', '2026-08-20'),
-('15', 'final final test', 'oaihdoiasbndasd\najosdnioasndioasd\nasudihbauiosbđuiabsd\naiousdbuioabsdiousabd', '2026-08-19 08:06:47', 'public/banners/banner_1787100666_929.png', '2v2 hoaihsbdi\naisdnioabnd\naosihdiuoasndioas', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"5.000.000 VNĐ + Cúp & Huy chương\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"3.000.000 VNĐ + Huy chương Bạc\"},{\"rank\":\"Đồng Hạng Ba\",\"reward\":\"1.500.000 VNĐ + Huy chương Đồng\"}]', 'Sắp diễn ra', '50% 50%', NULL, '2026-08-21', NULL),
-('16', 'MiniTour 247 Mùa thu 2026', 'lasdljbajsbALJS', '2026-08-19 08:52:00', 'public/banners/banner_1786792224_441.jpg', '2V2 ALSFDOSABDIA\nKJASDKJBSAJDSAD', '[{\"rank\":\"Nhất (Vô địch)\",\"reward\":\"5.000.000 VNĐ + Cúp & Huy chương\"},{\"rank\":\"Nhì (Á quân)\",\"reward\":\"3.000.000 VNĐ + Huy chương Bạc\"},{\"rank\":\"Đồng Hạng Ba\",\"reward\":\"1.500.000 VNĐ + Huy chương Đồng\"},{\"rank\":\"Khuyến khích\",\"reward\":\"500.000\"},{\"rank\":\"Đồng Hạng Ba\",\"reward\":\"1.500.000 VNĐ + Huy chương Đồng\"}]', 'Sắp diễn ra', '50% 50%', NULL, '2026-08-20', NULL);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS=1;
