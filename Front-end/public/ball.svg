@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="300" height="300">
   <circle cx="50" cy="50" r="46" fill="#D2DB38" stroke="#1A1A1A" stroke-width="8"/>
   <circle cx="40" cy="20" r="8" fill="#1A1A1A" transform="matrix(0.989173, 0, 0, 1.025403, 3.85711, 2.791844)"/>
   <circle cx="78" cy="36" r="8" fill="#1A1A1A"/>

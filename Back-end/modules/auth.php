@@ -105,11 +105,7 @@ class auth
     public function check()
     {
         echo json_encode([
-            "status" => "success",
-            "message" => "Authenticated",
-            "data" => [
-                "admin_id" => $_SESSION['admin_id'] ?? null
-            ]
+            "status" => "success"
         ]);
     }
 

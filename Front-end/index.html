@@ -6,7 +6,7 @@
     <title>Bảng Xếp Hạng – PICKO247</title>
     <meta name="description" content="Bảng xếp hạng tuyển thủ Pickleball tại PICKO247 theo điểm trình tích lũy.">
     <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
-    <link rel="stylesheet" href="css/style.css?v=16">
+    <link rel="stylesheet" href="css/style.css?v=17">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -53,37 +53,37 @@
                 <!-- RANK 2 SKELETON -->
                 <div class="pod-column pod-col-2">
                     <div class="pod-avatar-box">
-                        <div class="skeleton skeleton-avatar" style="width: 72px; height: 72px;"></div>
+                        <div class="skeleton skeleton-avatar pod-ske-avatar-sm"></div>
                     </div>
                     <div class="pod-info" style="gap: 6px; margin-bottom: 12px; width: 100%; align-items: center;">
-                        <div class="skeleton skeleton-line" style="width: 90px; height: 16px;"></div>
-                        <div class="skeleton skeleton-line" style="width: 50px; height: 14px;"></div>
+                        <div class="skeleton skeleton-line" style="width: 90px; height: 14px;"></div>
+                        <div class="skeleton skeleton-line" style="width: 50px; height: 12px;"></div>
                     </div>
-                    <div class="pod-stand skeleton skeleton-stand stand-2" style="min-height: 110px;"></div>
+                    <div class="pod-stand skeleton skeleton-stand stand-2"></div>
                 </div>
 
                 <!-- RANK 1 SKELETON -->
                 <div class="pod-column pod-col-1">
                     <div class="pod-avatar-box main-box">
-                        <div class="skeleton skeleton-avatar" style="width: 90px; height: 90px;"></div>
+                        <div class="skeleton skeleton-avatar pod-ske-avatar-lg"></div>
                     </div>
                     <div class="pod-info" style="gap: 6px; margin-bottom: 12px; width: 100%; align-items: center;">
-                        <div class="skeleton skeleton-line" style="width: 120px; height: 18px;"></div>
-                        <div class="skeleton skeleton-line" style="width: 65px; height: 15px;"></div>
+                        <div class="skeleton skeleton-line" style="width: 110px; height: 16px;"></div>
+                        <div class="skeleton skeleton-line" style="width: 65px; height: 13px;"></div>
                     </div>
-                    <div class="pod-stand skeleton skeleton-stand stand-1" style="min-height: 145px;"></div>
+                    <div class="pod-stand skeleton skeleton-stand stand-1"></div>
                 </div>
 
                 <!-- RANK 3 SKELETON -->
                 <div class="pod-column pod-col-3">
                     <div class="pod-avatar-box">
-                        <div class="skeleton skeleton-avatar" style="width: 72px; height: 72px;"></div>
+                        <div class="skeleton skeleton-avatar pod-ske-avatar-sm"></div>
                     </div>
                     <div class="pod-info" style="gap: 6px; margin-bottom: 12px; width: 100%; align-items: center;">
-                        <div class="skeleton skeleton-line" style="width: 80px; height: 16px;"></div>
-                        <div class="skeleton skeleton-line" style="width: 50px; height: 14px;"></div>
+                        <div class="skeleton skeleton-line" style="width: 80px; height: 14px;"></div>
+                        <div class="skeleton skeleton-line" style="width: 50px; height: 12px;"></div>
                     </div>
-                    <div class="pod-stand skeleton skeleton-stand stand-3" style="min-height: 85px;"></div>
+                    <div class="pod-stand skeleton skeleton-stand stand-3"></div>
                 </div>
             </div>
         </div>
@@ -181,9 +181,7 @@
         </table>
         </div>
         
-        <div style="text-align: center; margin-top: 20px;">
-            <button id="btn-load-more" class="neo-btn btn-load-more" style="display: none;" onclick="renderMorePlayers()">Xem thêm</button>
-        </div>
+        <div id="ranking-pagination"></div>
     </div>
     
     <!-- Quy tắc tính điểm -->
@@ -227,25 +225,39 @@
 
 <!-- Player Profile Modal -->
 <div id="modal-player-profile" class="modal-t">
-    <div class="modal-t-content" style="max-width: 400px; overflow: hidden; padding: 0;">
+    <div class="modal-t-content player-profile-card">
         <button class="modal-t-close" onclick="closePlayerProfileModal()">×</button>
-        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); height: 100px; position: relative;">
-            <img id="profile-avatar" src="" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+
+        <!-- Header banner -->
+        <div class="profile-banner">
+            <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar-img">
+            <div class="profile-rank-badge" id="profile-rank-badge"></div>
         </div>
-        <div style="padding: 50px 20px 30px; text-align: center;">
-            <h2 id="profile-name" style="margin: 0; font-size: 22px; color: var(--primary);">Name</h2>
-            <div style="color: var(--muted); font-size: 13px; margin-top: 4px;" id="profile-gender">Nam</div>
-            <div style="margin-top: 16px; display: inline-block; background: #f8fafc; padding: 8px 20px; border-radius: 20px; border: 1px solid #e2e8f0; font-weight: 800; font-size: 16px; color: #f59e0b;">
-                <i data-lucide="medal"></i> <span id="profile-points">0.00</span> điểm
+
+        <!-- Body -->
+        <div class="profile-body">
+            <h2 id="profile-name" class="profile-name">Name</h2>
+
+            <div class="profile-tags">
+                <span class="profile-tag tag-gender" id="profile-gender-tag">
+                    <span id="profile-gender-icon">👨</span>
+                    <span id="profile-gender">Nam</span>
+                </span>
+                <span class="profile-tag tag-points">
+                    🏅 <span id="profile-points">0.00</span> điểm trình
+                </span>
             </div>
-            
-            <div id="profile-bio" style="margin-top: 24px; text-align: left; font-size: 14px; line-height: 1.6; color: var(--text); background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: pre-wrap; display: none;"></div>
+
+            <div id="profile-bio" class="profile-bio-box">
+                <div class="profile-bio-title">📋 Thông tin</div>
+                <div id="profile-bio-text" class="profile-bio-text"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="toast"></div>
-<script type="module" src="js/main.js?v=16"></script>
+<script type="module" src="js/main.js?v=17"></script>
     <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

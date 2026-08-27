@@ -15,7 +15,7 @@ const Bot = {
           Game.isServing = false;
           Game.ball.vy = 7;
           Game.ball.vx = (Math.random() - 0.5) * 6;
-          GameAudio.play('hit');
+          GameAudio.playHit(7, 'normal');
         }
       }, 1500);
     } else if (!Game.isServing) {

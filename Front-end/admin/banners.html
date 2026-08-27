@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Banners – Pickaball Admin</title>
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+    <link rel="stylesheet" href="css/admin.css?v=29">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-section" class="login-wrap hidden">
+    <header class="topbar">
+      <div class="topbar-in">
+        <a class="logo" href="../"><img src="../public/logo.png" alt="PICKO247"><div class="spinning-ball"></div></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu" onclick="toggleAdminMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="login-body">
+        <div class="login-box">
+            <div class="login-logo"><img src="../public/logo.png" alt="Logo"><div><span>PICKO247</span><small>Admin Panel</small></div></div>
+            <form id="login-form">
+                <div class="form-group"><label>Tài khoản</label><input type="text" id="username" placeholder="Nhập username..." required></div>
+                <div class="form-group"><label>Mật khẩu</label><input type="password" id="password" placeholder="Nhập mật khẩu..." required></div>
+                <button type="submit" class="btn" style="width:100%; justify-content:center; margin-top:8px;">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar hidden">
+    <div class="sidebar-brand">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../public/logo.png" alt="Logo">
+            <div class="sidebar-brand-text"><span>Admin Panel</span></div>
+        </div>
+        <button class="menu-toggle" id="sidebar-menu-toggle" aria-label="Toggle Menu" onclick="toggleSidebarMenu()" style="display:none;">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="sidebar-section-label">Menu chính</div>
+    <nav class="sidebar-nav">
+        <a id="nav-tournaments" href="./"><span class="nav-icon"><i data-lucide="trophy"></i></span> Giải đấu</a>
+        <a id="nav-rankings" href="rankings"><span class="nav-icon">📊</span> Bảng xếp hạng</a>
+        <a id="nav-banners" href="banners" class="active"><span class="nav-icon"><i data-lucide="image"></i></span> Quản lý Banners</a>
+    </nav>
+    <div class="sidebar-section-label">Hệ thống</div>
+    <nav class="sidebar-nav" style="flex:0;">
+        <a id="nav-settings" href="index.html#settings" onclick="window.location.href='index.html#settings'">
+            <span class="nav-icon"><i data-lucide="settings"></i></span> Cài đặt
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <a class="home-link" href="../" target="_blank"><span>↗</span> Ra trang chủ</a>
+        <button id="btn-logout" class="btn-logout"><span>⏻</span> Đăng xuất</button>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main id="dashboard-section" class="main-content hidden">
+    <div id="tab-banners" class="tab-content active">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Quản lý Slider Banners</h1>
+                <p class="page-sub">Quản lý danh sách banner chính hiển thị tại trang giải đấu</p>
+            </div>
+            <button type="button" class="btn" style="background:#10b981; color:#fff;" onclick="openCreateBannerModal()">
+                <i data-lucide="plus"></i> Thêm banner mới
+            </button>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stats-row" style="margin-bottom:20px;">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i data-lucide="image"></i></div>
+                <div><div class="stat-value" id="stat-banner-total">–</div><div class="stat-label">Tổng banner</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i data-lucide="eye"></i></div>
+                <div><div class="stat-value" id="stat-banner-active">–</div><div class="stat-label">Đang hiển thị</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i data-lucide="eye-off"></i></div>
+                <div><div class="stat-value" id="stat-banner-inactive">–</div><div class="stat-label">Đang ẩn</div></div>
+            </div>
+        </div>
+
+        <!-- Banners Card -->
+        <div class="card">
+            <div class="card-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <h2>Danh sách Banners</h2>
+                    <span class="text-muted" id="banner-count" style="font-size:13px; font-weight:700;"></span>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="loadBanners()">
+                    <i data-lucide="refresh-cw"></i> Làm mới
+                </button>
+            </div>
+
+            <!-- Desktop: bảng -->
+            <div class="tbl-wrap admin-table-view">
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th style="width:60px; text-align:center;">Thứ tự</th>
+                            <th style="width:230px;">Xem trước</th>
+                            <th>Tiêu đề &amp; Tệp ảnh</th>
+                            <th style="width:140px; text-align:center;">Vị trí cắt</th>
+                            <th style="width:140px; text-align:center;">Trạng thái</th>
+                            <th style="width:150px; text-align:center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-banners-list">
+                        <tr><td colspan="6" class="text-muted" style="text-align:center; padding:24px;">Đang tải danh sách banner...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile: card list -->
+            <div id="admin-banners-mobile" class="admin-card-view"></div>
+        </div>
+    </div>
+</main>
+
+<!-- MODAL THÊM / SỬA BANNER -->
+<div id="modal-banner-manage" class="modal-overlay" style="z-index:1060;">
+    <div class="modal-container" style="max-width:640px;">
+        <div class="modal-header">
+            <h2 id="modal-banner-title-text"><i data-lucide="plus"></i> Thêm banner mới</h2>
+            <button class="modal-close" onclick="closeBannerManageModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:24px;">
+            <form id="form-banner-manage" onsubmit="submitBannerForm(event)">
+                <input type="hidden" id="banner-form-id">
+                <input type="hidden" id="banner-form-position" value="50% 50%">
+
+                <!-- 1. ẢNH -->
+                <div style="margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label style="font-weight:800; font-size:13px; margin-bottom:0;">Ảnh Banner *</label>
+                        <button type="button" class="btn btn-sm btn-ghost" onclick="toggleBannerReposition(event)">↕️ Chỉnh vị trí cắt</button>
+                    </div>
+                    <div id="banner-manage-preview-box" class="banner-upload-box"
+                         style="aspect-ratio:16/7; min-height:160px; position:relative; overflow:hidden; border-radius:10px;"
+                         ondblclick="startBannerRepositionDrag(event)" ontouchstart="startBannerRepositionDrag(event)">
+                        <img id="banner-preview-img" class="banner-preview-img hidden" src="" alt="Preview"
+                             style="object-position:50% 50%; width:100%; height:100%; object-fit:cover; display:block;">
+                        <div id="banner-preview-placeholder" class="banner-upload-placeholder">
+                            <div class="upload-icon-circle">🖼️</div>
+                            <div class="upload-title">Chọn ảnh banner từ máy hoặc nhập URL bên dưới</div>
+                            <div class="upload-subtitle">Định dạng hỗ trợ: JPG, PNG, WEBP</div>
+                        </div>
+                        <div id="banner-manage-reposition-bar" class="banner-reposition-bar hidden">
+                            <span>↕ Kéo ảnh lên/xuống để chỉnh góc nhìn</span>
+                            <button type="button" class="btn btn-sm" style="padding:4px 12px; font-size:12px;" onclick="stopBannerReposition(event)">✓ Xong</button>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:200px;">
+                            <input type="file" id="banner-form-file" accept="image/*"
+                                   style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); font-size:13px;"
+                                   onchange="handleBannerFormFileChange(this)">
+                        </div>
+                        <div style="flex:1; min-width:200px;">
+                            <input type="text" id="banner-form-url" placeholder="Hoặc nhập URL / đường dẫn ảnh..."
+                                   style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13px;"
+                                   oninput="handleBannerFormUrlInput()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. VỊ TRÍ CẮT -->
+                <div style="margin-bottom:16px; background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:12px 16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                        <label style="font-weight:800; font-size:12px; color:var(--text); margin-bottom:0;">📐 Vị trí cắt ảnh (Trục Y)</label>
+                        <span id="banner-pos-display" style="font-size:12px; font-weight:700; color:var(--primary); font-family:monospace;">Vị trí Y: 50% (50% 50%)</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:11px; color:var(--muted); font-weight:700; white-space:nowrap;">Trên (0%)</span>
+                        <input type="range" id="banner-pos-slider" min="0" max="100" value="50" style="flex:1; cursor:pointer;" oninput="handleSliderPosChange(this.value)">
+                        <span style="font-size:11px; color:var(--muted); font-weight:700; white-space:nowrap;">Dưới (100%)</span>
+                    </div>
+                    <div style="font-size:11px; color:var(--muted); margin-top:4px;">💡 Kéo thanh trượt hoặc kéo trực tiếp trên ảnh để chọn vùng hiển thị đẹp nhất.</div>
+                </div>
+
+                <!-- 3. TIÊU ĐỀ -->
+                <div style="margin-bottom:14px;">
+                    <label style="font-weight:800; font-size:13px; margin-bottom:6px; display:block;">Tiêu đề banner</label>
+                    <input type="text" id="banner-form-title" placeholder="VD: Giải đấu Pickleball Championship 2026"
+                           style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border);">
+                </div>
+
+                <!-- 4. THỨ TỰ & TRẠNG THÁI -->
+                <div style="display:flex; gap:16px; margin-bottom:20px; align-items:center; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:140px;">
+                        <label style="font-weight:800; font-size:13px; margin-bottom:6px; display:block;">Thứ tự hiển thị (Order)</label>
+                        <input type="number" id="banner-form-order" min="1" value="1" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border);">
+                    </div>
+                    <div style="flex:1; min-width:160px; padding-top:22px;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:800; font-size:13px;">
+                            <input type="checkbox" id="banner-form-active" checked style="width:18px; height:18px; cursor:pointer;">
+                            <span>Hiển thị trên Slider</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 5. SUBMIT -->
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-ghost" onclick="closeBannerManageModal()">Hủy</button>
+                    <button type="submit" class="btn" style="background:#10b981; color:#fff;">
+                        <i data-lucide="save"></i> Lưu thông tin banner
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="admin-toast"></div>
+<script type="module" src="js/main.js?v=29"></script>
+<script>if(window.lucide) lucide.createIcons();</script>
+</body>
+</html>

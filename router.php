@@ -71,6 +71,9 @@ if ($uri === '/admin/' || $uri === '/admin/index.html' || preg_match('#^/admin/t
 if (preg_match('#^/admin/rankings/?$#', $uri)) {
     serveFile($rootDir . '/Front-end/admin/rankings.html');
 }
+if (preg_match('#^/admin/banners/?$#', $uri)) {
+    serveFile($rootDir . '/Front-end/admin/banners.html');
+}
 if (preg_match('#^/admin/(.*)$#', $uri, $m)) {
     $target = $rootDir . '/Front-end/admin/' . $m[1];
     if (file_exists($target) && is_file($target)) {

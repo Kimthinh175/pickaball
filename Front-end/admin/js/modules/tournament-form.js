@@ -333,7 +333,7 @@ export function closeBannerLibraryModal() {
 export async function loadBannerLibrary() {
     const grid = document.getElementById('banner-library-grid');
     if (!grid) return;
-    const res = await apiRequest('/banners');
+    const res = await apiRequest('/tournament-banners');
     let banners = (res && res.data) ? res.data : [];
 
     const defaultBanners = [

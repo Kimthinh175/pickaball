@@ -5,8 +5,8 @@
 import { API_BASE, avatarOf, toast, svgAvatar } from '../core/api.js?v=16';
 
 let cachedPlayers = [];
-let displayedPlayersCount = 10;
-const PLAYERS_PER_PAGE = 10;
+let currentPage = 1;
+const ITEMS_PER_PAGE = 10;
 
 export async function fetchRanking() {
     const list = document.getElementById('ranking-list');
@@ -104,13 +104,13 @@ export async function fetchRanking() {
 
         renderRankingTable();
 
-        // Filters binding
+        // Filters binding – reset về trang 1 khi filter thay đổi
         document.getElementById('search-player')?.addEventListener('input', () => {
-            displayedPlayersCount = PLAYERS_PER_PAGE;
+            currentPage = 1;
             renderRankingTable();
         });
         document.getElementById('filter-gender')?.addEventListener('change', () => {
-            displayedPlayersCount = PLAYERS_PER_PAGE;
+            currentPage = 1;
             renderRankingTable();
         });
 
@@ -122,7 +122,6 @@ export async function fetchRanking() {
 
 export function renderRankingTable() {
     const list = document.getElementById('ranking-list');
-    const loadMoreBtn = document.getElementById('btn-load-more');
     if (!list) return;
 
     const searchVal = (document.getElementById('search-player')?.value || '').toLowerCase().trim();
@@ -136,27 +135,30 @@ export function renderRankingTable() {
 
     if (filtered.length === 0) {
         list.innerHTML = `<tr><td colspan="3" class="empty">Không tìm thấy tuyển thủ nào phù hợp.</td></tr>`;
-        if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+        renderPagination(0, 0);
         return;
     }
 
-    const toShow = filtered.slice(0, displayedPlayersCount);
+    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    if (currentPage > totalPages) currentPage = totalPages;
 
-    list.innerHTML = toShow.map((p, idx) => {
-        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '';
-        const rankClass = idx === 0 ? 'rk-1' : idx === 1 ? 'rk-2' : idx === 2 ? 'rk-3' : '';
-        const genderBadge = p.gender === 'Nữ' ? '<span class="badge-pink" style="margin-left:6px; font-size:11px; padding:2px 6px; border-radius:10px;">Nữ</span>' : '';
+    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIdx = startIdx + ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, endIdx);
+
+    list.innerHTML = pageItems.map((p, idx) => {
+        const globalIdx = startIdx + idx;
+        const medal = globalIdx === 0 ? '🥇' : globalIdx === 1 ? '🥈' : globalIdx === 2 ? '🥉' : '';
+        const rankClass = globalIdx === 0 ? 'rk-1' : globalIdx === 1 ? 'rk-2' : globalIdx === 2 ? 'rk-3' : '';
+        const rankDisplay = medal || (globalIdx + 1);
 
         return `
             <tr onclick="window.openPlayerProfile(${p.id})" style="cursor:pointer;">
-                <td class="rk ${rankClass}">${medal ? `${medal} ` : ''}${idx + 1}</td>
+                <td class="rk ${rankClass}">${rankDisplay}</td>
                 <td>
                     <div class="player-cell">
                         <img class="avatar" src="${avatarOf(p)}" alt="${p.name}" onerror="this.src='${svgAvatar(p.name)}'">
-                        <div class="player-meta-box">
-                            <span class="player-name">${p.name}</span>
-                            ${genderBadge}
-                        </div>
+                        <span class="player-name">${p.name}</span>
                     </div>
                 </td>
                 <td class="pts-col"><strong>${parseFloat(p.points || 0).toFixed(2)}</strong> điểm</td>
@@ -164,15 +166,73 @@ export function renderRankingTable() {
         `;
     }).join('');
 
-    if (loadMoreBtn) {
-        loadMoreBtn.style.display = filtered.length > displayedPlayersCount ? 'inline-block' : 'none';
-    }
+    renderPagination(totalPages, filtered.length);
 }
 
-export function renderMorePlayers() {
-    displayedPlayersCount += PLAYERS_PER_PAGE;
-    renderRankingTable();
+function renderPagination(totalPages, totalItems) {
+    const container = document.getElementById('ranking-pagination');
+    if (!container) return;
+
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    let html = `<div class="pagination">`;
+    html += `<span class="pagination-info">Tổng: <strong>${totalItems}</strong> tuyển thủ</span>`;
+    html += `<div class="pagination-btns">`;
+
+    // Nút trang đầu
+    html += `<button class="pg-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="window.goToRankingPage(1)" title="Trang đầu">«</button>`;
+    // Nút trang trước
+    html += `<button class="pg-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="window.goToRankingPage(${currentPage - 1})" title="Trang trước">‹</button>`;
+
+    if (startPage > 1) {
+        html += `<span class="pg-ellipsis">…</span>`;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="pg-btn ${i === currentPage ? 'pg-active' : ''}" onclick="window.goToRankingPage(${i})">${i}</button>`;
+    }
+
+    if (endPage < totalPages) {
+        html += `<span class="pg-ellipsis">…</span>`;
+    }
+
+    // Nút trang sau
+    html += `<button class="pg-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="window.goToRankingPage(${currentPage + 1})" title="Trang sau">›</button>`;
+    // Nút trang cuối
+    html += `<button class="pg-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="window.goToRankingPage(${totalPages})" title="Trang cuối">»</button>`;
+
+    html += `</div></div>`;
+    container.innerHTML = html;
 }
+
+export function goToRankingPage(page) {
+    const searchVal = (document.getElementById('search-player')?.value || '').toLowerCase().trim();
+    const genderVal = document.getElementById('filter-gender')?.value || 'all';
+    const filtered = cachedPlayers.filter(p => {
+        return p.name.toLowerCase().includes(searchVal) && (genderVal === 'all' || p.gender === genderVal);
+    });
+    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    renderRankingTable();
+
+    // Scroll nhẹ lên bảng xếp hạng
+    document.getElementById('ranking-list')?.closest('.section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Giữ lại để không gây lỗi nếu có nơi nào đó gọi
+export function renderMorePlayers() {}
 
 export function openPlayerProfile(id) {
     const player = cachedPlayers.find(p => p.id == id);
@@ -181,17 +241,52 @@ export function openPlayerProfile(id) {
     const modal = document.getElementById('modal-player-profile');
     if (!modal) return;
 
+    // Tên & điểm
     document.getElementById('profile-name').textContent = player.name;
-    document.getElementById('profile-gender').textContent = player.gender || 'Nam';
     document.getElementById('profile-points').textContent = parseFloat(player.points || 0).toFixed(2);
     document.getElementById('profile-avatar').src = avatarOf(player);
 
-    const bioEl = document.getElementById('profile-bio');
-    if (player.bio && player.bio.trim()) {
-        bioEl.textContent = player.bio;
-        bioEl.style.display = 'block';
+    // Rank badge (tìm vị trí trong cachedPlayers)
+    const rankIdx = cachedPlayers.findIndex(p => p.id == id);
+    const rankBadgeEl = document.getElementById('profile-rank-badge');
+    if (rankBadgeEl) {
+        if (rankIdx === 0) rankBadgeEl.textContent = '🥇';
+        else if (rankIdx === 1) rankBadgeEl.textContent = '🥈';
+        else if (rankIdx === 2) rankBadgeEl.textContent = '🥉';
+        else rankBadgeEl.textContent = `#${rankIdx + 1}`;
+        rankBadgeEl.className = 'profile-rank-badge' + (rankIdx < 3 ? ' rank-medal' : '');
+    }
+
+    // Giới tính
+    const gender = player.gender || 'Nam';
+    document.getElementById('profile-gender').textContent = gender;
+    const genderIconEl = document.getElementById('profile-gender-icon');
+    if (genderIconEl) genderIconEl.textContent = gender === 'Nữ' ? '👩' : '👨';
+    const genderTagEl = document.getElementById('profile-gender-tag');
+    if (genderTagEl) {
+        genderTagEl.className = 'profile-tag tag-gender ' + (gender === 'Nữ' ? 'tag-female' : 'tag-male');
+    }
+
+    // Profile / mô tả — parse format "Tuổi: X\nMô tả: Y"
+    const bioBox = document.getElementById('profile-bio');
+    const bioText = document.getElementById('profile-bio-text');
+    if (player.profile && player.profile.trim()) {
+        const raw = player.profile.trim();
+        const ageMatch = raw.match(/^Tuổi:\s*(\d+)/m);
+        const descMatch = raw.match(/Mô tả:\s*([\s\S]*)/);
+
+        let rendered = '';
+        if (ageMatch) rendered += `Tuổi: ${ageMatch[1]}`;
+        if (ageMatch && descMatch) rendered += '\n';
+        if (descMatch) rendered += `Mô tả: ${descMatch[1].trim()}`;
+
+        // Profile cũ (không có format mới) → hiển thị nguyên
+        if (!ageMatch && !descMatch) rendered = raw;
+
+        if (bioText) bioText.textContent = rendered;
+        if (bioBox) bioBox.style.display = 'block';
     } else {
-        bioEl.style.display = 'none';
+        if (bioBox) bioBox.style.display = 'none';
     }
 
     modal.classList.add('active');

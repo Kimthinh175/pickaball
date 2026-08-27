@@ -28,7 +28,8 @@ $router = new Router();
 $router->get('api/players', 'player', 'getAll');
 $router->get('api/tournaments', 'tournament', 'getAll');
 $router->get('api/tournaments/detail', 'tournament', 'getDetail');
-$router->get('api/banners', 'tournament', 'getBanners');
+$router->get('api/banners', 'banner', 'getActive');
+$router->get('api/tournament-banners', 'tournament', 'getBanners');
 
 // Admin Auth
 $router->post('api/admin/auth/login', 'auth', 'login');
@@ -53,6 +54,11 @@ $router->post('api/admin/matches/status', 'tournament', 'updateMatchStatus');
 $router->post('api/admin/tournaments/team-payment', 'tournament', 'updateTeamPaymentStatus');
 $router->post('api/admin/tournaments/finish', 'tournament', 'finishTournament');
 
+$router->get('api/admin/banners', 'banner', 'getAll');
+$router->post('api/admin/banners', 'banner', 'create');
+$router->post('api/admin/banners/update', 'banner', 'update');
+$router->post('api/admin/banners/toggle', 'banner', 'toggleStatus');
+$router->delete('api/admin/banners', 'banner', 'delete');
 $router->post('api/admin/banners/upload', 'tournament', 'uploadBanner');
 
 // ===================

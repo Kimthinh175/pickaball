@@ -2,17 +2,17 @@
 // PICKABALL ADMIN DASHBOARD CONTROLLER (ES MODULE)
 // ==========================================
 
-import { apiRequest, calculateTournamentStatus } from './core/api.js?v=28';
-import { showToast } from './core/toast.js?v=28';
-import { svgAvatar } from './core/avatar.js?v=28';
-import { checkLogin, initAuth } from './core/auth.js?v=28';
+import { apiRequest, calculateTournamentStatus } from './core/api.js?v=29';
+import { showToast } from './core/toast.js?v=29';
+import { svgAvatar } from './core/avatar.js?v=29';
+import { checkLogin, initAuth } from './core/auth.js?v=29';
 
 import {
     cachedTournaments,
     loadTournaments,
     openTournamentDetail,
     deleteCurrentTournament
-} from './modules/tournaments.js?v=28';
+} from './modules/tournaments.js?v=29';
 
 import {
     currentTournamentId,
@@ -20,7 +20,7 @@ import {
     refreshTournamentDetail,
     toggleTeamPaymentStatus,
     toggleMatchPaymentStatus
-} from './modules/tournament-detail.js?v=28';
+} from './modules/tournament-detail.js?v=29';
 
 import {
     teamPool,
@@ -34,7 +34,7 @@ import {
     addTeamToPool,
     removeTeamFromPool,
     renderTeamPool
-} from './modules/team-pool.js?v=28';
+} from './modules/team-pool.js?v=29';
 
 import {
     groupBuilders,
@@ -49,7 +49,7 @@ import {
     removeMatchupFromGroup,
     randomAddTeamsToGroup,
     renderGroupBuilders
-} from './modules/group-builder.js?v=28';
+} from './modules/group-builder.js?v=29';
 
 import {
     bracketStages,
@@ -60,7 +60,7 @@ import {
     addMatchToStage,
     removeMatchFromStage,
     renderBracketBuilders
-} from './modules/bracket-builder.js?v=28';
+} from './modules/bracket-builder.js?v=29';
 
 import {
     editingTournamentId,
@@ -80,14 +80,14 @@ import {
     startRepositionBanner,
     stopRepositionBanner,
     submitCreateTournament
-} from './modules/tournament-form.js?v=28';
+} from './modules/tournament-form.js?v=29';
 
 import {
     openEndTournamentModal,
     closeEndTournamentModal,
     addFinishPrizeRow,
     submitFinishTournament
-} from './modules/tournament-finish.js?v=28';
+} from './modules/tournament-finish.js?v=29';
 
 import {
     cachedPlayers,
@@ -103,8 +103,28 @@ import {
     deletePlayer,
     openPlayerProfileModal,
     openPlayerProfileModalById,
-    closePlayerProfileModal
-} from './modules/players.js?v=28';
+    closePlayerProfileModal,
+    goToPlayerPage
+} from './modules/players.js?v=29';
+
+import {
+    cachedBanners,
+    loadBanners,
+    renderBanners,
+    openCreateBannerModal,
+    openEditBannerModal,
+    closeBannerManageModal,
+    setBannerFormPreview,
+    handleBannerFormFileChange,
+    handleBannerFormUrlInput,
+    handleSliderPosChange,
+    toggleBannerReposition,
+    stopBannerReposition,
+    startBannerRepositionDrag,
+    submitBannerForm,
+    toggleBannerStatus,
+    deleteBanner
+} from './modules/banners.js?v=29';
 
 // ==========================================
 // EXPOSE HANDLERS TO WINDOW FOR INLINE HTML
@@ -178,7 +198,6 @@ window.addFinishPrizeRow = addFinishPrizeRow;
 window.submitFinishTournament = submitFinishTournament;
 
 // Players
-
 window.loadPlayers = loadPlayers;
 window.renderPlayerRanking = renderPlayerRanking;
 window.openPlayerModal = openPlayerModal;
@@ -192,12 +211,36 @@ window.deletePlayer = deletePlayer;
 window.openPlayerProfileModal = openPlayerProfileModal;
 window.openPlayerProfileModalById = openPlayerProfileModalById;
 window.closePlayerProfileModal = closePlayerProfileModal;
+window.goToPlayerPage = goToPlayerPage;
+
+// Banners
+window.loadBanners = loadBanners;
+window.renderBanners = renderBanners;
+window.openCreateBannerModal = openCreateBannerModal;
+window.openEditBannerModal = openEditBannerModal;
+window.closeBannerManageModal = closeBannerManageModal;
+window.setBannerFormPreview = setBannerFormPreview;
+window.handleBannerFormFileChange = handleBannerFormFileChange;
+window.handleBannerFormUrlInput = handleBannerFormUrlInput;
+window.handleSliderPosChange = handleSliderPosChange;
+window.toggleBannerReposition = toggleBannerReposition;
+window.stopBannerReposition = stopBannerReposition;
+window.startBannerRepositionDrag = startBannerRepositionDrag;
+window.submitBannerForm = submitBannerForm;
+window.toggleBannerStatus = toggleBannerStatus;
+window.deleteBanner = deleteBanner;
 
 // TAB SWITCHING
 window.showTab = function(tabName) {
     if (tabName === 'rankings') {
         if (!document.getElementById('tab-rankings')) {
             window.location.href = 'rankings';
+            return;
+        }
+    }
+    if (tabName === 'banners') {
+        if (!document.getElementById('tab-banners')) {
+            window.location.href = 'banners';
             return;
         }
     }
@@ -219,23 +262,32 @@ window.showTab = function(tabName) {
 
     if (tabName === 'tournaments') loadTournaments();
     if (tabName === 'rankings' || tabName === 'players') loadPlayers();
+    if (tabName === 'banners') loadBanners();
 
-    // Close mobile menu if open
+    // Close mobile sidebar menu if open
     const sidebar = document.getElementById('sidebar');
-    if (sidebar && sidebar.classList.contains('mobile-open')) {
-        sidebar.classList.remove('mobile-open');
+    if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        const btn = document.getElementById('sidebar-menu-toggle');
+        if (btn) btn.classList.remove('active');
     }
     if (window.lucide) window.lucide.createIcons();
 };
 
 window.toggleAdminMobileMenu = function() {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.classList.toggle('mobile-open');
+    // Dùng trên login page — toggle topnav
+    const topnav = document.getElementById('topnav');
+    const btn = document.getElementById('menu-toggle');
+    if (topnav) topnav.classList.toggle('open');
+    if (btn) btn.classList.toggle('active');
 };
 
 window.toggleSidebarMenu = function() {
+    // Dùng trên dashboard — toggle sidebar dropdown
     const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.classList.toggle('collapsed');
+    const btn = document.getElementById('sidebar-menu-toggle');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (btn) btn.classList.toggle('active');
 };
 
 // ==========================================
@@ -247,6 +299,9 @@ function initCurrentPageData() {
     }
     if (document.getElementById('admin-rankings-list')) {
         loadPlayers();
+    }
+    if (document.getElementById('admin-banners-list')) {
+        loadBanners();
     }
 }
 

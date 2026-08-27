@@ -15,6 +15,24 @@ CREATE TABLE `admins` (
 INSERT INTO `admins` (`id`, `username`, `password`) VALUES
 ('1', 'admin', '$2y$10$fqIf260TTwrKrsEuCVMYCuJz1TP/.5vFFuEVxpu9JdQkIK8z2QHIm');
 
+DROP TABLE IF EXISTS `banners`;
+CREATE TABLE `banners` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `order_num` int(11) DEFAULT 0,
+  `image_position` varchar(50) DEFAULT '50% 50%',
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `banners` (`id`, `title`, `image_url`, `order_num`, `image_position`, `is_active`) VALUES
+('1', 'Banner Trang Giải Đấu 1', 'public/banners/1.jpg', 1, '50% 50%', 1),
+('2', 'Banner Trang Giải Đấu 2', 'public/banners/2.jpg', 2, '50% 50%', 1),
+('3', 'Banner Trang Giải Đấu 3', 'public/banners/3.jpg', 3, '50% 50%', 1);
+
 DROP TABLE IF EXISTS `matches`;
 CREATE TABLE `matches` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

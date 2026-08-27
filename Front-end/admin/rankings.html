@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Bảng Xếp Hạng – Pickaball Admin</title>
     <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
-    <link rel="stylesheet" href="css/admin.css?v=28">
+    <link rel="stylesheet" href="css/admin.css?v=29">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -76,6 +76,9 @@
         <a id="nav-rankings" href="rankings" class="active">
             <span class="nav-icon">📊</span> Bảng xếp hạng
         </a>
+        <a id="nav-banners" href="banners">
+            <span class="nav-icon"><i data-lucide="image"></i></span> Quản lý Banners
+        </a>
     </nav>
 
     <div class="sidebar-section-label">Hệ thống</div>
@@ -142,30 +145,21 @@
                     <h2>Danh sách tuyển thủ</h2>
                     <span class="text-muted" id="player-count" style="font-size:13px; font-weight:700;"></span>
                 </div>
-                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <input type="text" id="search-player-admin" placeholder="Tìm kiếm tên..." style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px; width:160px;" oninput="renderPlayerRanking()">
-                    </div>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <label style="font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap;">Giới tính:</label>
-                        <select id="filter-gender" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px;" onchange="renderPlayerRanking()">
-                            <option value="all">Tất cả</option>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <label style="font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap;">Sắp xếp:</label>
-                        <select id="sort-players" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px;" onchange="renderPlayerRanking()">
-                            <option value="points_desc">Điểm trình (Giảm dần)</option>
-                            <option value="points_asc">Điểm trình (Tăng dần)</option>
-                            <option value="date_desc">Mới nhất (Ngày tạo)</option>
-                            <option value="date_asc">Cũ nhất (Ngày tạo)</option>
-                        </select>
-                    </div>
+                <div id="filter-bar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <input type="text" id="search-player-admin" placeholder="Tìm kiếm tên..." style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px; width:160px;" oninput="renderPlayerRanking()">
+                    <select id="filter-gender" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px;" onchange="renderPlayerRanking()">
+                        <option value="all">Giới tính: Tất cả</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                    <select id="sort-players" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:13px;" onchange="renderPlayerRanking()">
+                        <option value="points_desc">Sắp xếp: Điểm cao nhất</option>
+                        <option value="points_asc">Sắp xếp: Điểm thấp nhất</option>
+                        <option value="date_desc">Sắp xếp: Mới nhất</option>
+                    </select>
                 </div>
             </div>
-            <div class="tbl-wrap">
+            <div class="tbl-wrap admin-table-view">
                 <table class="tbl">
                     <thead>
                         <tr>
@@ -181,6 +175,10 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Mobile card list -->
+            <div id="admin-rankings-mobile" class="admin-card-view"></div>
+            <!-- Phân trang -->
+            <div id="admin-player-pagination"></div>
         </div>
     </div>
 
@@ -223,27 +221,60 @@
                     </div>
                 </div>
 
+                <!-- TUỔI -->
                 <div style="margin-bottom: 12px;">
-                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between;">
-                        Thông tin cá nhân (Profile)
-                        <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Hỗ trợ in đậm (**chữ**), icon</span>
+                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">
+                        Tuổi <span style="font-size: 11px; font-weight: normal; color: var(--muted);">— để trống nếu chưa có thông tin</span>
                     </label>
-                    <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px; background: #f8fafc; border: 1px solid var(--border); border-radius: 6px;">
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🏆')" title="Cúp vàng">🏆</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🥇')" title="Huy chương Vàng">🥇</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🥈')" title="Huy chương Bạc">🥈</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🥉')" title="Huy chương Đồng">🥉</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🏓')" title="Pickleball">🏓</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🎾')" title="Tennis">🎾</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('🔥')" title="Lửa">🔥</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('✨')" title="Tỏa sáng">✨</button>
-                        <button type="button" class="btn-icon-picker" onclick="insertIconToProfile('💪')" title="Sức mạnh">💪</button>
-                    </div>
-                    <textarea id="player-profile" rows="4" placeholder="Ví dụ:
-**Thành tích:** Vô địch giải Pickleball 2026
-**Phong cách:** Tấn công dồn dập
-🔥 Sẵn sàng giao lưu!" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); resize: vertical;"></textarea>
+                    <input type="number" id="player-age" min="5" max="99" placeholder="Ví dụ: 25" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
                 </div>
+
+                <!-- MÔ TẢ -->
+                <div style="margin-bottom: 12px;">
+                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Mô tả / Thành tích</span>
+                        <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Nhấn icon để chèn vào mô tả</span>
+                    </label>
+
+                    <!-- Bảng icon -->
+                    <div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px;">
+                        <span style="font-size: 10px; font-weight: 900; color: var(--muted); width: 100%; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">🏅 Thành tích</span>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🏆')" title="Cúp vô địch">🏆</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🥇')" title="Huy chương Vàng">🥇</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🥈')" title="Huy chương Bạc">🥈</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🥉')" title="Huy chương Đồng">🥉</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🎖️')" title="Huân chương">🎖️</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🏅')" title="Huy chương">🏅</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🎗️')" title="Ruy băng">🎗️</button>
+
+                        <span style="font-size: 10px; font-weight: 900; color: var(--muted); width: 100%; margin: 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">🏓 Thể thao</span>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🏓')" title="Pickleball / Bóng bàn">🏓</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🎾')" title="Tennis">🎾</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🏸')" title="Cầu lông">🏸</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('⚽')" title="Bóng đá">⚽</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🏊')" title="Bơi lội">🏊</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🚴')" title="Đạp xe">🚴</button>
+
+                        <span style="font-size: 10px; font-weight: 900; color: var(--muted); width: 100%; margin: 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">💬 Biểu cảm</span>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🔥')" title="Lửa / Hot">🔥</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('⚡')" title="Điện / Nhanh">⚡</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('✨')" title="Tỏa sáng">✨</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('💪')" title="Sức mạnh">💪</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('👑')" title="Vua / Champion">👑</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🎯')" title="Chuẩn xác">🎯</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🌟')" title="Ngôi sao">🌟</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('💥')" title="Bùng nổ">💥</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🎮')" title="Game">🎮</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('😎')" title="Cool">😎</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🤝')" title="Giao lưu">🤝</button>
+                        <button type="button" class="btn-icon-picker" onclick="insertIconToDesc('🛑')" title="Dừng">🛑</button>
+                    </div>
+
+                    <textarea id="player-desc" rows="4" placeholder="Ví dụ:&#10;🏆 Vô địch giải Pickleball TP.HCM 2026&#10;🥈 Hạng nhì giải Mở rộng MMP&#10;💪 Sẵn sàng giao lưu!" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); resize: vertical;"></textarea>
+                </div>
+
+                <!-- Hidden: lưu profile gốc khi edit để giữ nguyên nếu không thay đổi -->
+                <input type="hidden" id="player-profile">
 
                 <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px;">
                     <button type="button" class="btn btn-ghost" onclick="closePlayerModal()">Huỷ</button>
@@ -276,19 +307,20 @@
 <div id="admin-toast"></div>
 
 <script>
-function insertIconToProfile(icon) {
-    const textarea = document.getElementById('player-profile');
+function insertIconToDesc(icon) {
+    const textarea = document.getElementById('player-desc');
     if (!textarea) return;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const text = textarea.value;
-    textarea.value = text.substring(0, start) + icon + text.substring(end);
+    textarea.value = textarea.value.substring(0, start) + icon + textarea.value.substring(end);
     textarea.focus();
     textarea.selectionStart = textarea.selectionEnd = start + icon.length;
 }
+// Giữ lại để không lỗi nếu có chỗ nào gọi cũ
+function insertIconToProfile(icon) { insertIconToDesc(icon); }
 </script>
 
-<script type="module" src="js/main.js?v=28"></script>
+<script type="module" src="js/main.js?v=29"></script>
 <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

@@ -2,40 +2,60 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <title>Pickaball - Game Live 2D (Offline)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <title>Pickaball - Game Live 2D Pickleball</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
   <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
   <link rel="stylesheet" href="css/game.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-  <!-- Top Action Bar (Mobile-friendly Back button) -->
+  <!-- Top Action Bar -->
   <div class="top-nav-bar">
-    <a href="../" class="back-btn">⬅️ Quay Lại</a>
-    <div class="game-title">🏓 PICKABALL 2D AI</div>
+    <a href="../" class="back-btn">⬅️ Quay lại</a>
+    <div class="game-title">🏓 PICKABALL 2.5D PRO</div>
+    <div class="top-controls">
+      <button id="btn-sound" class="icon-control-btn" title="Bật/Tắt âm thanh" aria-label="Âm thanh">🔊</button>
+      <button id="btn-pause" class="icon-control-btn" title="Tạm dừng" aria-label="Tạm dừng">⏸️</button>
+    </div>
   </div>
 
   <div class="game-page-container">
     
     <!-- Top HUD (Outside Canvas) -->
     <div class="hud-top">
-      <div class="hud-player-profile">
-        <span class="hud-avatar">🤖</span>
+      <div class="hud-player-profile bot-profile">
+        <span class="hud-avatar bot-avatar">🤖</span>
         <div class="hud-info">
-          <span class="hud-title">BOT AI (SÂN TRÊN)</span>
+          <span class="hud-title tag-bot">BOT AI</span>
           <span class="hud-name">Hell Bot</span>
         </div>
       </div>
+
       <div class="hud-center-score">
-        <span id="score-p2" class="score-p2">0</span>
+        <div class="score-team bot-team">
+          <span class="team-label">BOT</span>
+          <span id="score-p2" class="score-num score-p2">0</span>
+        </div>
         <span class="score-divider">:</span>
-        <span id="score-p1" class="score-p1">0</span>
+        <div class="score-team user-team">
+          <span id="score-p1" class="score-num score-p1">0</span>
+          <span class="team-label">BẠN</span>
+        </div>
+      </div>
+
+      <div class="hud-rally-counter" id="rally-counter-hud">
+        <span class="rally-icon">⚡</span>
+        <span class="rally-num" id="hud-rally-num">0</span>
+        <span class="rally-txt">Rally</span>
       </div>
     </div>
 
+    <!-- Viewport & Canvas -->
     <div class="game-viewport">
+      <!-- Live notifications & Combo Banner -->
       <div id="serve-notification" class="serve-notification-banner" style="display: none;"></div>
+      <div id="combo-banner" class="combo-banner" style="display: none;"></div>
 
       <div class="canvas-wrapper" id="canvas-wrapper">
         <canvas id="gameCanvas" width="400" height="700"></canvas>
@@ -43,20 +63,36 @@
         <!-- Overlays -->
         <div id="start-overlay" class="canvas-overlay">
           <div class="start-card">
-            <h2>🏓 ĐẬP BÓNG PICKLEBALL 2D</h2>
-            <p class="mode-desc">Chế độ: <strong class="mode-tag">🤖 Luyện Tập Vs AI</strong></p>
-            <p><strong><span class="mobile-only">Chạm màn hình</span><span class="desktop-only">Nhấn Phím Cách (Space)</span></strong> để bắt đầu / phát bóng.</p>
-            <p>Lướt ngang trên khu vực sân để di chuyển vợt.</p>
-            <p>Vợt sẽ <strong>tự động đỡ bóng</strong> khi bóng chạm vào.</p>
+            <div class="card-icon-badge">🏓</div>
+            <h2>PICKLEBALL 2.5D ARENA</h2>
+            <p class="mode-desc">Chế độ: <strong class="mode-tag">🤖 Đấu Luyện Vs Hell Bot</strong></p>
+            <div class="instructions-box">
+              <p>🎯 <strong><span class="mobile-only">Chạm màn hình</span><span class="desktop-only">Nhấn Phím Space</span></strong> để phát bóng.</p>
+              <p>👆 <strong>Lướt ngón tay ngang</strong> để di chuyển vợt siêu nhạy.</p>
+              <p>⚡ Vợt <strong>tự động đỡ bóng</strong> khi chạm vào.</p>
+              <p>🔥 Tích đủ <strong>Mana</strong> để xả tuyệt chiêu lật kèo!</p>
+            </div>
             <button class="start-match-btn" id="start-btn">🚀 BẮT ĐẦU TRẬN ĐẤU (10 ĐIỂM)</button>
           </div>
         </div>
 
+        <!-- Pause Overlay -->
+        <div id="pause-overlay" class="canvas-overlay" style="display: none;">
+          <div class="start-card pause-card">
+            <div class="card-icon-badge">⏸️</div>
+            <h2>TRẬN ĐẤU ĐANG TẠM DỪNG</h2>
+            <p style="margin-bottom: 20px;">Trận đấu đang tạm dừng. Nhấn tiếp tục khi bạn đã sẵn sàng!</p>
+            <button class="start-match-btn" id="resume-btn">▶️ TIẾP TỤC THI ĐẤU</button>
+          </div>
+        </div>
+
+        <!-- Game Over Overlay -->
         <div id="game-over-overlay" class="canvas-overlay winner-overlay" style="display: none;">
           <div class="start-card">
-            <span class="trophy-icon">🏆</span>
-            <h2>KẾT THÚC TRẬN ĐẤU!</h2>
+            <div class="trophy-icon" id="game-over-trophy">🏆</div>
+            <h2 id="game-over-title">KẾT THÚC TRẬN ĐẤU!</h2>
             <h3 class="winner-name" id="winner-name-text">CHIẾN THẮNG: ...</h3>
+            <div class="match-summary-stats" id="match-summary-stats"></div>
             <button class="start-match-btn" id="restart-btn">🔄 THI ĐẤU TRẬN MỚI</button>
           </div>
         </div>
@@ -65,23 +101,39 @@
 
     <!-- Bottom HUD (Outside Canvas) -->
     <div class="hud-bottom">
-      <div class="hud-player-profile">
-        <div class="hud-mana-container">
-          <div id="my-mana-fill" class="mana-fill" style="width: 40%"></div>
-          <span id="my-mana-text" class="mana-text">⚡ MANA: 40%</span>
+      <div class="hud-player-profile user-profile">
+        <div class="hud-mana-box">
+          <div class="hud-mana-container">
+            <div id="my-mana-fill" class="mana-fill" style="width: 40%"></div>
+            <span id="my-mana-text" class="mana-text">⚡ 40% MANA</span>
+          </div>
         </div>
-        <div class="hud-info text-right" style="margin-right: 8px; margin-left: 8px;">
-          <span class="hud-title">BẠN (SÂN DƯỚI)</span>
-          <span class="hud-name">Người Chơi</span>
+        <div class="hud-info text-left">
+          <span class="hud-title tag-user">BẠN (SÂN DƯỚI)</span>
+          <span class="hud-name">Tuyển Thủ</span>
         </div>
-        <span class="hud-avatar">🏓</span>
       </div>
       
       <!-- Skills -->
       <div class="skills-container">
-        <button class="skill-btn" id="btn-shield"><span class="hotkey-badge desktop-only">Q</span>🛡️<br><small>Khiên</small></button>
-        <button class="skill-btn" id="btn-drop"><span class="hotkey-badge desktop-only">W</span>🌀<br><small>Bỏ nhỏ</small></button>
-        <button class="skill-btn fire-btn" id="btn-smash"><span class="hotkey-badge desktop-only">E</span>⚡<br><small>Lốc</small></button>
+        <button class="skill-btn" id="btn-shield" data-cost="40">
+          <span class="hotkey-badge desktop-only">Q</span>
+          <span class="skill-icon">🛡️</span>
+          <span class="skill-name">Khiên</span>
+          <span class="skill-cost">40%</span>
+        </button>
+        <button class="skill-btn" id="btn-drop" data-cost="40">
+          <span class="hotkey-badge desktop-only">W</span>
+          <span class="skill-icon">🌀</span>
+          <span class="skill-name">Bỏ nhỏ</span>
+          <span class="skill-cost">40%</span>
+        </button>
+        <button class="skill-btn fire-btn" id="btn-smash" data-cost="50">
+          <span class="hotkey-badge desktop-only">E</span>
+          <span class="skill-icon">⚡</span>
+          <span class="skill-name">Lốc</span>
+          <span class="skill-cost">50%</span>
+        </button>
       </div>
     </div>
 
@@ -91,9 +143,6 @@
   <script src="js/bot.js"></script>
   <script src="js/controls.js"></script>
   <script src="js/main.js"></script>
-
-    <script>lucide.createIcons();</script>
+  <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>
-
-
