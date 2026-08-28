@@ -25,77 +25,138 @@ export async function fetchRanking() {
 
         cachedPlayers = data.data;
 
-        // Render Clean & Modern Podium
-        if (cachedPlayers.length >= 3 && podium && podiumSection) {
-            const top3 = cachedPlayers.slice(0, 3);
+        // Render Clean & Modern Podium (Hỗ trợ hiển thị khi có 1, 2 hoặc 3+ người, thiếu vị trí nào thì hiển thị ô trống)
+        if (cachedPlayers.length > 0 && podium && podiumSection) {
+            const p1 = cachedPlayers[0] || null;
+            const p2 = cachedPlayers[1] || null;
+            const p3 = cachedPlayers[2] || null;
 
             podiumSection.style.display = 'block';
             podium.innerHTML = `
                 <div class="clean-podium-wrap">
                     <!-- RANK 2: HẠNG NHÌ -->
-                    <div class="pod-column pod-col-2" onclick="window.openPlayerProfile(${top3[1].id})">
+                    ${p2 ? `
+                    <div class="pod-column pod-col-2" onclick="window.openPlayerProfile(${p2.id})">
                         <div class="pod-avatar-box">
                             <div class="pod-avatar-glow glow-silver"></div>
-                            <img class="pod-avatar-img" src="${avatarOf(top3[1])}" alt="${top3[1].name}" onerror="this.src='${svgAvatar(top3[1].name)}'">
+                            <img class="pod-avatar-img" src="${avatarOf(p2)}" alt="${p2.name}" onerror="this.src='${svgAvatar(p2.name)}'">
                             <span class="pod-medal-badge">🥈</span>
                         </div>
                         
                         <div class="pod-info">
-                            <div class="pod-name" title="${top3[1].name}">${top3[1].name}</div>
-                            <div class="pod-points"><span class="pts-val">${parseFloat(top3[1].points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
+                            <div class="pod-name" title="${p2.name}">${p2.name}</div>
+                            <div class="pod-points"><span class="pts-val">${parseFloat(p2.points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
                         </div>
 
-                        <!-- 3D Stand -->
                         <div class="pod-stand stand-2">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number">2</div>
                             <div class="stand-label">Hạng Nhì</div>
                         </div>
                     </div>
+                    ` : `
+                    <div class="pod-column pod-col-2 empty-slot">
+                        <div class="pod-avatar-box">
+                            <div class="pod-avatar-empty"><span>?</span></div>
+                            <span class="pod-medal-badge" style="opacity: 0.6;">🥈</span>
+                        </div>
+                        
+                        <div class="pod-info">
+                            <div class="pod-name">Chưa có</div>
+                            <div class="pod-points"><span class="pts-val">--</span> <span class="pts-unit">điểm</span></div>
+                        </div>
+
+                        <div class="pod-stand stand-2">
+                            <div class="stand-shine-bar"></div>
+                            <div class="stand-number">2</div>
+                            <div class="stand-label">Hạng Nhì</div>
+                        </div>
+                    </div>
+                    `}
 
                     <!-- RANK 1: VÔ ĐỊCH / QUÁN QUÂN -->
-                    <div class="pod-column pod-col-1" onclick="window.openPlayerProfile(${top3[0].id})">
+                    ${p1 ? `
+                    <div class="pod-column pod-col-1" onclick="window.openPlayerProfile(${p1.id})">
                         <div class="crown-float-icon">👑</div>
                         
                         <div class="pod-avatar-box main-box">
                             <div class="pod-avatar-glow glow-gold"></div>
-                            <img class="pod-avatar-img main-img" src="${avatarOf(top3[0])}" alt="${top3[0].name}" onerror="this.src='${svgAvatar(top3[0].name)}'">
+                            <img class="pod-avatar-img main-img" src="${avatarOf(p1)}" alt="${p1.name}" onerror="this.src='${svgAvatar(p1.name)}'">
                             <span class="pod-medal-badge gold-medal-badge">🥇</span>
                         </div>
                         
                         <div class="pod-info">
-                            <div class="pod-name main-name" title="${top3[0].name}">${top3[0].name}</div>
-                            <div class="pod-points main-points"><span class="pts-val">${parseFloat(top3[0].points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
+                            <div class="pod-name main-name" title="${p1.name}">${p1.name}</div>
+                            <div class="pod-points main-points"><span class="pts-val">${parseFloat(p1.points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
                         </div>
 
-                        <!-- 3D Stand -->
                         <div class="pod-stand stand-1">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number main-num">1</div>
                             <div class="stand-label main-label">Vô Địch</div>
                         </div>
                     </div>
+                    ` : `
+                    <div class="pod-column pod-col-1 empty-slot">
+                        <div class="crown-float-icon" style="opacity: 0.4;">👑</div>
+                        
+                        <div class="pod-avatar-box main-box">
+                            <div class="pod-avatar-empty"><span>?</span></div>
+                            <span class="pod-medal-badge gold-medal-badge" style="opacity: 0.6;">🥇</span>
+                        </div>
+                        
+                        <div class="pod-info">
+                            <div class="pod-name main-name">Chưa có</div>
+                            <div class="pod-points main-points"><span class="pts-val">--</span> <span class="pts-unit">điểm</span></div>
+                        </div>
+
+                        <div class="pod-stand stand-1">
+                            <div class="stand-shine-bar"></div>
+                            <div class="stand-number main-num">1</div>
+                            <div class="stand-label main-label">Vô Địch</div>
+                        </div>
+                    </div>
+                    `}
 
                     <!-- RANK 3: HẠNG BA -->
-                    <div class="pod-column pod-col-3" onclick="window.openPlayerProfile(${top3[2].id})">
+                    ${p3 ? `
+                    <div class="pod-column pod-col-3" onclick="window.openPlayerProfile(${p3.id})">
                         <div class="pod-avatar-box">
                             <div class="pod-avatar-glow glow-bronze"></div>
-                            <img class="pod-avatar-img" src="${avatarOf(top3[2])}" alt="${top3[2].name}" onerror="this.src='${svgAvatar(top3[2].name)}'">
+                            <img class="pod-avatar-img" src="${avatarOf(p3)}" alt="${p3.name}" onerror="this.src='${svgAvatar(p3.name)}'">
                             <span class="pod-medal-badge">🥉</span>
                         </div>
                         
                         <div class="pod-info">
-                            <div class="pod-name" title="${top3[2].name}">${top3[2].name}</div>
-                            <div class="pod-points"><span class="pts-val">${parseFloat(top3[2].points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
+                            <div class="pod-name" title="${p3.name}">${p3.name}</div>
+                            <div class="pod-points"><span class="pts-val">${parseFloat(p3.points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
                         </div>
 
-                        <!-- 3D Stand -->
                         <div class="pod-stand stand-3">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number">3</div>
                             <div class="stand-label">Hạng Ba</div>
                         </div>
                     </div>
+                    ` : `
+                    <div class="pod-column pod-col-3 empty-slot">
+                        <div class="pod-avatar-box">
+                            <div class="pod-avatar-empty"><span>?</span></div>
+                            <span class="pod-medal-badge" style="opacity: 0.6;">🥉</span>
+                        </div>
+                        
+                        <div class="pod-info">
+                            <div class="pod-name">Chưa có</div>
+                            <div class="pod-points"><span class="pts-val">--</span> <span class="pts-unit">điểm</span></div>
+                        </div>
+
+                        <div class="pod-stand stand-3">
+                            <div class="stand-shine-bar"></div>
+                            <div class="stand-number">3</div>
+                            <div class="stand-label">Hạng Ba</div>
+                        </div>
+                    </div>
+                    `}
                 </div>
             `;
         } else if (podiumSection) {
