@@ -2,11 +2,11 @@
 // PICKABALL CLIENT MAIN CONTROLLER (ES MODULE)
 // ==========================================
 
-import { calculateTournamentStatus, toast, svgAvatar, avatarOf, fmtDate } from './core/api.js?v=17';
-import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage } from './modules/ranking.js?v=17';
-import { fetchTournaments } from './modules/tournaments.js?v=17';
-import { fetchTournamentDetail } from './modules/tournament-detail.js?v=17';
-import { initSlider, goToSlide, nextSlide, prevSlide } from './modules/slider.js?v=17';
+import { calculateTournamentStatus, toast, svgAvatar, avatarOf, fmtDate } from './core/api.js?v=18';
+import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage, openAvatarZoom, closeAvatarZoom } from './modules/ranking.js?v=18';
+import { fetchTournaments } from './modules/tournaments.js?v=18';
+import { fetchTournamentDetail } from './modules/tournament-detail.js?v=18';
+import { initSlider, goToSlide, nextSlide, prevSlide } from './modules/slider.js?v=18';
 
 // Expose handlers to window for inline HTML onclick attributes
 window.calculateTournamentStatus = calculateTournamentStatus;
@@ -18,6 +18,8 @@ window.fmtDate = fmtDate;
 window.renderMorePlayers = renderMorePlayers;
 window.openPlayerProfile = openPlayerProfile;
 window.closePlayerProfileModal = closePlayerProfileModal;
+window.openAvatarZoom = openAvatarZoom;
+window.closeAvatarZoom = closeAvatarZoom;
 window.goToRankingPage = goToRankingPage;
 
 window.goToSlide = goToSlide;

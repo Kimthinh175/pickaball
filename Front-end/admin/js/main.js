@@ -306,7 +306,7 @@ function initCurrentPageData() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Instant Optimistic Auth & Data Load (Zero Flash)
+    // 1. Instant Optimistic Auth (Zero Flash)
     const token = localStorage.getItem('admin_token');
     if (token) {
         checkLogin(true);
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initCurrentPageData();
     });
 
-    // 4. Background Auth Verification (Validate token in background)
+    // 4. Background Auth Verification
     apiRequest('/admin/auth/check').then((checkRes) => {
         if (checkRes && checkRes.status === 'success') {
             if (!token) {

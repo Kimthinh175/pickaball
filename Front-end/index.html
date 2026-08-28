@@ -6,10 +6,7 @@
     <title>Bảng Xếp Hạng – PICKO247</title>
     <meta name="description" content="Bảng xếp hạng tuyển thủ Pickleball tại PICKO247 theo điểm trình tích lũy.">
     <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Paytone+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=18">
+    <link rel="stylesheet" href="css/style.css?v=17">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -233,7 +230,7 @@
 
         <!-- Header banner -->
         <div class="profile-banner">
-            <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar-img">
+            <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar-img" title="Bấm để xem ảnh phóng to" onclick="openAvatarZoom(this.src, document.getElementById('profile-name')?.textContent)">
             <div class="profile-rank-badge" id="profile-rank-badge"></div>
         </div>
 
@@ -259,8 +256,17 @@
     </div>
 </div>
 
+<!-- Avatar Zoom Lightbox Modal -->
+<div id="modal-avatar-zoom" class="avatar-zoom-overlay" onclick="closeAvatarZoom(event)">
+    <div class="avatar-zoom-wrap">
+        <button class="avatar-zoom-close" onclick="closeAvatarZoom()" title="Đóng">&times;</button>
+        <img id="avatar-zoom-img" src="" alt="Avatar Phóng To" class="avatar-zoom-img">
+        <div id="avatar-zoom-name" class="avatar-zoom-name"></div>
+    </div>
+</div>
+
 <div id="toast"></div>
-<script type="module" src="js/main.js?v=17"></script>
+<script type="module" src="js/main.js?v=18"></script>
     <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

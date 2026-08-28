@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Paytone+One&display=swap');
+
 :root {
   --bg: #F0F2F5;
   --panel: #ffffff;
@@ -16,7 +18,7 @@
   --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
 }
 
-/* Anti-flicker instant render rules */
+/* Anti-flicker instant render rules (Zero White Screen / Instant Sidebar) */
 html.is-authenticated #sidebar { display: flex !important; }
 html.is-authenticated #dashboard-section { display: block !important; }
 html.is-authenticated #login-section { display: none !important; }

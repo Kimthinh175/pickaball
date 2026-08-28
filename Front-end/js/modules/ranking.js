@@ -296,3 +296,39 @@ export function openPlayerProfile(id) {
 export function closePlayerProfileModal() {
     document.getElementById('modal-player-profile')?.classList.remove('active');
 }
+
+export function openAvatarZoom(src, name) {
+    const modal = document.getElementById('modal-avatar-zoom');
+    const img = document.getElementById('avatar-zoom-img');
+    const nameEl = document.getElementById('avatar-zoom-name');
+    if (!modal || !img) return;
+
+    img.src = src || '';
+    if (nameEl) nameEl.textContent = name || '';
+    modal.classList.add('active');
+}
+
+export function closeAvatarZoom(e) {
+    if (e && e.target && (e.target.id === 'avatar-zoom-img' || e.target.closest('#avatar-zoom-img'))) {
+        return; // Don't close when clicking directly on the enlarged image
+    }
+    const modal = document.getElementById('modal-avatar-zoom');
+    if (modal) modal.classList.remove('active');
+}
+
+// Bind to window for global access
+window.openAvatarZoom = openAvatarZoom;
+window.closeAvatarZoom = closeAvatarZoom;
+
+// Close on Escape key
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const zoomModal = document.getElementById('modal-avatar-zoom');
+        if (zoomModal && zoomModal.classList.contains('active')) {
+            closeAvatarZoom();
+        } else {
+            closePlayerProfileModal();
+        }
+    }
+});
+
