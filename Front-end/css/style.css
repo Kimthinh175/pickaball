@@ -354,7 +354,7 @@ button { font-family: inherit; cursor: pointer; }
   display: inline-block; padding: 4px 12px;
   background: var(--accent); border-radius: 4px;
 }
-.tbl { width: 100%; border-collapse: separate; border-spacing: 0; }
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: auto; }
 .tbl th {
   text-align: left; font-family: 'Paytone One', sans-serif; font-size: 13px;
   padding: 11px 14px; border-bottom: 1.5px solid rgba(26,26,26,0.15);
@@ -364,8 +364,10 @@ button { font-family: inherit; cursor: pointer; }
   padding: 10px 14px; border-bottom: 1px solid rgba(26,26,26,0.07);
   font-size: 14px; font-weight: 700; vertical-align: middle;
 }
-.tbl .rk { font-family: 'Paytone One', sans-serif; font-size: 16px; width: 44px; text-align: center; }
+.tbl .rk { font-family: 'Paytone One', sans-serif; font-size: 16px; width: 44px; text-align: center; white-space: nowrap; }
 .tbl .rk.rk-1, .tbl .rk.rk-2, .tbl .rk.rk-3 { font-size: 20px; }
+.pts-col { text-align: right; white-space: nowrap; color: var(--action); font-weight: 800; }
+.pts-col-head { text-align: right !important; white-space: nowrap; }
 
 /* ===== PLAYER INFO & TABLE CELLS ===== */
 .player-cell, .player-info {
@@ -927,15 +929,15 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
   /* Matchup grid: 1 col trên tablet */
   .matchup-grid { grid-template-columns: 1fr; gap: 18px; }
 
-  /* Table: scroll ngang */
-  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .tbl { min-width: 500px; }
-  .tbl td, .tbl th { padding: 10px 10px; font-size: 13px; }
-  .tbl .rk { font-size: 16px; }
-
-  /* Player info */
-  .ava { width: 40px; height: 40px; }
-  .player-name { font-size: 14px; }
+  /* Table: 100% width on tablet/mobile, no horizontal scroll needed */
+  .tbl-wrap { overflow-x: visible; width: 100%; }
+  .tbl { min-width: 0; width: 100%; }
+  .tbl td, .tbl th { padding: 10px 8px; font-size: 13px; }
+  .tbl .rk { font-size: 15px; width: 34px; padding: 10px 2px; text-align: center; }
+  .player-cell { gap: 8px; min-width: 0; }
+  .player-cell .avatar, .player-cell .ava, .avatar, .ava { width: 36px; height: 36px; flex-shrink: 0; }
+  .player-name { font-size: 13.5px; line-height: 1.25; word-break: break-word; }
+  .pts-col, .pts-col-head { text-align: right !important; white-space: nowrap; width: 90px; padding-right: 8px !important; font-size: 13px; }
   .score-pill { font-size: 12px; padding: 3px 8px; }
 
   /* Clean Podium Responsive */
@@ -1000,8 +1002,12 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
   .matchup-players { gap: 4px; }
 
   /* Table */
-  .tbl td, .tbl th { padding: 8px 8px; font-size: 12px; }
-  .tbl .rk { font-size: 14px; width: 36px; }
+  .tbl td, .tbl th { padding: 8px 4px; font-size: 12px; }
+  .tbl .rk { font-size: 13px; width: 28px; padding: 8px 2px; }
+  .player-cell { gap: 6px; }
+  .player-cell .avatar, .player-cell .ava, .avatar, .ava { width: 30px; height: 30px; }
+  .player-name { font-size: 12.5px; }
+  .pts-col, .pts-col-head { width: 78px; font-size: 12px; padding-right: 4px !important; }
 
   /* Toast */
   #toast { font-size: 13px; padding: 10px 18px; width: 90%; text-align: center; }
