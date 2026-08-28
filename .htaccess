@@ -56,3 +56,14 @@ RewriteRule ^ - [L]
 RewriteCond $1 !^Front-end/
 RewriteCond $1 !^Back-end/
 RewriteRule ^(.*)$ Front-end/$1 [L]
+
+# 8. Browser Caching for Performance (Fast loading & zero flash)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+</IfModule>
