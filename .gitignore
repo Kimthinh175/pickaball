@@ -2,6 +2,7 @@
 cloudflared.exe
 *.log
 *.tmp
+*.zip
 
 # Composer dependencies
 /vendor/

@@ -305,27 +305,42 @@ function initCurrentPageData() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // Check if hash has tab
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Instant Optimistic Auth & Data Load (Zero Flash)
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+        checkLogin(true);
+        initCurrentPageData();
+    } else {
+        checkLogin(false);
+    }
+
+    // 2. Check if hash has tab
     const hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(`tab-${hash}`)) {
         window.showTab(hash);
     }
 
-    // Initialize Auth
+    // 3. Initialize Auth Handlers
     initAuth(() => {
         initCurrentPageData();
     });
 
-    // Check if session is already active
-    const checkRes = await apiRequest('/admin/auth/check');
-    if (checkRes && checkRes.status === 'success') {
-        checkLogin(true, () => {
-            initCurrentPageData();
-        });
-    } else {
-        checkLogin(false);
-    }
+    // 4. Background Auth Verification (Validate token in background)
+    apiRequest('/admin/auth/check').then((checkRes) => {
+        if (checkRes && checkRes.status === 'success') {
+            if (!token) {
+                checkLogin(true, () => {
+                    initCurrentPageData();
+                });
+            }
+        } else {
+            if (token) {
+                localStorage.removeItem('admin_token');
+            }
+            checkLogin(false);
+        }
+    });
 
     if (window.lucide) window.lucide.createIcons();
 });

@@ -11,11 +11,13 @@ export function checkLogin(isLoggedIn, onLoginSuccess = null) {
     const dashSec = document.getElementById('dashboard-section');
 
     if (isLoggedIn) {
+        document.documentElement.classList.add('is-authenticated');
         loginSec?.classList.add('hidden');
         sidebar?.classList.remove('hidden');
         dashSec?.classList.remove('hidden');
         if (typeof onLoginSuccess === 'function') onLoginSuccess();
     } else {
+        document.documentElement.classList.remove('is-authenticated');
         loginSec?.classList.remove('hidden');
         sidebar?.classList.add('hidden');
         dashSec?.classList.add('hidden');

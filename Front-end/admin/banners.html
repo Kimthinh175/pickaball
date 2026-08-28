@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Banners – Pickaball Admin</title>
     <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
-    <link rel="stylesheet" href="css/admin.css?v=29">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Paytone+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css?v=30">
+    <script>
+        if (localStorage.getItem('admin_token')) {
+            document.documentElement.classList.add('is-authenticated');
+        }
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -222,7 +230,7 @@
 </div>
 
 <div id="admin-toast"></div>
-<script type="module" src="js/main.js?v=29"></script>
+<script type="module" src="js/main.js?v=30"></script>
 <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>
