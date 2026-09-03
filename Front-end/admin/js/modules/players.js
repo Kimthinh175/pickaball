@@ -54,7 +54,7 @@ export function renderPlayerRanking() {
     }
 
     let list = [...cachedPlayers];
-    if (searchVal) list = list.filter(p => p.name.toLowerCase().includes(searchVal));
+    if (searchVal) list = list.filter(p => (p.name && p.name.toLowerCase().includes(searchVal)) || (p.nickname && p.nickname.toLowerCase().includes(searchVal)));
     if (genderVal !== 'all') list = list.filter(p => p.gender === genderVal);
 
     if (sortVal === 'points_desc')     list.sort((a, b) => b.points - a.points);
@@ -105,8 +105,13 @@ function renderPage() {
                     <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="window.openPlayerProfileModalById(${p.id})">
                         <img src="${ava}" onerror="this.onerror=null;this.src='${fallbackSvg}';" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid #e2e8f0; flex-shrink:0;">
                         <div>
-                            <strong style="color:var(--primary); font-size:14px;">${p.name}</strong>
-                            <div style="font-size:11px; color:var(--muted);">ID: #${p.id}</div>
+                            ${p.nickname ? `
+                                <strong style="color:var(--primary); font-size:14.5px; display:block; line-height:1.2;">${p.nickname}</strong>
+                                <div style="font-size:11.5px; color:var(--muted); margin-top:2px;">Tên thật: <strong>${p.name}</strong></div>
+                            ` : `
+                                <strong style="color:var(--primary); font-size:14px;">${p.name}</strong>
+                            `}
+                            <div style="font-size:10.5px; color:var(--muted);">ID: #${p.id}</div>
                         </div>
                     </div>
                 </td>
@@ -127,7 +132,7 @@ function renderPage() {
             const absoluteIndex = startIdx + idx;
             const medal = absoluteIndex === 0 ? '🥇' : absoluteIndex === 1 ? '🥈' : absoluteIndex === 2 ? '🥉' : `#${absoluteIndex + 1}`;
             const ava = getPlayerAvatarUrl(p);
-            const fallbackSvg = svgAvatar(p.name);
+            const fallbackSvg = svgAvatar(p.nickname || p.name);
             const isFemale = p.gender === 'Nữ';
             return `
                 <div class="player-mobile-card">
@@ -135,7 +140,12 @@ function renderPage() {
                     <img class="pmc-avatar" src="${ava}" onerror="this.onerror=null;this.src='${fallbackSvg}';"
                          onclick="window.openPlayerProfileModalById(${p.id})">
                     <div class="pmc-info" onclick="window.openPlayerProfileModalById(${p.id})">
-                        <div class="pmc-name">${p.name}</div>
+                        <div class="pmc-name">
+                            ${p.nickname ? `
+                                <strong style="font-size:14px;">${p.nickname}</strong>
+                                <div style="font-size:11.5px; color:var(--muted); font-weight:normal; margin-top:1px;">Tên thật: ${p.name}</div>
+                            ` : `<strong>${p.name}</strong>`}
+                        </div>
                         <div class="pmc-meta">
                             <span class="badge ${isFemale ? 'badge-pink' : 'badge-blue'}" style="font-size:10px; padding:2px 7px;">${p.gender || 'Nam'}</span>
                             <span class="pmc-pts">${parseFloat(p.points || 0).toFixed(2)} điểm</span>
@@ -256,6 +266,8 @@ export function handlePlayerGenderChange() {
 
 export function openPlayerModal() {
     document.getElementById('player-id-input').value = '';
+    const nickEl = document.getElementById('player-nickname');
+    if (nickEl) nickEl.value = '';
     document.getElementById('player-name').value = '';
     document.getElementById('player-gender').value = 'Nam';
     document.getElementById('player-points').value = '2.60';
@@ -279,6 +291,8 @@ export function openEditPlayerModalById(id) {
 export function openEditPlayerModal(p) {
     if (!p) return;
     document.getElementById('player-id-input').value = p.id;
+    const nickEl = document.getElementById('player-nickname');
+    if (nickEl) nickEl.value = p.nickname || '';
     document.getElementById('player-name').value = p.name || '';
     document.getElementById('player-gender').value = p.gender || 'Nam';
     document.getElementById('player-points').value = p.points || '0.00';
@@ -325,6 +339,7 @@ export function previewPlayerAvatar(input) {
 export async function submitPlayerForm(e) {
     e.preventDefault();
     const id = document.getElementById('player-id-input').value;
+    const nickname = document.getElementById('player-nickname')?.value.trim() || '';
     const name = document.getElementById('player-name').value.trim();
     const gender = document.getElementById('player-gender').value;
     const points = parseFloat(document.getElementById('player-points').value || 0);
@@ -342,6 +357,7 @@ export async function submitPlayerForm(e) {
 
     const formData = new FormData();
     formData.append('name', name);
+    formData.append('nickname', nickname);
     formData.append('gender', gender);
     formData.append('points', points);
     formData.append('profile', profile);

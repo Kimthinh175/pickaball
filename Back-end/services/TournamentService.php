@@ -33,10 +33,10 @@ class TournamentService
         $groups = [];
         foreach ($groupsData as $g) {
             $sqlMatches = "SELECT m.*, 
-                p1a.name as t1_p1_name, p1a.avatar as t1_p1_avatar, p1a.points as t1_p1_points,
-                p1b.name as t1_p2_name, p1b.avatar as t1_p2_avatar, p1b.points as t1_p2_points,
-                p2a.name as t2_p1_name, p2a.avatar as t2_p1_avatar, p2a.points as t2_p1_points,
-                p2b.name as t2_p2_name, p2b.avatar as t2_p2_avatar, p2b.points as t2_p2_points
+                p1a.name as t1_p1_name, p1a.nickname as t1_p1_nickname, p1a.avatar as t1_p1_avatar, p1a.points as t1_p1_points,
+                p1b.name as t1_p2_name, p1b.nickname as t1_p2_nickname, p1b.avatar as t1_p2_avatar, p1b.points as t1_p2_points,
+                p2a.name as t2_p1_name, p2a.nickname as t2_p1_nickname, p2a.avatar as t2_p1_avatar, p2a.points as t2_p1_points,
+                p2b.name as t2_p2_name, p2b.nickname as t2_p2_nickname, p2b.avatar as t2_p2_avatar, p2b.points as t2_p2_points
                 FROM matches m
                 LEFT JOIN players p1a ON m.team1_p1_id = p1a.id
                 LEFT JOIN players p1b ON m.team1_p2_id = p1b.id
@@ -49,10 +49,10 @@ class TournamentService
 
         // Lấy danh sách tất cả Kèo đấu trong giải
         $sqlMatchups = "SELECT m.*, 
-            p1a.name as t1_p1_name, p1a.avatar as t1_p1_avatar, p1a.points as t1_p1_points,
-            p1b.name as t1_p2_name, p1b.avatar as t1_p2_avatar, p1b.points as t1_p2_points,
-            p2a.name as t2_p1_name, p2a.avatar as t2_p1_avatar, p2a.points as t2_p1_points,
-            p2b.name as t2_p2_name, p2b.avatar as t2_p2_avatar, p2b.points as t2_p2_points
+            p1a.name as t1_p1_name, p1a.nickname as t1_p1_nickname, p1a.avatar as t1_p1_avatar, p1a.points as t1_p1_points,
+            p1b.name as t1_p2_name, p1b.nickname as t1_p2_nickname, p1b.avatar as t1_p2_avatar, p1b.points as t1_p2_points,
+            p2a.name as t2_p1_name, p2a.nickname as t2_p1_nickname, p2a.avatar as t2_p1_avatar, p2a.points as t2_p1_points,
+            p2b.name as t2_p2_name, p2b.nickname as t2_p2_nickname, p2b.avatar as t2_p2_avatar, p2b.points as t2_p2_points
             FROM matches m
             LEFT JOIN players p1a ON m.team1_p1_id = p1a.id
             LEFT JOIN players p1b ON m.team1_p2_id = p1b.id
@@ -65,8 +65,8 @@ class TournamentService
         // Lấy danh sách các Đội từ tournament_teams
         $sqlTeams = "SELECT tt.*, 
             tt.player1_id as p1_id, tt.player2_id as p2_id,
-            p1.name as p1_name, p1.avatar as p1_avatar, p1.points as p1_points,
-            p2.name as p2_name, p2.avatar as p2_avatar, p2.points as p2_points,
+            p1.name as p1_name, p1.nickname as p1_nickname, p1.avatar as p1_avatar, p1.points as p1_points,
+            p2.name as p2_name, p2.nickname as p2_nickname, p2.avatar as p2_avatar, p2.points as p2_points,
             tg.name as group_name
             FROM tournament_teams tt
             JOIN players p1 ON tt.player1_id = p1.id
@@ -147,10 +147,10 @@ class TournamentService
 
         // Lấy danh sách brackets
         $sqlBrackets = "SELECT b.*, 
-            p1a.name as t1_p1_name, p1a.avatar as t1_p1_avatar, p1a.points as t1_p1_points,
-            p1b.name as t1_p2_name, p1b.avatar as t1_p2_avatar, p1b.points as t1_p2_points,
-            p2a.name as t2_p1_name, p2a.avatar as t2_p1_avatar, p2a.points as t2_p1_points,
-            p2b.name as t2_p2_name, p2b.avatar as t2_p2_avatar, p2b.points as t2_p2_points
+            p1a.name as t1_p1_name, p1a.nickname as t1_p1_nickname, p1a.avatar as t1_p1_avatar, p1a.points as t1_p1_points,
+            p1b.name as t1_p2_name, p1b.nickname as t1_p2_nickname, p1b.avatar as t1_p2_avatar, p1b.points as t1_p2_points,
+            p2a.name as t2_p1_name, p2a.nickname as t2_p1_nickname, p2a.avatar as t2_p1_avatar, p2a.points as t2_p1_points,
+            p2b.name as t2_p2_name, p2b.nickname as t2_p2_nickname, p2b.avatar as t2_p2_avatar, p2b.points as t2_p2_points
             FROM tournament_brackets b
             LEFT JOIN players p1a ON b.team1_p1_id = p1a.id
             LEFT JOIN players p1b ON b.team1_p2_id = p1b.id

@@ -39,12 +39,13 @@ export async function fetchRanking() {
                     <div class="pod-column pod-col-2" onclick="window.openPlayerProfile(${p2.id})">
                         <div class="pod-avatar-box">
                             <div class="pod-avatar-glow glow-silver"></div>
-                            <img class="pod-avatar-img" src="${avatarOf(p2)}" alt="${p2.name}" onerror="this.src='${svgAvatar(p2.name)}'">
+                            <img class="pod-avatar-img" src="${avatarOf(p2)}" alt="${p2.nickname || p2.name}" onerror="this.src='${svgAvatar(p2.nickname || p2.name)}'">
                             <span class="pod-medal-badge">🥈</span>
                         </div>
                         
                         <div class="pod-info">
-                            <div class="pod-name" title="${p2.name}">${p2.name}</div>
+                            <div class="pod-name" title="${p2.nickname || p2.name}">${p2.nickname || p2.name}</div>
+                            ${p2.nickname ? `<div class="pod-realname">${p2.name}</div>` : ''}
                             <div class="pod-points"><span class="pts-val">${parseFloat(p2.points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
                         </div>
 
@@ -81,12 +82,13 @@ export async function fetchRanking() {
                         
                         <div class="pod-avatar-box main-box">
                             <div class="pod-avatar-glow glow-gold"></div>
-                            <img class="pod-avatar-img main-img" src="${avatarOf(p1)}" alt="${p1.name}" onerror="this.src='${svgAvatar(p1.name)}'">
+                            <img class="pod-avatar-img main-img" src="${avatarOf(p1)}" alt="${p1.nickname || p1.name}" onerror="this.src='${svgAvatar(p1.nickname || p1.name)}'">
                             <span class="pod-medal-badge gold-medal-badge">🥇</span>
                         </div>
                         
                         <div class="pod-info">
-                            <div class="pod-name main-name" title="${p1.name}">${p1.name}</div>
+                            <div class="pod-name main-name" title="${p1.nickname || p1.name}">${p1.nickname || p1.name}</div>
+                            ${p1.nickname ? `<div class="pod-realname main-realname">${p1.name}</div>` : ''}
                             <div class="pod-points main-points"><span class="pts-val">${parseFloat(p1.points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
                         </div>
 
@@ -123,12 +125,13 @@ export async function fetchRanking() {
                     <div class="pod-column pod-col-3" onclick="window.openPlayerProfile(${p3.id})">
                         <div class="pod-avatar-box">
                             <div class="pod-avatar-glow glow-bronze"></div>
-                            <img class="pod-avatar-img" src="${avatarOf(p3)}" alt="${p3.name}" onerror="this.src='${svgAvatar(p3.name)}'">
+                            <img class="pod-avatar-img" src="${avatarOf(p3)}" alt="${p3.nickname || p3.name}" onerror="this.src='${svgAvatar(p3.nickname || p3.name)}'">
                             <span class="pod-medal-badge">🥉</span>
                         </div>
                         
                         <div class="pod-info">
-                            <div class="pod-name" title="${p3.name}">${p3.name}</div>
+                            <div class="pod-name" title="${p3.nickname || p3.name}">${p3.nickname || p3.name}</div>
+                            ${p3.nickname ? `<div class="pod-realname">${p3.name}</div>` : ''}
                             <div class="pod-points"><span class="pts-val">${parseFloat(p3.points || 0).toFixed(2)}</span> <span class="pts-unit">điểm</span></div>
                         </div>
 
@@ -189,7 +192,7 @@ export function renderRankingTable() {
     const genderVal = document.getElementById('filter-gender')?.value || 'all';
 
     let filtered = cachedPlayers.filter(p => {
-        const matchName = p.name.toLowerCase().includes(searchVal);
+        const matchName = (p.name && p.name.toLowerCase().includes(searchVal)) || (p.nickname && p.nickname.toLowerCase().includes(searchVal));
         const matchGender = genderVal === 'all' || p.gender === genderVal;
         return matchName && matchGender;
     });
@@ -218,8 +221,15 @@ export function renderRankingTable() {
                 <td class="rk ${rankClass}">${rankDisplay}</td>
                 <td>
                     <div class="player-cell">
-                        <img class="avatar" src="${avatarOf(p)}" alt="${p.name}" onerror="this.src='${svgAvatar(p.name)}'">
-                        <span class="player-name">${p.name}</span>
+                        <img class="avatar" src="${avatarOf(p)}" alt="${p.nickname || p.name}" onerror="this.src='${svgAvatar(p.nickname || p.name)}'">
+                        <div class="player-meta-names">
+                            ${p.nickname ? `
+                                <span class="player-name">${p.nickname}</span>
+                                <span class="player-realname">${p.name}</span>
+                            ` : `
+                                <span class="player-name">${p.name}</span>
+                            `}
+                        </div>
                     </div>
                 </td>
                 <td class="pts-col"><strong>${parseFloat(p.points || 0).toFixed(2)}</strong> điểm</td>
@@ -280,7 +290,7 @@ export function goToRankingPage(page) {
     const searchVal = (document.getElementById('search-player')?.value || '').toLowerCase().trim();
     const genderVal = document.getElementById('filter-gender')?.value || 'all';
     const filtered = cachedPlayers.filter(p => {
-        return p.name.toLowerCase().includes(searchVal) && (genderVal === 'all' || p.gender === genderVal);
+        return ((p.name && p.name.toLowerCase().includes(searchVal)) || (p.nickname && p.nickname.toLowerCase().includes(searchVal))) && (genderVal === 'all' || p.gender === genderVal);
     });
     const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
 
@@ -302,8 +312,19 @@ export function openPlayerProfile(id) {
     const modal = document.getElementById('modal-player-profile');
     if (!modal) return;
 
-    // Tên & điểm
-    document.getElementById('profile-name').textContent = player.name;
+    // Tên & điểm (Biệt danh hiện chính, tên thật hiện nhỏ)
+    const nameEl = document.getElementById('profile-name');
+    const realnameEl = document.getElementById('profile-realname');
+    if (player.nickname) {
+        if (nameEl) nameEl.textContent = player.nickname;
+        if (realnameEl) {
+            realnameEl.textContent = `Tên thật: ${player.name}`;
+            realnameEl.style.display = 'block';
+        }
+    } else {
+        if (nameEl) nameEl.textContent = player.name;
+        if (realnameEl) realnameEl.style.display = 'none';
+    }
     document.getElementById('profile-points').textContent = parseFloat(player.points || 0).toFixed(2);
     document.getElementById('profile-avatar').src = avatarOf(player);
 

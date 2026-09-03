@@ -199,9 +199,15 @@
         <div class="modal-body" style="padding: 24px;">
             <form id="form-player" onsubmit="submitPlayerForm(event)">
                 <input type="hidden" id="player-id-input">
-                <div style="margin-bottom: 12px;">
-                    <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Tên tuyển thủ *</label>
-                    <input type="text" id="player-name" placeholder="Ví dụ: Nguyễn Văn A" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Biệt danh <span style="color: var(--primary); font-size: 11.5px;">(Hiện chính)</span></label>
+                        <input type="text" id="player-nickname" placeholder="Ví dụ: Ben Thành, Sói Bạc..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 800; font-size: 13px; margin-bottom: 6px; display: block;">Tên thật * <span style="color: var(--muted); font-size: 11.5px;">(Hiện nhỏ)</span></label>
+                        <input type="text" id="player-name" placeholder="Ví dụ: Nguyễn Văn A" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                    </div>
                 </div>
                 
                 <div style="display: flex; gap: 12px; margin-bottom: 12px;">
@@ -325,7 +331,7 @@ function insertIconToDesc(icon) {
 function insertIconToProfile(icon) { insertIconToDesc(icon); }
 </script>
 
-<script type="module" src="js/main.js?v=30"></script>
+<script type="module" src="js/main.js?v=31"></script>
 <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

@@ -67,6 +67,7 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE `players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `nickname` varchar(100) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `points` decimal(10,2) DEFAULT 0.00,
   `gender` varchar(10) DEFAULT 'Nam',

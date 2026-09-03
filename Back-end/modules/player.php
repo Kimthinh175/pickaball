@@ -12,6 +12,7 @@ class player
     public function create($data)
     {
         $name = $data['name'] ?? '';
+        $nickname = $data['nickname'] ?? '';
         $avatar = $data['avatar'] ?? '';
         $gender = $data['gender'] ?? 'Nam';
         $defaultPoints = ($gender === 'Nữ') ? 2.10 : 2.60;
@@ -31,9 +32,10 @@ class player
             return;
         }
 
-        $sql = "INSERT INTO players (name, avatar, gender, points, profile) VALUES (:name, :avatar, :gender, :points, :profile)";
+        $sql = "INSERT INTO players (name, nickname, avatar, gender, points, profile) VALUES (:name, :nickname, :avatar, :gender, :points, :profile)";
         database::ThucThi($sql, [
             'name' => $name,
+            'nickname' => $nickname,
             'avatar' => $avatar,
             'gender' => $gender,
             'points' => $points,
@@ -47,6 +49,7 @@ class player
     {
         $id = $_POST['id'] ?? ($data['id'] ?? 0);
         $name = $_POST['name'] ?? ($data['name'] ?? '');
+        $nickname = $_POST['nickname'] ?? ($data['nickname'] ?? '');
         $gender = $_POST['gender'] ?? ($data['gender'] ?? 'Nam');
         $points = $_POST['points'] ?? ($data['points'] ?? 0);
         $profile = $_POST['profile'] ?? ($data['profile'] ?? '');
@@ -80,10 +83,11 @@ class player
             $avatar = $old_avatar; // Keep old avatar if no new one is provided and no string avatar provided
         }
 
-        $sql = "UPDATE players SET name = :name, avatar = :avatar, gender = :gender, points = :points, profile = :profile WHERE id = :id";
+        $sql = "UPDATE players SET name = :name, nickname = :nickname, avatar = :avatar, gender = :gender, points = :points, profile = :profile WHERE id = :id";
         database::ThucThi($sql, [
             'id' => $id,
             'name' => $name,
+            'nickname' => $nickname,
             'avatar' => $avatar,
             'gender' => $gender,
             'points' => $points,

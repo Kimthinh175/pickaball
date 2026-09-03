@@ -185,7 +185,9 @@ export async function fetchTournamentDetail() {
                                         <!-- VĐV 1 -->
                                         <div style="display:flex; align-items:center; gap:6px;">
                                             <img src="${p1Ava}" onerror="this.onerror=null;this.src='${fb1}';" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1.5px solid #e2e8f0;">
-                                            <span style="font-size:13.5px; font-weight:700; color:var(--text);">${tm.p1_name || 'Tự do'}</span>
+                                            <span style="font-size:13.5px; font-weight:700; color:var(--text);">
+                                                ${tm.p1_nickname ? `<strong>${tm.p1_nickname}</strong> <span style="font-size:11.5px; color:var(--muted); font-weight:normal;">(${tm.p1_name})</span>` : (tm.p1_name || 'Tự do')}
+                                            </span>
                                             ${tm.p1_points !== undefined && tm.p1_points !== null ? `<span style="font-size:11px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 6px; border-radius:4px;">${parseFloat(tm.p1_points).toFixed(2)} pts</span>` : ''}
                                         </div>
 
@@ -194,7 +196,9 @@ export async function fetchTournamentDetail() {
                                         <!-- VĐV 2 -->
                                         <div style="display:flex; align-items:center; gap:6px;">
                                             <img src="${p2Ava}" onerror="this.onerror=null;this.src='${fb2}';" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1.5px solid #e2e8f0;">
-                                            <span style="font-size:13.5px; font-weight:700; color:var(--text);">${tm.p2_name || 'Tự do'}</span>
+                                            <span style="font-size:13.5px; font-weight:700; color:var(--text);">
+                                                ${tm.p2_nickname ? `<strong>${tm.p2_nickname}</strong> <span style="font-size:11.5px; color:var(--muted); font-weight:normal;">(${tm.p2_name})</span>` : (tm.p2_name || 'Tự do')}
+                                            </span>
                                             ${tm.p2_points !== undefined && tm.p2_points !== null ? `<span style="font-size:11px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 6px; border-radius:4px;">${parseFloat(tm.p2_points).toFixed(2)} pts</span>` : ''}
                                         </div>
                                     </div>
@@ -252,7 +256,9 @@ export async function fetchTournamentDetail() {
                                                     <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
                                                         <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                                                             <img src="${p1Ava}" onerror="this.onerror=null;this.src='${fb1}';" style="width:22px; height:22px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
-                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate">${gm.t1_p1_name || 'Tự do'}</span>
+                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate" title="${gm.t1_p1_nickname ? `${gm.t1_p1_nickname} (${gm.t1_p1_name})` : (gm.t1_p1_name || 'Tự do')}">
+                                                                ${gm.t1_p1_nickname ? `<strong>${gm.t1_p1_nickname}</strong> <span style="font-size:10.5px; color:var(--muted); font-weight:normal;">(${gm.t1_p1_name})</span>` : (gm.t1_p1_name || 'Tự do')}
+                                                            </span>
                                                         </div>
                                                         ${gm.t1_p1_points !== undefined && gm.t1_p1_points !== null ? `<span style="font-size:10.5px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 5px; border-radius:4px; flex-shrink:0;">${parseFloat(gm.t1_p1_points).toFixed(2)}</span>` : ''}
                                                     </div>
@@ -263,7 +269,9 @@ export async function fetchTournamentDetail() {
                                                     <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
                                                         <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                                                             <img src="${p2Ava}" onerror="this.onerror=null;this.src='${fb2}';" style="width:22px; height:22px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
-                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate">${gm.t1_p2_name || 'Tự do'}</span>
+                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate" title="${gm.t1_p2_nickname ? `${gm.t1_p2_nickname} (${gm.t1_p2_name})` : (gm.t1_p2_name || 'Tự do')}">
+                                                                ${gm.t1_p2_nickname ? `<strong>${gm.t1_p2_nickname}</strong> <span style="font-size:10.5px; color:var(--muted); font-weight:normal;">(${gm.t1_p2_name})</span>` : (gm.t1_p2_name || 'Tự do')}
+                                                            </span>
                                                         </div>
                                                         ${gm.t1_p2_points !== undefined && gm.t1_p2_points !== null ? `<span style="font-size:10.5px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 5px; border-radius:4px; flex-shrink:0;">${parseFloat(gm.t1_p2_points).toFixed(2)}</span>` : ''}
                                                     </div>
@@ -284,7 +292,9 @@ export async function fetchTournamentDetail() {
                                                     <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
                                                         <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                                                             <img src="${p3Ava}" onerror="this.onerror=null;this.src='${fb3}';" style="width:22px; height:22px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
-                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate">${gm.t2_p1_name || 'Tự do'}</span>
+                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate" title="${gm.t2_p1_nickname ? `${gm.t2_p1_nickname} (${gm.t2_p1_name})` : (gm.t2_p1_name || 'Tự do')}">
+                                                                ${gm.t2_p1_nickname ? `<strong>${gm.t2_p1_nickname}</strong> <span style="font-size:10.5px; color:var(--muted); font-weight:normal;">(${gm.t2_p1_name})</span>` : (gm.t2_p1_name || 'Tự do')}
+                                                            </span>
                                                         </div>
                                                         ${gm.t2_p1_points !== undefined && gm.t2_p1_points !== null ? `<span style="font-size:10.5px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 5px; border-radius:4px; flex-shrink:0;">${parseFloat(gm.t2_p1_points).toFixed(2)}</span>` : ''}
                                                     </div>
@@ -295,7 +305,9 @@ export async function fetchTournamentDetail() {
                                                     <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
                                                         <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                                                             <img src="${p4Ava}" onerror="this.onerror=null;this.src='${fb4}';" style="width:22px; height:22px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0;">
-                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate">${gm.t2_p2_name || 'Tự do'}</span>
+                                                            <span style="font-size:12.5px; font-weight:700; color:var(--text);" class="truncate" title="${gm.t2_p2_nickname ? `${gm.t2_p2_nickname} (${gm.t2_p2_name})` : (gm.t2_p2_name || 'Tự do')}">
+                                                                ${gm.t2_p2_nickname ? `<strong>${gm.t2_p2_nickname}</strong> <span style="font-size:10.5px; color:var(--muted); font-weight:normal;">(${gm.t2_p2_name})</span>` : (gm.t2_p2_name || 'Tự do')}
+                                                            </span>
                                                         </div>
                                                         ${gm.t2_p2_points !== undefined && gm.t2_p2_points !== null ? `<span style="font-size:10.5px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 5px; border-radius:4px; flex-shrink:0;">${parseFloat(gm.t2_p2_points).toFixed(2)}</span>` : ''}
                                                     </div>
