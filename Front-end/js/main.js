@@ -26,6 +26,67 @@ window.goToSlide = goToSlide;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
 
+// ==========================================
+// FACEBOOK GROUP INVITATION POPUP
+// ==========================================
+const FB_JOINED_KEY = 'picko247_fb_joined';
+const FB_GROUP_URL = 'https://www.facebook.com/picko247?mibextid=wwXIfr&rdid=SICBPNokIWV2uIAV&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1KZtciCpUK%2F%3Fmibextid%3DwwXIfr#';
+
+export function initFbGroupPopup() {
+    const modal = document.getElementById('modal-fb-group');
+    if (!modal) return;
+
+    // Chỉ hiển thị khi check localStorage chưa bấm tham gia
+    const hasJoined = localStorage.getItem(FB_JOINED_KEY);
+    if (hasJoined === 'true') {
+        return;
+    }
+
+    // Hiển thị mượt mà sau 800ms
+    setTimeout(() => {
+        if (localStorage.getItem(FB_JOINED_KEY) !== 'true') {
+            modal.classList.add('active');
+        }
+    }, 800);
+}
+
+export function joinFbGroup() {
+    // 1. Lưu trạng thái vào localStorage -> Không bao giờ hiện lại nữa
+    localStorage.setItem(FB_JOINED_KEY, 'true');
+
+    // 2. Đóng popup
+    const modal = document.getElementById('modal-fb-group');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+
+    // 3. Mở link Facebook trong tab mới
+    window.open(FB_GROUP_URL, '_blank', 'noopener,noreferrer');
+}
+
+export function closeFbModal(e) {
+    if (e && e.target && (e.target.classList.contains('fb-modal-container') || e.target.closest('.fb-modal-container')) && !e.target.classList.contains('fb-modal-close') && !e.target.classList.contains('btn-fb-later')) {
+        return;
+    }
+    const modal = document.getElementById('modal-fb-group');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+window.joinFbGroup = joinFbGroup;
+window.closeFbModal = closeFbModal;
+
+// Close on Escape key
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('modal-fb-group');
+        if (modal && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        }
+    }
+});
+
 window.toggleMobileMenu = function() {
     const topnav = document.getElementById('topnav');
     const menuToggle = document.getElementById('menu-toggle');
@@ -52,6 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('ranking-list')) fetchRanking();
     if (document.getElementById('tournaments-list')) fetchTournaments();
     if (document.getElementById('td-title')) fetchTournamentDetail();
+
+    // Khởi tạo popup mời vào group Facebook (ở trang chủ)
+    initFbGroupPopup();
 
     if (window.lucide) window.lucide.createIcons();
 });

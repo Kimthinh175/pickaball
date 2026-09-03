@@ -1781,3 +1781,200 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
     font-size: 13px;
   }
 }
+
+/* ===== POPUP MỜI THAM GIA FACEBOOK GROUP ===== */
+.fb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 29, 0.80);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fb-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.fb-modal-container {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 520px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  transform: scale(0.88) translateY(15px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fb-modal-overlay.active .fb-modal-container {
+  transform: scale(1) translateY(0);
+}
+
+.fb-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fb-modal-close:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: scale(1.1);
+  border-color: #ffffff;
+}
+
+.fb-modal-banner {
+  width: 100%;
+  background: #0f172a;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.fb-modal-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.fb-modal-banner:hover .fb-modal-img {
+  transform: scale(1.02);
+}
+
+.fb-modal-body {
+  padding: 22px 24px 26px;
+  text-align: center;
+}
+
+.fb-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(24, 119, 242, 0.1);
+  color: #1877F2;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.fb-modal-title {
+  font-family: 'Paytone One', sans-serif;
+  font-size: 21px;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.fb-modal-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 22px;
+  padding: 0 10px;
+}
+
+.fb-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-fb-join {
+  width: 100%;
+  background: linear-gradient(135deg, #1877F2 0%, #0d65d9 100%);
+  color: #ffffff;
+  border: none;
+  padding: 13px 24px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(24, 119, 242, 0.4);
+  transition: all 0.25s ease;
+}
+
+.btn-fb-join:hover {
+  background: linear-gradient(135deg, #2083fc 0%, #1572eb 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(24, 119, 242, 0.5);
+  color: #ffffff;
+}
+
+.btn-fb-later {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 10px;
+  transition: color 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn-fb-later:hover {
+  color: var(--text);
+}
+
+@media (max-width: 480px) {
+  .fb-modal-container {
+    max-width: 92%;
+    border-radius: 16px;
+  }
+  .fb-modal-body {
+    padding: 18px 16px 20px;
+  }
+  .fb-modal-title {
+    font-size: 18px;
+  }
+  .fb-modal-desc {
+    font-size: 13px;
+    padding: 0;
+    margin-bottom: 18px;
+  }
+  .btn-fb-join {
+    font-size: 14.5px;
+    padding: 11px 20px;
+  }
+}
+
