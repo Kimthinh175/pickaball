@@ -124,7 +124,16 @@ import {
     submitBannerForm,
     toggleBannerStatus,
     deleteBanner
-} from './modules/banners.js?v=29';
+} from './modules/banners.js?v=31';
+
+import {
+    loadPopupSettings,
+    submitPopupForm,
+    onPopupToggleChange,
+    previewPopupImage,
+    updatePopupLivePreview,
+    testOpenPopupTarget
+} from './modules/popup.js?v=31';
 
 // ==========================================
 // EXPOSE HANDLERS TO WINDOW FOR INLINE HTML
@@ -230,6 +239,14 @@ window.submitBannerForm = submitBannerForm;
 window.toggleBannerStatus = toggleBannerStatus;
 window.deleteBanner = deleteBanner;
 
+// Popup
+window.loadPopupSettings = loadPopupSettings;
+window.submitPopupForm = submitPopupForm;
+window.onPopupToggleChange = onPopupToggleChange;
+window.previewPopupImage = previewPopupImage;
+window.updatePopupLivePreview = updatePopupLivePreview;
+window.testOpenPopupTarget = testOpenPopupTarget;
+
 // TAB SWITCHING
 window.showTab = function(tabName) {
     if (tabName === 'rankings') {
@@ -241,6 +258,12 @@ window.showTab = function(tabName) {
     if (tabName === 'banners') {
         if (!document.getElementById('tab-banners')) {
             window.location.href = 'banners';
+            return;
+        }
+    }
+    if (tabName === 'popup') {
+        if (!document.getElementById('tab-popup')) {
+            window.location.href = 'popup';
             return;
         }
     }
@@ -263,6 +286,7 @@ window.showTab = function(tabName) {
     if (tabName === 'tournaments') loadTournaments();
     if (tabName === 'rankings' || tabName === 'players') loadPlayers();
     if (tabName === 'banners') loadBanners();
+    if (tabName === 'popup') loadPopupSettings();
 
     // Close mobile sidebar menu if open
     const sidebar = document.getElementById('sidebar');
@@ -302,6 +326,9 @@ function initCurrentPageData() {
     }
     if (document.getElementById('admin-banners-list')) {
         loadBanners();
+    }
+    if (document.getElementById('form-popup-settings')) {
+        loadPopupSettings();
     }
 }
 

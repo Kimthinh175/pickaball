@@ -61,6 +61,26 @@ INSERT INTO `tournament_banners` (`id`, `title`, `image_url`) VALUES
 (3, 'Banner Mẫu 3', 'public/banners/3.jpg');
 
 -- --------------------------------------------------------
+-- Table: `popup_settings`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `popup_settings`;
+CREATE TABLE `popup_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `title` varchar(255) DEFAULT 'Cộng Đồng Pickleball PICKO 247',
+  `description` text DEFAULT NULL,
+  `image_url` varchar(255) NOT NULL DEFAULT 'public/pop-up.png',
+  `target_url` text NOT NULL,
+  `button_text` varchar(100) DEFAULT 'Tham gia nhóm ngay',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `popup_settings` (`id`, `is_active`, `title`, `description`, `image_url`, `target_url`, `button_text`) VALUES
+(1, 1, 'Cộng Đồng Pickleball PICKO 247', 'Gia nhập nhóm Facebook để giao lưu với hàng nghìn VĐV, cập nhật bảng xếp hạng, tìm bạn ghép đôi & săn giải đấu mới nhất!', 'public/pop-up.png', 'https://www.facebook.com/picko247?mibextid=wwXIfr&rdid=SICBPNokIWV2uIAV&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1KZtciCpUK%2F%3Fmibextid%3DwwXIfr#', 'Tham gia nhóm ngay');
+
+-- --------------------------------------------------------
 -- 4. Table: `players`
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `players`;

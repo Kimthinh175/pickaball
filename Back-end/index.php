@@ -30,6 +30,7 @@ $router->get('api/tournaments', 'tournament', 'getAll');
 $router->get('api/tournaments/detail', 'tournament', 'getDetail');
 $router->get('api/banners', 'banner', 'getActive');
 $router->get('api/tournament-banners', 'tournament', 'getBanners');
+$router->get('api/popup', 'popup', 'getPublic');
 
 // Admin Auth
 $router->post('api/admin/auth/login', 'auth', 'login');
@@ -60,6 +61,9 @@ $router->post('api/admin/banners/update', 'banner', 'update');
 $router->post('api/admin/banners/toggle', 'banner', 'toggleStatus');
 $router->delete('api/admin/banners', 'banner', 'delete');
 $router->post('api/admin/banners/upload', 'tournament', 'uploadBanner');
+
+$router->get('api/admin/popup', 'popup', 'getAdmin');
+$router->post('api/admin/popup', 'popup', 'update');
 
 // ===================
 // DISPATCH ROUTER

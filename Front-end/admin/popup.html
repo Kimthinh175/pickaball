@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Popup Trang Chủ – Pickaball Admin</title>
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+    <link rel="stylesheet" href="css/admin.css?v=31">
+    <link rel="stylesheet" href="../css/style.css?v=20">
+    <script>
+        if (localStorage.getItem('admin_token')) {
+            document.documentElement.classList.add('is-authenticated');
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .popup-admin-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 1024px) {
+            .popup-admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .toggle-switch-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        .file-upload-dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 24px 16px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .file-upload-dropzone:hover {
+            border-color: var(--primary);
+            background: rgba(55, 157, 224, 0.04);
+        }
+        .preview-sticky-wrap {
+            position: sticky;
+            top: 24px;
+        }
+        .live-preview-box {
+            background: #0b1329;
+            border: 1.5px solid #1e293b;
+            border-radius: 16px;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        }
+        .preview-inactive-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            gap: 12px;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-section" class="login-wrap hidden">
+    <header class="topbar">
+      <div class="topbar-in">
+        <a class="logo" href="../"><img src="../public/logo.png" alt="PICKO247"><div class="spinning-ball"></div></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu" onclick="toggleAdminMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+    <div class="login-body">
+        <div class="login-box">
+            <div class="login-logo"><img src="../public/logo.png" alt="Logo"><div><span>PICKO247</span><small>Admin Panel</small></div></div>
+            <form id="login-form">
+                <div class="form-group"><label>Tài khoản</label><input type="text" id="username" placeholder="Nhập username..." required></div>
+                <div class="form-group"><label>Mật khẩu</label><input type="password" id="password" placeholder="Nhập mật khẩu..." required></div>
+                <button type="submit" class="btn" style="width:100%; justify-content:center; margin-top:8px;">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar hidden">
+    <div class="sidebar-brand">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../public/logo.png" alt="Logo">
+            <div class="sidebar-brand-text"><span>Admin Panel</span></div>
+        </div>
+        <button class="menu-toggle" id="sidebar-menu-toggle" aria-label="Toggle Menu" onclick="toggleSidebarMenu()" style="display:none;">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="sidebar-section-label">Menu chính</div>
+    <nav class="sidebar-nav">
+        <a id="nav-tournaments" href="./"><span class="nav-icon"><i data-lucide="trophy"></i></span> Giải đấu</a>
+        <a id="nav-rankings" href="rankings"><span class="nav-icon">📊</span> Bảng xếp hạng</a>
+        <a id="nav-banners" href="banners"><span class="nav-icon"><i data-lucide="image"></i></span> Quản lý Banners</a>
+        <a id="nav-popup" href="popup" class="active"><span class="nav-icon"><i data-lucide="megaphone"></i></span> Quản lý Popup</a>
+    </nav>
+    <div class="sidebar-section-label">Hệ thống</div>
+    <nav class="sidebar-nav" style="flex:0;">
+        <a id="nav-settings" href="index.html#settings" onclick="window.location.href='index.html#settings'">
+            <span class="nav-icon"><i data-lucide="settings"></i></span> Cài đặt
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <a class="home-link" href="../" target="_blank"><span>↗</span> Ra trang chủ</a>
+        <button id="btn-logout" class="btn-logout"><span>⏻</span> Đăng xuất</button>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main id="dashboard-section" class="main-content hidden">
+    <div id="tab-popup" class="tab-content active">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Quản lý Popup Trang Chủ</h1>
+                <p class="page-sub">Cấu hình bật / tắt popup mời tham gia nhóm Facebook, đổi ảnh và đường dẫn liên kết</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="loadPopupSettings()">
+                    <i data-lucide="refresh-cw"></i> Tải lại dữ liệu
+                </button>
+                <a href="../" target="_blank" class="btn btn-sm" style="background:#0284c7; color:#fff;">
+                    <i data-lucide="external-link"></i> Xem ngoài trang chủ
+                </a>
+            </div>
+        </div>
+
+        <div class="popup-admin-grid">
+            <!-- CỘT TRÁI: FORM CẤU HÌNH -->
+            <div class="card" style="padding: 24px;">
+                <form id="form-popup-settings" onsubmit="submitPopupForm(event)">
+                    
+                    <!-- 1. BẬT / TẮT POPUP -->
+                    <div class="toggle-switch-wrap">
+                        <div>
+                            <div style="font-weight:800; font-size:15px; color:var(--text); margin-bottom:4px;">
+                                Trạng thái Popup
+                            </div>
+                            <div id="popup-status-badge" class="badge badge-green">
+                                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#16a34a; margin-right:6px;"></span> Đang BẬT
+                            </div>
+                        </div>
+                        <label class="switch" title="Bật / Tắt hiển thị Popup">
+                            <input type="checkbox" id="popup-is-active" onchange="onPopupToggleChange()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- 2. THAY ẢNH POPUP -->
+                    <div style="margin-bottom:20px;">
+                        <label style="font-weight:800; font-size:13px; display:block; margin-bottom:8px;">
+                            Ảnh Popup <span style="color:var(--muted); font-size:12px; font-weight:normal;">(Tối ưu hiển thị ảnh tỉ lệ vuông hoặc 4:3)</span>
+                        </label>
+                        <div class="file-upload-dropzone" onclick="document.getElementById('popup-file-input').click()">
+                            <i data-lucide="upload-cloud" style="width:36px; height:36px; color:var(--primary); margin-bottom:8px;"></i>
+                            <div style="font-weight:700; font-size:13.5px; color:var(--text);">Nhấp để chọn ảnh mới từ máy tính</div>
+                            <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">Hỗ trợ định dạng PNG, JPG, JPEG, WEBP (Tối đa 15MB)</div>
+                            <div id="popup-file-name" style="display:none; font-weight:800; color:#0284c7; font-size:12px; margin-top:8px;"></div>
+                        </div>
+                        <input type="file" id="popup-file-input" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="previewPopupImage(this)">
+                    </div>
+
+                    <!-- 3. LINK ĐÍCH KHI BẤM VÀO POPUP -->
+                    <div style="margin-bottom:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <label style="font-weight:800; font-size:13px;">Đường dẫn chuyển hướng (URL đích) *</label>
+                            <button type="button" class="btn btn-ghost" style="padding:2px 8px; font-size:11px;" onclick="testOpenPopupTarget()">
+                                <i data-lucide="external-link" style="width:12px; height:12px;"></i> Kiểm tra link
+                            </button>
+                        </div>
+                        <input type="url" id="popup-target-url" required 
+                               placeholder="https://www.facebook.com/..." 
+                               oninput="updatePopupLivePreview()"
+                               style="width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--border); font-size:13.5px;">
+                        <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">
+                            Khi khách truy cập bấm "Tham gia nhóm ngay" hoặc bấm vào ảnh popup, trình duyệt sẽ mở link này.
+                        </div>
+                    </div>
+
+                    <!-- 4. TIÊU ĐỀ POPUP -->
+                    <div style="margin-bottom:20px;">
+                        <label style="font-weight:800; font-size:13px; display:block; margin-bottom:6px;">Tiêu đề Popup</label>
+                        <input type="text" id="popup-title" 
+                               placeholder="Ví dụ: Cộng Đồng Pickleball PICKO 247" 
+                               oninput="updatePopupLivePreview()"
+                               style="width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--border); font-size:13.5px;">
+                    </div>
+
+                    <!-- 5. MÔ TẢ POPUP -->
+                    <div style="margin-bottom:20px;">
+                        <label style="font-weight:800; font-size:13px; display:block; margin-bottom:6px;">Nội dung mô tả ngắn</label>
+                        <textarea id="popup-desc" rows="3" 
+                                  placeholder="Nhập nội dung mời gọi người dùng..." 
+                                  oninput="updatePopupLivePreview()"
+                                  style="width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--border); font-size:13px; font-family:inherit;"></textarea>
+                    </div>
+
+                    <!-- 6. CHỮ NÚT BẤM -->
+                    <div style="margin-bottom:24px;">
+                        <label style="font-weight:800; font-size:13px; display:block; margin-bottom:6px;">Chữ trên nút hành động</label>
+                        <input type="text" id="popup-button-text" 
+                               placeholder="Ví dụ: Tham gia nhóm ngay" 
+                               oninput="updatePopupLivePreview()"
+                               style="width:100%; padding:10px 12px; border-radius:8px; border:1.5px solid var(--border); font-size:13.5px;">
+                    </div>
+
+                    <!-- HÀNG NÚT LƯU -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:20px;">
+                        <div style="font-size:12px; color:var(--muted);">
+                            Cập nhật gần nhất: <strong id="popup-last-updated" style="color:var(--text); font-weight:700;">--</strong>
+                        </div>
+                        <button type="submit" id="btn-save-popup" class="btn" style="background:var(--primary); color:#fff; padding:10px 24px; font-size:14px; font-weight:800;">
+                            <i data-lucide="save"></i> Lưu cấu hình Popup
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- CỘT PHẢI: LIVE PREVIEW -->
+            <div class="preview-sticky-wrap">
+                <div class="card" style="padding: 20px; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                        <div style="font-weight:800; font-size:14px; display:flex; align-items:center; gap:8px;">
+                            <span>👁️ Mô phỏng xem trước</span>
+                            <span class="badge badge-blue" style="font-size:10.5px;">Live Preview</span>
+                        </div>
+                        <span id="popup-status-text" style="font-size:11.5px; color:var(--muted); font-weight:700;">--</span>
+                    </div>
+
+                    <!-- KHUNG MÔ PHỎNG POPUP -->
+                    <div class="live-preview-box">
+                        <div id="preview-inactive-overlay" class="preview-inactive-overlay">
+                            <i data-lucide="eye-off" style="width:40px; height:40px; color:#f59e0b;"></i>
+                            <strong style="font-size:15px;">Popup hiện đang TẮT</strong>
+                            <p style="font-size:12px; color:#94a3b8; max-width:240px; margin:0;">
+                                Khách truy cập vào trang chủ sẽ không nhìn thấy popup này cho đến khi bạn bật công tắc.
+                            </p>
+                        </div>
+
+                        <!-- POPUP CONTAINER PREVIEW -->
+                        <div class="fb-modal-container" style="max-width:340px; margin:0; box-shadow:none;">
+                            <div class="fb-modal-banner" style="cursor:default;">
+                                <img id="preview-popup-img" src="../public/pop-up.png" alt="Popup Preview" class="fb-modal-img">
+                            </div>
+                            <div class="fb-modal-body" style="padding:16px 14px;">
+                                <div class="fb-modal-badge">
+                                    <span>🔥 Cộng Đồng Chính Thức</span>
+                                </div>
+                                <h3 id="preview-popup-title" class="fb-modal-title" style="font-size:15px; margin:6px 0 4px;">
+                                    Cộng Đồng Pickleball PICKO 247
+                                </h3>
+                                <p id="preview-popup-desc" class="fb-modal-desc" style="font-size:11.5px; line-height:1.45; margin-bottom:12px;">
+                                    Gia nhập nhóm Facebook để giao lưu với hàng nghìn VĐV, cập nhật bảng xếp hạng, tìm bạn ghép đôi & săn giải đấu mới nhất!
+                                </p>
+                                <div class="fb-modal-actions" style="margin-top:0;">
+                                    <button type="button" class="btn-fb-join" style="padding:8px 12px; font-size:12.5px; cursor:default;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                        </svg>
+                                        <span id="preview-popup-btn-text">Tham gia nhóm ngay</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:14px; font-size:11.5px; color:var(--muted); line-height:1.5;">
+                        🔗 <strong>URL chuyển hướng:</strong> 
+                        <span id="preview-popup-link-display" style="word-break:break-all; color:#0284c7;">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="admin-toast"></div>
+
+<script type="module" src="js/main.js?v=32"></script>
+<script>if(window.lucide) lucide.createIcons();</script>
+</body>
+</html>

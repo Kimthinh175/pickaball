@@ -27,12 +27,12 @@ window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
 
 // ==========================================
-// FACEBOOK GROUP INVITATION POPUP
+// DYNAMIC POPUP / FACEBOOK GROUP INVITATION POPUP
 // ==========================================
 const FB_JOINED_KEY = 'picko247_fb_joined';
-const FB_GROUP_URL = 'https://www.facebook.com/picko247?mibextid=wwXIfr&rdid=SICBPNokIWV2uIAV&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1KZtciCpUK%2F%3Fmibextid%3DwwXIfr#';
+let activePopupTargetUrl = 'https://www.facebook.com/picko247?mibextid=wwXIfr&rdid=SICBPNokIWV2uIAV&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1KZtciCpUK%2F%3Fmibextid%3DwwXIfr#';
 
-export function initFbGroupPopup() {
+export async function initFbGroupPopup() {
     const modal = document.getElementById('modal-fb-group');
     if (!modal) return;
 
@@ -40,6 +40,58 @@ export function initFbGroupPopup() {
     const hasJoined = localStorage.getItem(FB_JOINED_KEY);
     if (hasJoined === 'true') {
         return;
+    }
+
+    try {
+        const res = await fetch('api/popup');
+        const json = await res.json();
+        if (json && json.status === 'success' && json.data) {
+            const data = json.data;
+            
+            // Nếu admin tắt popup -> dừng, không hiển thị
+            if (parseInt(data.is_active, 10) !== 1) {
+                return;
+            }
+
+            // Cập nhật target URL
+            if (data.target_url) {
+                activePopupTargetUrl = data.target_url;
+            }
+
+            // Cập nhật ảnh
+            if (data.image_url) {
+                const imgEl = document.getElementById('client-popup-img');
+                if (imgEl) {
+                    imgEl.src = data.image_url;
+                }
+            }
+
+            // Cập nhật tiêu đề
+            if (data.title) {
+                const titleEl = document.getElementById('client-popup-title');
+                if (titleEl) {
+                    titleEl.textContent = data.title;
+                }
+            }
+
+            // Cập nhật mô tả
+            if (data.description) {
+                const descEl = document.getElementById('client-popup-desc');
+                if (descEl) {
+                    descEl.textContent = data.description;
+                }
+            }
+
+            // Cập nhật chữ trên nút bấm
+            if (data.button_text) {
+                const btnSpan = document.getElementById('client-popup-btn-text');
+                if (btnSpan) {
+                    btnSpan.textContent = data.button_text;
+                }
+            }
+        }
+    } catch (e) {
+        console.warn("Could not load dynamic popup settings, using defaults", e);
     }
 
     // Hiển thị mượt mà sau 800ms
@@ -51,7 +103,7 @@ export function initFbGroupPopup() {
 }
 
 export function joinFbGroup() {
-    // 1. Lưu trạng thái vào localStorage -> Không bao giờ hiện lại nữa
+    // 1. Lưu trạng thái vào localStorage -> Không hiển thị lại
     localStorage.setItem(FB_JOINED_KEY, 'true');
 
     // 2. Đóng popup
@@ -60,8 +112,8 @@ export function joinFbGroup() {
         modal.classList.remove('active');
     }
 
-    // 3. Mở link Facebook trong tab mới
-    window.open(FB_GROUP_URL, '_blank', 'noopener,noreferrer');
+    // 3. Mở link đích trong tab mới
+    window.open(activePopupTargetUrl, '_blank', 'noopener,noreferrer');
 }
 
 export function closeFbModal(e) {

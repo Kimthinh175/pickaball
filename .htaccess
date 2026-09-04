@@ -13,6 +13,10 @@ RewriteCond %{THE_REQUEST} \s/+Front-end/admin/banners(?:\.html)?[\s\?] [NC,OR]
 RewriteCond %{THE_REQUEST} \s/+admin/banners\.html[\s\?] [NC]
 RewriteRule ^.*$ admin/banners [R=301,L]
 
+RewriteCond %{THE_REQUEST} \s/+Front-end/admin/popup(?:\.html)?[\s\?] [NC,OR]
+RewriteCond %{THE_REQUEST} \s/+admin/popup\.html[\s\?] [NC]
+RewriteRule ^.*$ admin/popup [R=301,L]
+
 RewriteCond %{THE_REQUEST} \s/+Front-end/admin/(?:index\.html)?[\s\?] [NC,OR]
 RewriteCond %{THE_REQUEST} \s/+admin/index\.html[\s\?] [NC]
 RewriteRule ^.*$ admin/ [R=301,L]
@@ -37,6 +41,7 @@ RewriteRule ^admin/?$ Front-end/admin/index.html [L]
 RewriteRule ^admin/tournaments/?$ Front-end/admin/index.html [L]
 RewriteRule ^admin/rankings/?$ Front-end/admin/rankings.html [L]
 RewriteRule ^admin/banners/?$ Front-end/admin/banners.html [L]
+RewriteRule ^admin/popup/?$ Front-end/admin/popup.html [L]
 
 # 4. Client Pretty URLs
 RewriteRule ^$ Front-end/index.html [L]
