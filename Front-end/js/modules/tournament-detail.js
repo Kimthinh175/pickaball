@@ -56,7 +56,8 @@ export async function fetchTournamentDetail() {
                 prizesEl.innerHTML = `
                     <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px; margin-top:8px;">
                         ${prizes.map(p => {
-                            const rName = p.rank || '';
+                            const rawRank = p.rank || '';
+                            const rName = rawRank.replace(/đồng hạng ba/gi, 'Hạng Ba');
                             let icon = '🎁';
                             let borderStyle = 'border: 1.5px solid #e2e8f0; background: #fff;';
                             let titleColor = 'color: var(--text);';
@@ -125,7 +126,7 @@ export async function fetchTournamentDetail() {
                             ${results.map(r => `
                                 <div class="neo-box" style="padding:16px; text-align:center; background:#fff;">
                                     <div style="font-size:32px; margin-bottom:8px;">${r.medal || '🥇'}</div>
-                                    <div style="font-family:'Paytone One', sans-serif; font-size:16px; color:var(--primary); margin-bottom:4px;">${r.rank}</div>
+                                    <div style="font-family:'Paytone One', sans-serif; font-size:16px; color:var(--primary); margin-bottom:4px;">${(r.rank || '').replace(/đồng hạng ba/gi, 'Hạng Ba')}</div>
                                     <div style="font-weight:800; font-size:15px; color:#d97706; margin-bottom:6px;">${r.team_name || 'Đang cập nhật'}</div>
                                     ${r.reward ? `<div style="font-size:12px; color:var(--muted); font-weight:700;">🎁 ${r.reward}</div>` : ''}
                                 </div>
