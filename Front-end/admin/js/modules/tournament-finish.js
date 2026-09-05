@@ -102,7 +102,7 @@ export async function openEndTournamentModal() {
         prizes = [
             { rank: 'Nhất (Vô địch)', reward: 'Huy chương Vàng & Cúp' },
             { rank: 'Nhì (Á quân)', reward: 'Huy chương Bạc' },
-            { rank: 'Đồng Hạng Ba', reward: 'Huy chương Đồng' }
+            { rank: 'Hạng Ba', reward: 'Huy chương Đồng' }
         ];
     }
 
@@ -112,6 +112,7 @@ export async function openEndTournamentModal() {
     const rankMedals = {
         'Nhất (Vô địch)': '🥇',
         'Nhì (Á quân)': '🥈',
+        'Hạng Ba': '🥉',
         'Đồng Hạng Ba': '🥉',
         'Khuyến khích': '🎖️'
     };

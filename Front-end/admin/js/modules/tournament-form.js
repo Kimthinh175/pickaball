@@ -75,7 +75,7 @@ export async function openCreateTournamentModal() {
                 <select style="width: 170px;" class="prize-rank-select">
                     <option value="Nhất (Vô địch)" selected>🥇 Nhất (Vô địch)</option>
                     <option value="Nhì (Á quân)">🥈 Nhì (Á quân)</option>
-                    <option value="Đồng Hạng Ba">🥉 Đồng Hạng Ba</option>
+                    <option value="Hạng Ba">🥉 Hạng Ba</option>
                     <option value="Khuyến khích">🎖️ Khuyến khích</option>
                 </select>
                 <input type="text" class="prize-desc-input" placeholder="VD: 5.000.000 VNĐ + Cúp & Huy chương" value="5.000.000 VNĐ + Cúp & Huy chương">
@@ -85,7 +85,7 @@ export async function openCreateTournamentModal() {
                 <select style="width: 170px;" class="prize-rank-select">
                     <option value="Nhất (Vô địch)">🥇 Nhất (Vô địch)</option>
                     <option value="Nhì (Á quân)" selected>🥈 Nhì (Á quân)</option>
-                    <option value="Đồng Hạng Ba">🥉 Đồng Hạng Ba</option>
+                    <option value="Hạng Ba">🥉 Hạng Ba</option>
                     <option value="Khuyến khích">🎖️ Khuyến khích</option>
                 </select>
                 <input type="text" class="prize-desc-input" placeholder="VD: 3.000.000 VNĐ + Huy chương Bạc" value="3.000.000 VNĐ + Huy chương Bạc">
@@ -95,7 +95,7 @@ export async function openCreateTournamentModal() {
                 <select style="width: 170px;" class="prize-rank-select">
                     <option value="Nhất (Vô địch)">🥇 Nhất (Vô địch)</option>
                     <option value="Nhì (Á quân)">🥈 Nhì (Á quân)</option>
-                    <option value="Đồng Hạng Ba" selected>🥉 Đồng Hạng Ba</option>
+                    <option value="Hạng Ba" selected>🥉 Hạng Ba</option>
                     <option value="Khuyến khích">🎖️ Khuyến khích</option>
                 </select>
                 <input type="text" class="prize-desc-input" placeholder="VD: 1.500.000 VNĐ + Huy chương Đồng" value="1.500.000 VNĐ + Huy chương Đồng">
@@ -163,7 +163,7 @@ export async function openEditCurrentTournamentModal() {
         prizes = [
             { rank: 'Nhất (Vô địch)', reward: '' },
             { rank: 'Nhì (Á quân)', reward: '' },
-            { rank: 'Đồng Hạng Ba', reward: '' }
+            { rank: 'Hạng Ba', reward: '' }
         ];
     }
     const pContainer = document.getElementById('prize-rows-container');
@@ -173,7 +173,7 @@ export async function openEditCurrentTournamentModal() {
                 <select style="width: 170px;" class="prize-rank-select">
                     <option value="Nhất (Vô địch)" ${p.rank === 'Nhất (Vô địch)' ? 'selected' : ''}>🥇 Nhất (Vô địch)</option>
                     <option value="Nhì (Á quân)" ${p.rank === 'Nhì (Á quân)' ? 'selected' : ''}>🥈 Nhì (Á quân)</option>
-                    <option value="Đồng Hạng Ba" ${p.rank === 'Đồng Hạng Ba' ? 'selected' : ''}>🥉 Đồng Hạng Ba</option>
+                    <option value="Hạng Ba" ${(p.rank === 'Hạng Ba' || p.rank === 'Đồng Hạng Ba') ? 'selected' : ''}>🥉 Hạng Ba</option>
                     <option value="Khuyến khích" ${p.rank === 'Khuyến khích' ? 'selected' : ''}>🎖️ Khuyến khích</option>
                 </select>
                 <input type="text" class="prize-desc-input" value="${p.reward || ''}" placeholder="Nhập phần thưởng...">
@@ -282,7 +282,7 @@ export function addPrizeRow() {
             <option value="Khuyến khích" selected>🎖️ Khuyến khích</option>
             <option value="Nhất (Vô địch)">🥇 Nhất (Vô địch)</option>
             <option value="Nhì (Á quân)">🥈 Nhì (Á quân)</option>
-            <option value="Đồng Hạng Ba">🥉 Đồng Hạng Ba</option>
+            <option value="Hạng Ba">🥉 Hạng Ba</option>
         </select>
         <input type="text" class="prize-desc-input" placeholder="VD: 500.000 VNĐ" value="">
         <button type="button" class="btn btn-sm btn-danger" onclick="removePrizeRow(this)">✕</button>
