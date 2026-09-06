@@ -628,9 +628,13 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--text);
   line-height: 1.25;
   margin-bottom: 2px;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
 }
 
@@ -646,9 +650,13 @@ button { font-family: inherit; cursor: pointer; }
   line-height: 1.2;
   margin-top: -2px;
   margin-bottom: 2px;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
 }
 
@@ -995,8 +1003,8 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
   .pod-avatar-box { width: 56px; height: 56px; }
   .main-box { width: 72px; height: 72px; }
   .crown-float-icon { font-size: 26px; }
-  .pod-name { font-size: 12px; }
-  .main-name { font-size: 13.5px; }
+  .pod-name { font-size: 12px; line-height: 1.2; }
+  .main-name { font-size: 13.5px; line-height: 1.2; }
   .stand-1 { min-height: 125px; }
   .stand-2 { min-height: 98px; }
   .stand-3 { min-height: 78px; }
@@ -1022,8 +1030,8 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
   .crown-float-icon { font-size: 20px; }
   .pod-medal-badge { font-size: 16px; }
   .gold-medal-badge { font-size: 20px; }
-  .pod-name { font-size: 11px; }
-  .main-name { font-size: 12px; }
+  .pod-name { font-size: 11px; line-height: 1.15; }
+  .main-name { font-size: 12px; line-height: 1.15; }
   .pod-points { font-size: 10.5px; }
   .main-points { font-size: 11.5px; }
   .pts-val { font-size: 11.5px; }
