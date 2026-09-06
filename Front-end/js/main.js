@@ -3,7 +3,7 @@
 // ==========================================
 
 import { calculateTournamentStatus, toast, svgAvatar, avatarOf, fmtDate } from './core/api.js?v=18';
-import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage, openAvatarZoom, closeAvatarZoom } from './modules/ranking.js?v=18';
+import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage, openAvatarZoom, closeAvatarZoom } from './modules/ranking.js?v=19';
 import { fetchTournaments } from './modules/tournaments.js?v=18';
 import { fetchTournamentDetail } from './modules/tournament-detail.js?v=18';
 import { initSlider, goToSlide, nextSlide, prevSlide } from './modules/slider.js?v=18';

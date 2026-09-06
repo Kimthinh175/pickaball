@@ -715,7 +715,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .stand-2 {
-  min-height: 110px;
+  min-height: 115px;
   background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 35%, #cbd5e1 75%, #94a3b8 100%);
   color: #334155;
   border: 1.5px solid #cbd5e1;
@@ -724,7 +724,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .stand-3 {
-  min-height: 85px;
+  min-height: 92px;
   background: linear-gradient(180deg, #ffedd5 0%, #fed7aa 35%, #fdba74 75%, #f97316 100%);
   color: #7c2d12;
   border: 1.5px solid #fdba74;
@@ -734,28 +734,39 @@ button { font-family: inherit; cursor: pointer; }
 
 .stand-number {
   font-family: 'Paytone One', sans-serif;
-  font-size: 32px;
+  font-size: 30px;
   line-height: 1;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.06);
 }
 
 .main-num {
-  font-size: 42px;
+  font-size: 38px;
   color: #78350f;
   text-shadow: 0 2px 6px rgba(245,158,11,0.25);
 }
 
 .stand-label {
   font-family: 'Paytone One', sans-serif;
-  font-size: 13px;
+  font-size: 11.5px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 100%;
+  padding: 0 4px;
+}
+
+.stand-word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .main-label {
-  font-size: 15px;
+  font-size: 13.5px;
   color: #78350f;
+  letter-spacing: 0.3px;
 }
 
 /* ===== SKELETON LOADING ANIMATION ===== */
@@ -986,13 +997,13 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
   .crown-float-icon { font-size: 26px; }
   .pod-name { font-size: 12px; }
   .main-name { font-size: 13.5px; }
-  .stand-1 { min-height: 120px; }
-  .stand-2 { min-height: 90px; }
-  .stand-3 { min-height: 70px; }
-  .stand-number { font-size: 26px; }
-  .main-num { font-size: 34px; }
-  .stand-label { font-size: 11px; }
-  .main-label { font-size: 12px; }
+  .stand-1 { min-height: 125px; }
+  .stand-2 { min-height: 98px; }
+  .stand-3 { min-height: 78px; }
+  .stand-number { font-size: 24px; margin-bottom: 2px; }
+  .main-num { font-size: 32px; }
+  .stand-label { font-size: 10px; line-height: 1.2; letter-spacing: 0.1px; }
+  .main-label { font-size: 11.5px; }
 
   /* Bracket */
   .bracket-wrapper { padding-bottom: 16px; }
@@ -1016,13 +1027,13 @@ label { font-family: 'Paytone One', sans-serif; font-size: 14px; margin: 12px 0 
   .pod-points { font-size: 10.5px; }
   .main-points { font-size: 11.5px; }
   .pts-val { font-size: 11.5px; }
-  .stand-1 { min-height: 95px; padding: 6px 2px; }
-  .stand-2 { min-height: 75px; padding: 6px 2px; }
-  .stand-3 { min-height: 60px; padding: 6px 2px; }
-  .stand-number { font-size: 20px; }
+  .stand-1 { min-height: 105px; padding: 8px 3px; }
+  .stand-2 { min-height: 85px; padding: 8px 3px; }
+  .stand-3 { min-height: 70px; padding: 8px 3px; }
+  .stand-number { font-size: 20px; margin-bottom: 2px; }
   .main-num { font-size: 26px; }
-  .stand-label { font-size: 9.5px; }
-  .main-label { font-size: 10px; }
+  .stand-label { font-size: 9px; line-height: 1.15; letter-spacing: 0; }
+  .main-label { font-size: 9.8px; }
 
   /* Typography */
   .page-title { font-size: 20px; }

@@ -52,7 +52,7 @@ export async function fetchRanking() {
                         <div class="pod-stand stand-2">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number">2</div>
-                            <div class="stand-label">Hạng Nhì</div>
+                            <div class="stand-label"><span class="stand-word">Phó Bảng</span> <span class="stand-word">Giữ Sân</span></div>
                         </div>
                     </div>
                     ` : `
@@ -70,7 +70,7 @@ export async function fetchRanking() {
                         <div class="pod-stand stand-2">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number">2</div>
-                            <div class="stand-label">Hạng Nhì</div>
+                            <div class="stand-label"><span class="stand-word">Phó Bảng</span> <span class="stand-word">Giữ Sân</span></div>
                         </div>
                     </div>
                     `}
@@ -95,7 +95,7 @@ export async function fetchRanking() {
                         <div class="pod-stand stand-1">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number main-num">1</div>
-                            <div class="stand-label main-label">Vô Địch</div>
+                            <div class="stand-label main-label"><span class="stand-word">Đại Ca</span> <span class="stand-word">Sân Pick</span></div>
                         </div>
                     </div>
                     ` : `
@@ -115,7 +115,7 @@ export async function fetchRanking() {
                         <div class="pod-stand stand-1">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number main-num">1</div>
-                            <div class="stand-label main-label">Vô Địch</div>
+                            <div class="stand-label main-label"><span class="stand-word">Đại Ca</span> <span class="stand-word">Sân Pick</span></div>
                         </div>
                     </div>
                     `}
@@ -138,7 +138,7 @@ export async function fetchRanking() {
                         <div class="pod-stand stand-3">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number">3</div>
-                            <div class="stand-label">Hạng Ba</div>
+                            <div class="stand-label"><span class="stand-word">Tam Ca</span> <span class="stand-word">Chốt Lưới</span></div>
                         </div>
                     </div>
                     ` : `
@@ -156,7 +156,7 @@ export async function fetchRanking() {
                         <div class="pod-stand stand-3">
                             <div class="stand-shine-bar"></div>
                             <div class="stand-number">3</div>
-                            <div class="stand-label">Hạng Ba</div>
+                            <div class="stand-label"><span class="stand-word">Tam Ca</span> <span class="stand-word">Chốt Lưới</span></div>
                         </div>
                     </div>
                     `}
