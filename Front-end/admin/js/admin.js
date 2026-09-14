@@ -350,7 +350,7 @@ window.renderPlayerRanking = function() {
             <tr>
                 <td style="font-weight:800; color:var(--muted);">${idx + 1}</td>
                 <td>
-                    <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick='openPlayerProfileModal(${JSON.stringify(p)})'>
+                    <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="openPlayerProfileModalById(${p.id})">
                         <img src="${ava}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
                         <div>
                             <strong style="color:var(--primary); font-size:13.5px;">${p.name}</strong>

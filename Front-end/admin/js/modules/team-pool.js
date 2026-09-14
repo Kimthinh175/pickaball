@@ -76,7 +76,13 @@ function clearSlotUI() {
     renderPlayerPickerList();
 }
 
-export function selectPlayerForSlot(player) {
+export function selectPlayerForSlot(playerOrId) {
+    let player = playerOrId;
+    if (typeof playerOrId === 'number' || typeof playerOrId === 'string') {
+        player = (cachedPlayers || []).find(x => Number(x.id) === Number(playerOrId));
+    }
+    if (!player) return;
+
     const fb = svgAvatar(player.name || 'P');
     const ava = player.avatar ? (player.avatar.startsWith('http') ? player.avatar : (player.avatar.startsWith('public/') || player.avatar.startsWith('Back-end/') ? '../' + player.avatar : API_BASE.replace('/api', '') + '/' + player.avatar)) : fb;
 
@@ -153,7 +159,7 @@ export function renderPlayerPickerList() {
         if (isSlot2) badgeHtml = `<span style="font-size:10px; font-weight:800; color:var(--primary); background:rgba(55,157,224,0.15); padding:2px 6px; border-radius:4px; margin-left:auto;">Ô 2</span>`;
 
         return `
-            <div class="player-picker-item ${isSelected ? 'active' : ''}" style="${isSelected ? 'border-color:var(--primary); background:rgba(55,157,224,0.06);' : ''}" onclick='window.selectPlayerForSlot(${JSON.stringify(p)})'>
+            <div class="player-picker-item ${isSelected ? 'active' : ''}" style="${isSelected ? 'border-color:var(--primary); background:rgba(55,157,224,0.06);' : ''}" onclick="window.selectPlayerForSlot(${p.id})">
                 <img src="${ava}" onerror="this.onerror=null;this.src='${fb}';" class="player-picker-avatar" alt="Avatar">
                 <div class="player-picker-info" style="display:flex; align-items:center; gap:8px; width:100%;">
                     <div>
