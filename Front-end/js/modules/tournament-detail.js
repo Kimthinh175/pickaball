@@ -121,18 +121,7 @@ export async function fetchTournamentDetail() {
                 try { results = typeof t.final_results === 'string' ? JSON.parse(t.final_results) : (t.final_results || []); } catch(e) {}
 
                 if (Array.isArray(results) && results.length > 0) {
-                    podiumWrap.innerHTML = `
-                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
-                            ${results.map(r => `
-                                <div class="neo-box" style="padding:16px; text-align:center; background:#fff;">
-                                    <div style="font-size:32px; margin-bottom:8px;">${r.medal || '🥇'}</div>
-                                    <div style="font-family:'Paytone One', sans-serif; font-size:16px; color:var(--primary); margin-bottom:4px;">${(r.rank || '').replace(/đồng hạng ba/gi, 'Hạng Ba')}</div>
-                                    <div style="font-weight:800; font-size:15px; color:#d97706; margin-bottom:6px;">${r.team_name || 'Đang cập nhật'}</div>
-                                    ${r.reward ? `<div style="font-size:12px; color:var(--muted); font-weight:700;">🎁 ${r.reward}</div>` : ''}
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
+                    podiumWrap.innerHTML = renderTournamentPodium(results, teams, data.data.players || []);
                 } else {
                     podiumWrap.innerHTML = `<div class="empty">Chưa cập nhật kết quả chung cuộc.</div>`;
                 }
@@ -471,4 +460,216 @@ export async function fetchTournamentDetail() {
     } catch(e) {
         console.error(e);
     }
+}
+
+function renderTournamentPodium(results, teams, players) {
+    if (!Array.isArray(results) || results.length === 0) {
+        return `<div class="empty">Chưa cập nhật kết quả chung cuộc.</div>`;
+    }
+
+    const resolveTeamAvatars = (r) => {
+        let p1 = null, p2 = null;
+
+        if (r.team_id) {
+            const tm = teams.find(t => t.id == r.team_id);
+            if (tm) {
+                p1 = {
+                    name: tm.p1_nickname || tm.p1_name || 'VĐV 1',
+                    avatar: tm.p1_avatar ? (tm.p1_avatar.startsWith('http') ? tm.p1_avatar : tm.p1_avatar) : svgAvatar(tm.p1_name || 'A')
+                };
+                if (tm.p2_name || tm.p2_nickname || tm.player2_id) {
+                    p2 = {
+                        name: tm.p2_nickname || tm.p2_name || 'VĐV 2',
+                        avatar: tm.p2_avatar ? (tm.p2_avatar.startsWith('http') ? tm.p2_avatar : tm.p2_avatar) : svgAvatar(tm.p2_name || 'B')
+                    };
+                }
+            }
+        }
+
+        if (!p1 && r.p1_id) {
+            const pl1 = players.find(p => p.id == r.p1_id);
+            if (pl1) {
+                p1 = {
+                    name: pl1.nickname || pl1.name,
+                    avatar: pl1.avatar ? (pl1.avatar.startsWith('http') ? pl1.avatar : pl1.avatar) : svgAvatar(pl1.name)
+                };
+            }
+        }
+        if (!p2 && r.p2_id) {
+            const pl2 = players.find(p => p.id == r.p2_id);
+            if (pl2) {
+                p2 = {
+                    name: pl2.nickname || pl2.name,
+                    avatar: pl2.avatar ? (pl2.avatar.startsWith('http') ? pl2.avatar : pl2.avatar) : svgAvatar(pl2.name)
+                };
+            }
+        }
+
+        if (!p1) {
+            const rawName = r.team_name || 'Đồng đội';
+            const parts = rawName.split(/\s*(?:\/|&|\+|,)\s*/);
+            const name1 = parts[0] || 'VĐV 1';
+            const name2 = parts[1] || null;
+
+            const findP = (n) => players.find(p => (p.name && p.name.toLowerCase() === n.toLowerCase()) || (p.nickname && p.nickname.toLowerCase() === n.toLowerCase()));
+
+            const found1 = findP(name1);
+            p1 = {
+                name: name1,
+                avatar: found1 && found1.avatar ? (found1.avatar.startsWith('http') ? found1.avatar : found1.avatar) : svgAvatar(name1)
+            };
+
+            if (name2) {
+                const found2 = findP(name2);
+                p2 = {
+                    name: name2,
+                    avatar: found2 && found2.avatar ? (found2.avatar.startsWith('http') ? found2.avatar : found2.avatar) : svgAvatar(name2)
+                };
+            }
+        }
+
+        const displayName = (p1 && p2) ? `${p1.name} / ${p2.name}` : (r.team_name || (p1 ? p1.name : 'Đội chiến thắng'));
+        return { p1, p2, displayName };
+    };
+
+    let rank1 = null;
+    let rank2 = null;
+    let rank3_list = [];
+    let otherResults = [];
+
+    results.forEach(r => {
+        const lower = (r.rank || '').toLowerCase();
+        if (lower.includes('nhất') || lower.includes('vô địch') || lower.includes('1st')) {
+            if (!rank1) rank1 = r;
+            else otherResults.push(r);
+        } else if (lower.includes('nhì') || lower.includes('á quân') || lower.includes('2nd')) {
+            if (!rank2) rank2 = r;
+            else otherResults.push(r);
+        } else if (lower.includes('ba') || lower.includes('3rd')) {
+            if (rank3_list.length < 2) rank3_list.push(r);
+            else otherResults.push(r);
+        } else {
+            otherResults.push(r);
+        }
+    });
+
+    let podiumSlots = [];
+
+    if (rank3_list.length >= 2) {
+        if (rank3_list[0]) podiumSlots.push({ type: '3', data: rank3_list[0], label: 'ĐỒNG HẠNG 3', rankNum: 3 });
+        if (rank2) podiumSlots.push({ type: '2', data: rank2, label: 'HẠNG NHÌ', rankNum: 2 });
+        if (rank1) podiumSlots.push({ type: '1', data: rank1, label: 'VÔ ĐỊCH', rankNum: 1 });
+        if (rank3_list[1]) podiumSlots.push({ type: '3', data: rank3_list[1], label: 'ĐỒNG HẠNG 3', rankNum: 3 });
+    } else {
+        if (rank3_list[0]) podiumSlots.push({ type: '3', data: rank3_list[0], label: 'HẠNG BA', rankNum: 3 });
+        if (rank2) podiumSlots.push({ type: '2', data: rank2, label: 'HẠNG NHÌ', rankNum: 2 });
+        if (rank1) podiumSlots.push({ type: '1', data: rank1, label: 'VÔ ĐỊCH', rankNum: 1 });
+    }
+
+    const renderSlotColumn = (slot) => {
+        const r = slot.data;
+        const info = resolveTeamAvatars(r);
+        const p1 = info.p1;
+        const p2 = info.p2;
+
+        let standBg = '';
+        let standBorder = '';
+        let standHeight = '95px';
+        let medalIcon = '🥇';
+        let borderHex = '#f59e0b';
+        let numColor = '#78350f';
+
+        if (slot.type === '1') {
+            standBg = 'linear-gradient(180deg, #fffbeb 0%, #fef3c7 40%, #fde047 75%, #eab308 100%)';
+            standBorder = '1.5px solid #facc15';
+            standHeight = '145px';
+            medalIcon = '🥇';
+            borderHex = '#eab308';
+            numColor = '#713f12';
+        } else if (slot.type === '2') {
+            standBg = 'linear-gradient(180deg, #f8fafc 0%, #e2e8f0 40%, #cbd5e1 75%, #94a3b8 100%)';
+            standBorder = '1.5px solid #cbd5e1';
+            standHeight = '115px';
+            medalIcon = '🥈';
+            borderHex = '#94a3b8';
+            numColor = '#334155';
+        } else {
+            standBg = 'linear-gradient(180deg, #fff7ed 0%, #ffedd5 40%, #fed7aa 75%, #f97316 100%)';
+            standBorder = '1.5px solid #fdba74';
+            standHeight = '92px';
+            medalIcon = '🥉';
+            borderHex = '#f97316';
+            numColor = '#7c2d12';
+        }
+
+        const fb1 = svgAvatar(p1 ? p1.name : 'A');
+        const fb2 = svgAvatar(p2 ? p2.name : 'B');
+
+        let avatarBlock = '';
+        if (p1 && p2) {
+            avatarBlock = `
+                <div style="display:flex; justify-content:center; align-items:center; height:68px; margin-bottom:8px; position:relative; width:100%;">
+                    <img src="${p1.avatar}" onerror="this.onerror=null;this.src='${fb1}';" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:3px solid ${borderHex}; box-shadow:0 4px 10px rgba(0,0,0,0.18); margin-right:-16px; z-index:2; background:#fff;">
+                    <img src="${p2.avatar}" onerror="this.onerror=null;this.src='${fb2}';" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:3px solid ${borderHex}; box-shadow:0 4px 10px rgba(0,0,0,0.18); z-index:1; background:#fff;">
+                </div>
+            `;
+        } else if (p1) {
+            avatarBlock = `
+                <div style="display:flex; justify-content:center; align-items:center; height:68px; margin-bottom:8px; width:100%;">
+                    <img src="${p1.avatar}" onerror="this.onerror=null;this.src='${fb1}';" style="width:56px; height:56px; border-radius:50%; object-fit:cover; border:3px solid ${borderHex}; box-shadow:0 4px 10px rgba(0,0,0,0.18); background:#fff;">
+                </div>
+            `;
+        }
+
+        return `
+            <div style="flex:1; max-width:210px; min-width:130px; display:flex; flex-direction:column; align-items:center; position:relative; z-index:2;">
+                <!-- Avatars -->
+                ${avatarBlock}
+
+                <!-- Team Name -->
+                <div style="text-align:center; margin-bottom:10px; width:100%; padding:0 4px;">
+                    <div style="font-family:'Paytone One', sans-serif; font-size:14px; color:var(--text); line-height:1.25; margin-bottom:2px; word-break:break-word;">
+                        ${info.displayName}
+                    </div>
+                    ${r.reward ? `<div style="font-size:11px; color:#d97706; font-weight:700;">🎁 ${r.reward}</div>` : ''}
+                </div>
+
+                <!-- Stand / Bục đứng -->
+                <div style="width:100%; border-radius:14px 14px 0 0; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:14px 6px; background:${standBg}; border:${standBorder}; border-bottom:none; min-height:${standHeight}; box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+                    <div style="font-size:26px; line-height:1; margin-bottom:4px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));">${r.medal || medalIcon}</div>
+                    <div style="font-family:'Paytone One', sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.3px; text-align:center; color:${numColor}; font-weight:900;">
+                        ${slot.label}
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    let html = `
+        <div style="display:flex; align-items:flex-end; justify-content:center; gap:14px; padding:24px 8px 0; max-width:850px; margin:0 auto; width:100%; flex-wrap:nowrap; overflow-x:auto;">
+            ${podiumSlots.map(slot => renderSlotColumn(slot)).join('')}
+        </div>
+    `;
+
+    if (otherResults.length > 0) {
+        html += `
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:12px; margin-top:24px; padding-top:20px; border-top:1px dashed #cbd5e1;">
+                ${otherResults.map(r => {
+                    const info = resolveTeamAvatars(r);
+                    return `
+                        <div class="neo-box" style="padding:14px 16px; display:flex; align-items:center; gap:12px; background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+                            <div style="font-size:28px;">${r.medal || '🎖️'}</div>
+                            <div>
+                                <div style="font-family:'Paytone One', sans-serif; font-size:13px; color:var(--primary);">${r.rank}</div>
+                                <div style="font-weight:800; font-size:13.5px; color:#d97706;">${info.displayName}</div>
+                                ${r.reward ? `<div style="font-size:11.5px; color:var(--muted); font-weight:700;">🎁 ${r.reward}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    return html;
 }
