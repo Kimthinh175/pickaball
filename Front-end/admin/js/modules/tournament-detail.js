@@ -126,7 +126,9 @@ export async function refreshTournamentDetail() {
                                     <div style="display:flex; align-items:center; justify-content:space-between;">
                                         <div style="display:flex; align-items:center; gap:8px;">
                                             <img src="${p1Ava}" onerror="this.onerror=null;this.src='${fb1}';" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0;">
-                                            <span style="font-size:13.5px; font-weight:700;">${tm.p1_name || 'Tự do'}</span>
+                                            <span style="font-size:13.5px; font-weight:700;">
+                                                ${tm.p1_nickname ? `<strong>${tm.p1_nickname}</strong> <span style="font-size:11.5px; color:var(--muted); font-weight:normal;">(${tm.p1_name})</span>` : (tm.p1_name || 'Tự do')}
+                                            </span>
                                         </div>
                                         <span style="font-size:12px; font-weight:800; color:#d97706; background:#fef3c7; padding:2px 6px; border-radius:4px;">${parseFloat(tm.p1_points || 0).toFixed(2)} pts</span>
                                     </div>
@@ -137,7 +139,9 @@ export async function refreshTournamentDetail() {
                                     <div style="display:flex; align-items:center; justify-content:space-between;">
                                         <div style="display:flex; align-items:center; gap:8px;">
                                             <img src="${p2Ava}" onerror="this.onerror=null;this.src='${fb2}';" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0;">
-                                            <span style="font-size:13.5px; font-weight:700;">${tm.p2_name || 'Tự do'}</span>
+                                            <span style="font-size:13.5px; font-weight:700;">
+                                                ${tm.p2_nickname ? `<strong>${tm.p2_nickname}</strong> <span style="font-size:11.5px; color:var(--muted); font-weight:normal;">(${tm.p2_name})</span>` : (tm.p2_name || 'Tự do')}
+                                            </span>
                                         </div>
                                         <span style="font-size:12px; font-weight:800; color:#d97706; background:#fef3c7; padding:2px 6px; border-radius:4px;">${parseFloat(tm.p2_points || 0).toFixed(2)} pts</span>
                                     </div>
@@ -185,11 +189,11 @@ export async function refreshTournamentDetail() {
                                             <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
                                                 <div style="display:flex; align-items:center; gap:4px;">
                                                     <img src="${p1Ava}" onerror="this.onerror=null;this.src='${fb1}';" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
-                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t1_p1_name || 'Tự do'}</span>
+                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t1_p1_nickname ? `${gm.t1_p1_nickname} (${gm.t1_p1_name})` : (gm.t1_p1_name || 'Tự do')}</span>
                                                 </div>
                                                 <div style="display:flex; align-items:center; gap:4px;">
                                                     <img src="${p2Ava}" onerror="this.onerror=null;this.src='${fb2}';" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
-                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t1_p2_name || 'Tự do'}</span>
+                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t1_p2_nickname ? `${gm.t1_p2_nickname} (${gm.t1_p2_name})` : (gm.t1_p2_name || 'Tự do')}</span>
                                                 </div>
                                             </div>
 
@@ -198,11 +202,11 @@ export async function refreshTournamentDetail() {
                                             <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
                                                 <div style="display:flex; align-items:center; gap:4px;">
                                                     <img src="${p3Ava}" onerror="this.onerror=null;this.src='${fb3}';" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
-                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t2_p1_name || 'Tự do'}</span>
+                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t2_p1_nickname ? `${gm.t2_p1_nickname} (${gm.t2_p1_name})` : (gm.t2_p1_name || 'Tự do')}</span>
                                                 </div>
                                                 <div style="display:flex; align-items:center; gap:4px;">
                                                     <img src="${p4Ava}" onerror="this.onerror=null;this.src='${fb4}';" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
-                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t2_p2_name || 'Tự do'}</span>
+                                                    <span style="font-size:12px; font-weight:700;" class="truncate">${gm.t2_p2_nickname ? `${gm.t2_p2_nickname} (${gm.t2_p2_name})` : (gm.t2_p2_name || 'Tự do')}</span>
                                                 </div>
                                             </div>
                                         </div>

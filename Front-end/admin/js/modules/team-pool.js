@@ -157,7 +157,9 @@ export function renderPlayerPickerList() {
                 <img src="${ava}" onerror="this.onerror=null;this.src='${fb}';" class="player-picker-avatar" alt="Avatar">
                 <div class="player-picker-info" style="display:flex; align-items:center; gap:8px; width:100%;">
                     <div>
-                        <span class="player-picker-name" style="${isSelected ? 'color:var(--primary); font-weight:800;' : ''}">${p.name}</span>
+                        <span class="player-picker-name" style="${isSelected ? 'color:var(--primary); font-weight:800;' : ''}">
+                            ${p.nickname ? `<strong>${p.nickname}</strong> (${p.name})` : p.name}
+                        </span>
                         <span class="player-picker-pts">${p.gender === 'Nữ' ? '👩' : '👨'} ${parseFloat(p.points || 0).toFixed(2)} pts</span>
                     </div>
                     ${badgeHtml}
@@ -180,10 +182,12 @@ export function addTeamToPool() {
     teamPool.push({
         p1_id: selectedP1.id,
         p1_name: selectedP1.name,
+        p1_nickname: selectedP1.nickname,
         p1_avatar: p1Ava,
         p1_points: selectedP1.points,
         p2_id: selectedP2.id,
         p2_name: selectedP2.name,
+        p2_nickname: selectedP2.nickname,
         p2_avatar: p2Ava,
         p2_points: selectedP2.points,
         status: status
@@ -253,12 +257,14 @@ export function renderTeamPool() {
                     <div class="admin-matchup-team" style="flex-direction:column; align-items:flex-start; gap:6px;">
                         <div style="display:flex; align-items:center; gap:6px;">
                             <img src="${ava1}" onerror="this.onerror=null;this.src='${fb1}';" style="width:22px; height:22px; border-radius:50%; object-fit:cover;">
-                            <span class="truncate" style="font-size:12px; font-weight:700;">${t.p1_name || '?'}</span>
+                            <span class="truncate" style="font-size:12px; font-weight:700;">${t.p1_nickname ? `${t.p1_nickname} (${t.p1_name})` : (t.p1_name || '?')}</span>
                         </div>
+                        ${(t.p2_id || t.p2_name) ? `
                         <div style="display:flex; align-items:center; gap:6px;">
                             <img src="${ava2}" onerror="this.onerror=null;this.src='${fb2}';" style="width:22px; height:22px; border-radius:50%; object-fit:cover;">
-                            <span class="truncate" style="font-size:12px; font-weight:700;">${t.p2_name || '?'}</span>
+                            <span class="truncate" style="font-size:12px; font-weight:700;">${t.p2_nickname ? `${t.p2_nickname} (${t.p2_name})` : (t.p2_name || '?')}</span>
                         </div>
+                        ` : ''}
                     </div>
                     <button type="button" class="btn btn-sm btn-danger" style="padding:4px 8px; font-size:11px;" onclick="window.removeTeamFromPool(${idx})"><i data-lucide="trash-2"></i></button>
                 </div>
