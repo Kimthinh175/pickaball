@@ -182,46 +182,81 @@ export async function openEditCurrentTournamentModal() {
         `).join('');
     }
 
-    // Populate Team Pool from matchups
+    // Populate Team Pool from data.teams and matchups
     resetTeamPool();
+    const teams = data.teams || [];
     const matchups = data.matchups || [];
     const addedTeamsMap = {};
 
-    matchups.forEach(m => {
-        const team1Key = `${m.team1_p1_id}_${m.team1_p2_id}`;
-        const team2Key = `${m.team2_p1_id}_${m.team2_p2_id}`;
-
-        if (m.team1_p1_id && addedTeamsMap[team1Key] === undefined) {
-            addedTeamsMap[team1Key] = teamPool.length;
-            const ava1 = m.t1_p1_avatar ? (m.t1_p1_avatar.startsWith('http') ? m.t1_p1_avatar : `../${m.t1_p1_avatar}`) : svgAvatar(m.t1_p1_name || 'A');
-            const ava2 = m.t1_p2_avatar ? (m.t1_p2_avatar.startsWith('http') ? m.t1_p2_avatar : `../${m.t1_p2_avatar}`) : svgAvatar(m.t1_p2_name || 'B');
-            teamPool.push({
-                p1_id: m.team1_p1_id,
-                p1_name: m.t1_p1_name,
-                p1_avatar: ava1,
-                p1_points: m.t1_p1_points,
-                p2_id: m.team1_p2_id,
-                p2_name: m.t1_p2_name,
-                p2_avatar: ava2,
-                p2_points: m.t1_p2_points,
-                status: m.status || 'Chưa chuyển khoản'
-            });
+    // 1. Populate from data.teams (teams in tournament_teams)
+    teams.forEach(tm => {
+        const p1Id = Number(tm.p1_id || tm.player1_id || 0);
+        const p2Id = Number(tm.p2_id || tm.player2_id || 0);
+        if (p1Id || p2Id) {
+            const key = (p1Id && p2Id) ? `${Math.min(p1Id, p2Id)}_${Math.max(p1Id, p2Id)}` : `${p1Id || p2Id}_0`;
+            if (addedTeamsMap[key] === undefined) {
+                addedTeamsMap[key] = teamPool.length;
+                const ava1 = tm.p1_avatar ? (tm.p1_avatar.startsWith('http') ? tm.p1_avatar : `../${tm.p1_avatar}`) : svgAvatar(tm.p1_name || 'A');
+                const ava2 = tm.p2_avatar ? (tm.p2_avatar.startsWith('http') ? tm.p2_avatar : `../${tm.p2_avatar}`) : svgAvatar(tm.p2_name || 'B');
+                teamPool.push({
+                    p1_id: p1Id || p2Id,
+                    p1_name: tm.p1_name || tm.p2_name,
+                    p1_avatar: ava1,
+                    p1_points: tm.p1_points,
+                    p2_id: p1Id && p2Id ? p2Id : null,
+                    p2_name: tm.p2_name,
+                    p2_avatar: ava2,
+                    p2_points: tm.p2_points,
+                    status: tm.status || 'Chưa chuyển khoản'
+                });
+            }
         }
-        if (m.team2_p1_id && addedTeamsMap[team2Key] === undefined) {
-            addedTeamsMap[team2Key] = teamPool.length;
-            const ava1 = m.t2_p1_avatar ? (m.t2_p1_avatar.startsWith('http') ? m.t2_p1_avatar : `../${m.t2_p1_avatar}`) : svgAvatar(m.t2_p1_name || 'A');
-            const ava2 = m.t2_p2_avatar ? (m.t2_p2_avatar.startsWith('http') ? m.t2_p2_avatar : `../${m.t2_p2_avatar}`) : svgAvatar(m.t2_p2_name || 'B');
-            teamPool.push({
-                p1_id: m.team2_p1_id,
-                p1_name: m.t2_p1_name,
-                p1_avatar: ava1,
-                p1_points: m.t2_p1_points,
-                p2_id: m.team2_p2_id,
-                p2_name: m.t2_p2_name,
-                p2_avatar: ava2,
-                p2_points: m.t2_p2_points,
-                status: m.status || 'Chưa chuyển khoản'
-            });
+    });
+
+    // 2. Also check data.matchups for any teams not yet in teamPool
+    matchups.forEach(m => {
+        const t1p1 = Number(m.team1_p1_id || 0);
+        const t1p2 = Number(m.team1_p2_id || 0);
+        if (t1p1 || t1p2) {
+            const team1Key = (t1p1 && t1p2) ? `${Math.min(t1p1, t1p2)}_${Math.max(t1p1, t1p2)}` : `${t1p1 || t1p2}_0`;
+            if (addedTeamsMap[team1Key] === undefined) {
+                addedTeamsMap[team1Key] = teamPool.length;
+                const ava1 = m.t1_p1_avatar ? (m.t1_p1_avatar.startsWith('http') ? m.t1_p1_avatar : `../${m.t1_p1_avatar}`) : svgAvatar(m.t1_p1_name || 'A');
+                const ava2 = m.t1_p2_avatar ? (m.t1_p2_avatar.startsWith('http') ? m.t1_p2_avatar : `../${m.t1_p2_avatar}`) : svgAvatar(m.t1_p2_name || 'B');
+                teamPool.push({
+                    p1_id: t1p1 || t1p2,
+                    p1_name: m.t1_p1_name || m.t1_p2_name,
+                    p1_avatar: ava1,
+                    p1_points: m.t1_p1_points,
+                    p2_id: t1p1 && t1p2 ? t1p2 : null,
+                    p2_name: m.t1_p2_name,
+                    p2_avatar: ava2,
+                    p2_points: m.t1_p2_points,
+                    status: m.t1_status || m.status || 'Chưa chuyển khoản'
+                });
+            }
+        }
+
+        const t2p1 = Number(m.team2_p1_id || 0);
+        const t2p2 = Number(m.team2_p2_id || 0);
+        if (t2p1 || t2p2) {
+            const team2Key = (t2p1 && t2p2) ? `${Math.min(t2p1, t2p2)}_${Math.max(t2p1, t2p2)}` : `${t2p1 || t2p2}_0`;
+            if (addedTeamsMap[team2Key] === undefined) {
+                addedTeamsMap[team2Key] = teamPool.length;
+                const ava1 = m.t2_p1_avatar ? (m.t2_p1_avatar.startsWith('http') ? m.t2_p1_avatar : `../${m.t2_p1_avatar}`) : svgAvatar(m.t2_p1_name || 'A');
+                const ava2 = m.t2_p2_avatar ? (m.t2_p2_avatar.startsWith('http') ? m.t2_p2_avatar : `../${m.t2_p2_avatar}`) : svgAvatar(m.t2_p2_name || 'B');
+                teamPool.push({
+                    p1_id: t2p1 || t2p2,
+                    p1_name: m.t2_p1_name || m.t2_p2_name,
+                    p1_avatar: ava1,
+                    p1_points: m.t2_p1_points,
+                    p2_id: t2p1 && t2p2 ? t2p2 : null,
+                    p2_name: m.t2_p2_name,
+                    p2_avatar: ava2,
+                    p2_points: m.t2_p2_points,
+                    status: m.t2_status || m.status || 'Chưa chuyển khoản'
+                });
+            }
         }
     });
 
@@ -231,10 +266,24 @@ export async function openEditCurrentTournamentModal() {
     groups.forEach(g => {
         const selectedIndices = [];
         (g.matches || []).forEach(gm => {
-            const k1 = `${gm.team1_p1_id}_${gm.team1_p2_id}`;
-            const k2 = `${gm.team2_p1_id}_${gm.team2_p2_id}`;
+            const t1p1 = Number(gm.team1_p1_id || 0);
+            const t1p2 = Number(gm.team1_p2_id || 0);
+            const t2p1 = Number(gm.team2_p1_id || 0);
+            const t2p2 = Number(gm.team2_p2_id || 0);
+            const k1 = (t1p1 && t1p2) ? `${Math.min(t1p1, t1p2)}_${Math.max(t1p1, t1p2)}` : `${t1p1 || t1p2}_0`;
+            const k2 = (t2p1 && t2p2) ? `${Math.min(t2p1, t2p2)}_${Math.max(t2p1, t2p2)}` : `${t2p1 || t2p2}_0`;
             if (addedTeamsMap[k1] !== undefined && !selectedIndices.includes(addedTeamsMap[k1])) selectedIndices.push(addedTeamsMap[k1]);
             if (addedTeamsMap[k2] !== undefined && !selectedIndices.includes(addedTeamsMap[k2])) selectedIndices.push(addedTeamsMap[k2]);
+        });
+        teams.forEach(tm => {
+            if (tm.group_id && Number(tm.group_id) === Number(g.id)) {
+                const p1Id = Number(tm.p1_id || tm.player1_id || 0);
+                const p2Id = Number(tm.p2_id || tm.player2_id || 0);
+                const key = (p1Id && p2Id) ? `${Math.min(p1Id, p2Id)}_${Math.max(p1Id, p2Id)}` : `${p1Id || p2Id}_0`;
+                if (addedTeamsMap[key] !== undefined && !selectedIndices.includes(addedTeamsMap[key])) {
+                    selectedIndices.push(addedTeamsMap[key]);
+                }
+            }
         });
         groupBuilders.push({
             name: g.name,

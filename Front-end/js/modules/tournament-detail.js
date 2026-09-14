@@ -192,6 +192,7 @@ export async function fetchTournamentDetail() {
                                             ${tm.p1_points !== undefined && tm.p1_points !== null ? `<span style="font-size:11px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 6px; border-radius:4px;">${parseFloat(tm.p1_points).toFixed(2)} pts</span>` : ''}
                                         </div>
 
+                                        ${(tm.p2_id || tm.p2_name) ? `
                                         <span style="color:var(--muted); font-weight:900; font-size:12px;">&amp;</span>
 
                                         <!-- VĐV 2 -->
@@ -202,6 +203,7 @@ export async function fetchTournamentDetail() {
                                             </span>
                                             ${tm.p2_points !== undefined && tm.p2_points !== null ? `<span style="font-size:11px; font-weight:800; color:#d97706; background:#fef3c7; padding:1px 6px; border-radius:4px;">${parseFloat(tm.p2_points).toFixed(2)} pts</span>` : ''}
                                         </div>
+                                        ` : ''}
                                     </div>
                                 </div>
 

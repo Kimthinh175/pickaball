@@ -69,8 +69,8 @@ class TournamentService
             p2.name as p2_name, p2.nickname as p2_nickname, p2.avatar as p2_avatar, p2.points as p2_points,
             tg.name as group_name
             FROM tournament_teams tt
-            JOIN players p1 ON tt.player1_id = p1.id
-            JOIN players p2 ON tt.player2_id = p2.id
+            LEFT JOIN players p1 ON tt.player1_id = p1.id
+            LEFT JOIN players p2 ON tt.player2_id = p2.id
             LEFT JOIN tournament_groups tg ON tt.group_id = tg.id
             WHERE tt.tournament_id = :id
             ORDER BY tt.id ASC";

@@ -131,6 +131,7 @@ export async function refreshTournamentDetail() {
                                         <span style="font-size:12px; font-weight:800; color:#d97706; background:#fef3c7; padding:2px 6px; border-radius:4px;">${parseFloat(tm.p1_points || 0).toFixed(2)} pts</span>
                                     </div>
                                     
+                                    ${(tm.p2_id || tm.p2_name) ? `
                                     <div style="height:1px; background:#f1f5f9;"></div>
 
                                     <div style="display:flex; align-items:center; justify-content:space-between;">
@@ -140,6 +141,7 @@ export async function refreshTournamentDetail() {
                                         </div>
                                         <span style="font-size:12px; font-weight:800; color:#d97706; background:#fef3c7; padding:2px 6px; border-radius:4px;">${parseFloat(tm.p2_points || 0).toFixed(2)} pts</span>
                                     </div>
+                                    ` : ''}
                                 </div>
                             </div>
                         `;

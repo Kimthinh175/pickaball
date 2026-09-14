@@ -47,9 +47,23 @@ class tournament
             // Lưu danh sách tournament_teams
             if (!empty($data['teams'])) {
                 foreach ($data['teams'] as $tm) {
-                    $p1 = min(intval($tm['player1_id'] ?? 0), intval($tm['player2_id'] ?? 0));
-                    $p2 = max(intval($tm['player1_id'] ?? 0), intval($tm['player2_id'] ?? 0));
-                    if ($p1 && $p2) {
+                    $p1_raw = intval($tm['player1_id'] ?? $tm['p1_id'] ?? 0);
+                    $p2_raw = intval($tm['player2_id'] ?? $tm['p2_id'] ?? 0);
+                    if ($p1_raw > 0 && $p2_raw > 0) {
+                        $p1 = min($p1_raw, $p2_raw);
+                        $p2 = max($p1_raw, $p2_raw);
+                    } else if ($p1_raw > 0) {
+                        $p1 = $p1_raw;
+                        $p2 = null;
+                    } else if ($p2_raw > 0) {
+                        $p1 = $p2_raw;
+                        $p2 = null;
+                    } else {
+                        $p1 = 0;
+                        $p2 = null;
+                    }
+
+                    if ($p1 > 0) {
                         database::ThucThi("INSERT IGNORE INTO tournament_teams (tournament_id, player1_id, player2_id, status, group_id) VALUES (:tid, :p1, :p2, :st, :gid)", [
                             'tid' => $tournament_id,
                             'p1' => $p1,
@@ -115,9 +129,23 @@ class tournament
             // Lưu danh sách tournament_teams
             if (!empty($data['teams'])) {
                 foreach ($data['teams'] as $tm) {
-                    $p1 = min(intval($tm['player1_id'] ?? 0), intval($tm['player2_id'] ?? 0));
-                    $p2 = max(intval($tm['player1_id'] ?? 0), intval($tm['player2_id'] ?? 0));
-                    if ($p1 && $p2) {
+                    $p1_raw = intval($tm['player1_id'] ?? $tm['p1_id'] ?? 0);
+                    $p2_raw = intval($tm['player2_id'] ?? $tm['p2_id'] ?? 0);
+                    if ($p1_raw > 0 && $p2_raw > 0) {
+                        $p1 = min($p1_raw, $p2_raw);
+                        $p2 = max($p1_raw, $p2_raw);
+                    } else if ($p1_raw > 0) {
+                        $p1 = $p1_raw;
+                        $p2 = null;
+                    } else if ($p2_raw > 0) {
+                        $p1 = $p2_raw;
+                        $p2 = null;
+                    } else {
+                        $p1 = 0;
+                        $p2 = null;
+                    }
+
+                    if ($p1 > 0) {
                         database::ThucThi("INSERT IGNORE INTO tournament_teams (tournament_id, player1_id, player2_id, status, group_id) VALUES (:tid, :p1, :p2, :st, :gid)", [
                             'tid' => $id,
                             'p1' => $p1,
@@ -272,24 +300,25 @@ class tournament
             return;
         }
 
-        if (empty($tournament_id) || empty($p1_id) || empty($p2_id)) {
+        if (empty($tournament_id) || (empty($p1_id) && empty($p2_id))) {
             echo json_encode(["status" => "error", "message" => "Thiếu thông tin giải đấu hoặc đội"]);
             return;
         }
 
-        $minP = min($p1_id, $p2_id);
-        $maxP = max($p1_id, $p2_id);
-
-        // Cập nhật trạng thái chỉ cho riêng ĐỘI ĐÓ trong tournament_teams
-        $sql = "UPDATE tournament_teams SET status = :status 
-                WHERE tournament_id = :tid 
-                  AND player1_id = :p1 AND player2_id = :p2";
-        database::ThucThi($sql, [
-            'tid' => $tournament_id,
-            'p1' => $minP,
-            'p2' => $maxP,
-            'status' => $status
-        ]);
+        if ($p1_id > 0 && $p2_id > 0) {
+            $minP = min($p1_id, $p2_id);
+            $maxP = max($p1_id, $p2_id);
+            $sql = "UPDATE tournament_teams SET status = :status 
+                    WHERE tournament_id = :tid 
+                      AND player1_id = :p1 AND player2_id = :p2";
+            database::ThucThi($sql, ['tid' => $tournament_id, 'p1' => $minP, 'p2' => $maxP, 'status' => $status]);
+        } else {
+            $p = max($p1_id, $p2_id);
+            $sql = "UPDATE tournament_teams SET status = :status 
+                    WHERE tournament_id = :tid 
+                      AND (player1_id = :p OR player2_id = :p)";
+            database::ThucThi($sql, ['tid' => $tournament_id, 'p' => $p, 'status' => $status]);
+        }
 
         echo json_encode(["status" => "success", "message" => "Cập nhật trạng thái đóng tiền của đội thành công", "new_status" => $status]);
     }
