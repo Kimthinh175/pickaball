@@ -2,7 +2,7 @@
 // CORE API CLIENT
 // ==========================================
 
-import { showToast } from './toast.js?v=28';
+import { showToast } from './toast.js?v=35';
 
 export function calculateTournamentStatus(startDateStr, endDateStr) {
     if (!startDateStr) return 'Sắp diễn ra';

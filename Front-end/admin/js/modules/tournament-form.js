@@ -2,15 +2,15 @@
 // MODULE: TOURNAMENT FORM (CREATE & EDIT)
 // ==========================================
 
-import { apiRequest } from '../core/api.js?v=28';
-import { showToast } from '../core/toast.js?v=28';
-import { svgAvatar } from '../core/avatar.js?v=28';
-import { teamPool, resetTeamPool, renderTeamPool, renderPlayerPickerList } from './team-pool.js?v=28';
-import { groupBuilders, resetGroupBuilders, renderGroupBuilders } from './group-builder.js?v=28';
-import { bracketStages, resetBracketStages, renderBracketBuilders } from './bracket-builder.js?v=28';
-import { loadTournaments } from './tournaments.js?v=28';
-import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=28';
-import { loadPlayers, cachedPlayers } from './players.js?v=28';
+import { apiRequest } from '../core/api.js?v=35';
+import { showToast } from '../core/toast.js?v=35';
+import { svgAvatar } from '../core/avatar.js?v=35';
+import { teamPool, resetTeamPool, renderTeamPool, renderPlayerPickerList } from './team-pool.js?v=35';
+import { groupBuilders, resetGroupBuilders, renderGroupBuilders } from './group-builder.js?v=35';
+import { bracketStages, resetBracketStages, renderBracketBuilders } from './bracket-builder.js?v=35';
+import { loadTournaments } from './tournaments.js?v=35';
+import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=35';
+import { loadPlayers, cachedPlayers } from './players.js?v=35';
 
 export let editingTournamentId = null;
 let isRepositioning = false;

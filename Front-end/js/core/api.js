@@ -41,7 +41,7 @@ export function svgAvatar(name) {
         <rect width='96' height='96' rx='48' fill='${bg}'/>
         <text x='48' y='63' font-family='Arial' font-size='32' fill='#fff' text-anchor='middle' font-weight='bold'>${ini}</text>
     </svg>`;
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg).replace(/'/g, "%27");
 }
 
 export function avatarOf(player) {

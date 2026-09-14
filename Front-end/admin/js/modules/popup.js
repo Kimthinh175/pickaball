@@ -2,8 +2,8 @@
 // POPUP MANAGEMENT MODULE (ES MODULE)
 // ==========================================
 
-import { apiRequest } from '../core/api.js?v=31';
-import { showToast } from '../core/toast.js?v=31';
+import { apiRequest } from '../core/api.js?v=35';
+import { showToast } from '../core/toast.js?v=35';
 
 let currentPopupData = null;
 

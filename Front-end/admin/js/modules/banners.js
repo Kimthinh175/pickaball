@@ -2,8 +2,8 @@
 // MODULE: ADMIN BANNERS MANAGEMENT
 // ==========================================
 
-import { apiRequest } from '../core/api.js?v=28';
-import { showToast } from '../core/toast.js?v=28';
+import { apiRequest } from '../core/api.js?v=35';
+import { showToast } from '../core/toast.js?v=35';
 
 export let cachedBanners = [];
 let editingBannerId = null;

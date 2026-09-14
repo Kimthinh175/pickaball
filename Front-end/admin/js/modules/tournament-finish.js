@@ -2,10 +2,10 @@
 // MODULE: TOURNAMENT FINISH & RESULTS
 // ==========================================
 
-import { apiRequest } from '../core/api.js?v=28';
-import { showToast } from '../core/toast.js?v=28';
-import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=28';
-import { loadTournaments } from './tournaments.js?v=28';
+import { apiRequest } from '../core/api.js?v=35';
+import { showToast } from '../core/toast.js?v=35';
+import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=35';
+import { loadTournaments } from './tournaments.js?v=35';
 
 function getDefaultPointsForRank(rankName) {
     const lower = (rankName || '').toLowerCase();

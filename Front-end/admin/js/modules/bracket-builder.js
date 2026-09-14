@@ -2,8 +2,8 @@
 // MODULE: BRACKET BUILDER (KNOCKOUT)
 // ==========================================
 
-import { showToast } from '../core/toast.js?v=28';
-import { groupBuilders } from './group-builder.js?v=28';
+import { showToast } from '../core/toast.js?v=35';
+import { groupBuilders } from './group-builder.js?v=35';
 
 export let bracketStages = [];
 

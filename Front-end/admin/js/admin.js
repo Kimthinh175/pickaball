@@ -44,7 +44,8 @@ function showToast(message, type = 'info') {
 // Avatar generator fallback
 function svgAvatar(name) {
     const initial = (name || '?').charAt(0).toUpperCase();
-    return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23e2e8f0"/><text x="50%" y="55%" font-size="18" font-family="sans-serif" font-weight="bold" fill="%23475569" text-anchor="middle" dominant-baseline="middle">${encodeURIComponent(initial)}</text></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23e2e8f0"/><text x="50%" y="55%" font-size="18" font-family="sans-serif" font-weight="bold" fill="%23475569" text-anchor="middle" dominant-baseline="middle">${initial}</text></svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg).replace(/'/g, "%27");
 }
 
 // Global API Request Helper

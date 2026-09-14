@@ -2,17 +2,17 @@
 // PICKABALL ADMIN DASHBOARD CONTROLLER (ES MODULE)
 // ==========================================
 
-import { apiRequest, calculateTournamentStatus } from './core/api.js?v=29';
-import { showToast } from './core/toast.js?v=29';
-import { svgAvatar } from './core/avatar.js?v=29';
-import { checkLogin, initAuth } from './core/auth.js?v=29';
+import { apiRequest, calculateTournamentStatus } from './core/api.js?v=35';
+import { showToast } from './core/toast.js?v=35';
+import { svgAvatar } from './core/avatar.js?v=35';
+import { checkLogin, initAuth } from './core/auth.js?v=35';
 
 import {
     cachedTournaments,
     loadTournaments,
     openTournamentDetail,
     deleteCurrentTournament
-} from './modules/tournaments.js?v=29';
+} from './modules/tournaments.js?v=35';
 
 import {
     currentTournamentId,
@@ -20,7 +20,7 @@ import {
     refreshTournamentDetail,
     toggleTeamPaymentStatus,
     toggleMatchPaymentStatus
-} from './modules/tournament-detail.js?v=29';
+} from './modules/tournament-detail.js?v=35';
 
 import {
     teamPool,
@@ -34,7 +34,7 @@ import {
     addTeamToPool,
     removeTeamFromPool,
     renderTeamPool
-} from './modules/team-pool.js?v=29';
+} from './modules/team-pool.js?v=35';
 
 import {
     groupBuilders,
@@ -49,7 +49,7 @@ import {
     removeMatchupFromGroup,
     randomAddTeamsToGroup,
     renderGroupBuilders
-} from './modules/group-builder.js?v=29';
+} from './modules/group-builder.js?v=35';
 
 import {
     bracketStages,
@@ -60,7 +60,7 @@ import {
     addMatchToStage,
     removeMatchFromStage,
     renderBracketBuilders
-} from './modules/bracket-builder.js?v=29';
+} from './modules/bracket-builder.js?v=35';
 
 import {
     editingTournamentId,
@@ -80,14 +80,14 @@ import {
     startRepositionBanner,
     stopRepositionBanner,
     submitCreateTournament
-} from './modules/tournament-form.js?v=29';
+} from './modules/tournament-form.js?v=35';
 
 import {
     openEndTournamentModal,
     closeEndTournamentModal,
     addFinishPrizeRow,
     submitFinishTournament
-} from './modules/tournament-finish.js?v=29';
+} from './modules/tournament-finish.js?v=35';
 
 import {
     cachedPlayers,
@@ -105,7 +105,7 @@ import {
     openPlayerProfileModalById,
     closePlayerProfileModal,
     goToPlayerPage
-} from './modules/players.js?v=29';
+} from './modules/players.js?v=35';
 
 import {
     cachedBanners,
@@ -124,7 +124,7 @@ import {
     submitBannerForm,
     toggleBannerStatus,
     deleteBanner
-} from './modules/banners.js?v=31';
+} from './modules/banners.js?v=35';
 
 import {
     loadPopupSettings,
@@ -133,7 +133,7 @@ import {
     previewPopupImage,
     updatePopupLivePreview,
     testOpenPopupTarget
-} from './modules/popup.js?v=31';
+} from './modules/popup.js?v=35';
 
 // ==========================================
 // EXPOSE HANDLERS TO WINDOW FOR INLINE HTML
