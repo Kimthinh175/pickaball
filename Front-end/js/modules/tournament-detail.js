@@ -538,14 +538,14 @@ function renderTournamentPodium(results, teams, players) {
     let podiumSlots = [];
 
     if (rank3_list.length >= 2) {
-        if (rank3_list[0]) podiumSlots.push({ type: '3', data: rank3_list[0], label: 'HẠNG 3', rankNum: 3 });
-        if (rank2) podiumSlots.push({ type: '2', data: rank2, label: 'HẠNG NHÌ', rankNum: 2 });
-        if (rank1) podiumSlots.push({ type: '1', data: rank1, label: 'VÔ ĐỊCH', rankNum: 1 });
         if (rank3_list[1]) podiumSlots.push({ type: '3', data: rank3_list[1], label: 'HẠNG 3', rankNum: 3 });
-    } else {
-        if (rank3_list[0]) podiumSlots.push({ type: '3', data: rank3_list[0], label: 'HẠNG 3', rankNum: 3 });
         if (rank2) podiumSlots.push({ type: '2', data: rank2, label: 'HẠNG NHÌ', rankNum: 2 });
         if (rank1) podiumSlots.push({ type: '1', data: rank1, label: 'VÔ ĐỊCH', rankNum: 1 });
+        if (rank3_list[0]) podiumSlots.push({ type: '3', data: rank3_list[0], label: 'HẠNG 3', rankNum: 3 });
+    } else {
+        if (rank2) podiumSlots.push({ type: '2', data: rank2, label: 'HẠNG NHÌ', rankNum: 2 });
+        if (rank1) podiumSlots.push({ type: '1', data: rank1, label: 'VÔ ĐỊCH', rankNum: 1 });
+        if (rank3_list[0]) podiumSlots.push({ type: '3', data: rank3_list[0], label: 'HẠNG 3', rankNum: 3 });
     }
 
     const renderSlotColumn = (slot) => {
