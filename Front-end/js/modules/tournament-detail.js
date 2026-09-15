@@ -135,8 +135,7 @@ export async function fetchTournamentDetail() {
             const teamsCountEl = document.getElementById('td-teams-count');
 
             if (teamsCountEl) {
-                const paidCount = teams.filter(tm => tm.status === 'Đã chuyển khoản').length;
-                teamsCountEl.textContent = `Tổng: ${teams.length} đội | Đã đóng: ${paidCount}/${teams.length}`;
+                teamsCountEl.textContent = `Tổng: ${teams.length} đội`;
             }
 
             if (teamsEl) {
@@ -144,23 +143,13 @@ export async function fetchTournamentDetail() {
                     teamsEl.innerHTML = '<div class="empty">Chưa có đội nào tham gia giải đấu này.</div>';
                 } else {
                     teamsEl.innerHTML = teams.map((tm, idx) => {
-                        const isPaid = tm.status === 'Đã chuyển khoản';
                         const p1Ava = tm.p1_avatar ? (tm.p1_avatar.startsWith('http') ? tm.p1_avatar : tm.p1_avatar) : svgAvatar(tm.p1_name || 'A');
                         const p2Ava = tm.p2_avatar ? (tm.p2_avatar.startsWith('http') ? tm.p2_avatar : tm.p2_avatar) : svgAvatar(tm.p2_name || 'B');
                         const fb1 = svgAvatar(tm.p1_name || 'A');
                         const fb2 = svgAvatar(tm.p2_name || 'B');
 
-                        const cardStyle = isPaid
-                            ? 'background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: 1.5px solid #86efac; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.06);'
-                            : 'background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); border: 1.5px solid #fca5a5; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.06);';
-
-                        const tagStyle = isPaid
-                            ? 'color: #15803d; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);'
-                            : 'color: #b91c1c; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);';
-
-                        const badgeStyle = isPaid
-                            ? 'background: #dcfce7; color: #15803d; border: 1px solid #86efac;'
-                            : 'background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5;';
+                        const cardStyle = 'background: #ffffff; border: 1.5px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);';
+                        const tagStyle = 'color: var(--primary); background: rgba(55,157,224,0.1); border: 1px solid rgba(55,157,224,0.2);';
 
                         return `
                             <div class="team-row-card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-radius:12px; transition:all 0.2s ease; gap:16px; flex-wrap:wrap; ${cardStyle}">
@@ -194,13 +183,6 @@ export async function fetchTournamentDetail() {
                                         </div>
                                         ` : ''}
                                     </div>
-                                </div>
-
-                                <!-- Bên phải: Trạng thái đóng lệ phí (Căn phải) -->
-                                <div style="flex-shrink:0;">
-                                    <span style="font-size:11.5px; font-weight:800; padding:5px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:5px; ${badgeStyle}">
-                                        ${isPaid ? '✓ Đã đóng tiền' : '✕ Chưa đóng tiền'}
-                                    </span>
                                 </div>
                             </div>
                         `;
