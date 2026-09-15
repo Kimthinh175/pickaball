@@ -171,7 +171,6 @@ export async function refreshTournamentDetail() {
                                             <span>TRẬN #${gmIdx+1}</span>
                                         </div>
                                         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                                             <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
                                                 <div style="display:flex; align-items:center; gap:4px;">
                                                     <img src="${p1Ava}" onerror="this.onerror=null;this.src='${fb1}';" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
