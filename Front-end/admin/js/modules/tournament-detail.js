@@ -37,7 +37,7 @@ export async function refreshTournamentDetail() {
     const titleEl = document.getElementById('detail-title');
     const subEl = document.getElementById('detail-sub');
     if (titleEl) titleEl.textContent = t.title || 'Chi tiết giải đấu';
-    if (subEl) subEl.textContent = t.description || 'Quản lý danh sách các đội tham gia và trạng thái đóng lệ phí';
+    if (subEl) subEl.textContent = t.description || 'Quản lý danh sách các đội tham gia';
 
     // Final Results Banner (if finished)
     const resultsContainer = document.getElementById('tournament-results-banner');
@@ -77,12 +77,11 @@ export async function refreshTournamentDetail() {
         }
     }
 
-    // 1. RENDER TEAMS LIST (MAIN PAYMENT MANAGEMENT)
+    // 1. RENDER TEAMS LIST
     const teamsList = document.getElementById('tournament-teams-list');
     const teamStatsEl = document.getElementById('tournament-team-stats');
     if (teamStatsEl) {
-        const paidCount = teams.filter(tm => tm.status === 'Đã chuyển khoản').length;
-        teamStatsEl.textContent = `Tổng: ${teams.length} đội | Đã đóng tiền: ${paidCount}/${teams.length} đội`;
+        teamStatsEl.textContent = `Tổng: ${teams.length} đội`;
     }
 
     if (teamsList) {
@@ -92,23 +91,13 @@ export async function refreshTournamentDetail() {
             teamsList.innerHTML = `
                 <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:14px;">
                     ${teams.map((tm, idx) => {
-                        const isPaid = tm.status === 'Đã chuyển khoản';
                         const p1Ava = getPlayerAvatarUrl(tm.p1_avatar, tm.p1_name || 'A');
                         const p2Ava = getPlayerAvatarUrl(tm.p2_avatar, tm.p2_name || 'B');
                         const fb1 = svgAvatar(tm.p1_name || 'A');
                         const fb2 = svgAvatar(tm.p2_name || 'B');
 
-                        const cardStyle = isPaid
-                            ? 'background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%); border: 1.5px solid #86efac; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08);'
-                            : 'background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%); border: 1.5px solid #fca5a5; box-shadow: 0 2px 10px rgba(239, 68, 68, 0.08);';
-
-                        const tagStyle = isPaid
-                            ? 'color: #15803d; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25);'
-                            : 'color: #b91c1c; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);';
-
-                        const btnStyle = isPaid
-                            ? 'background:#10b981; color:#fff; border: 1px solid #10b981;'
-                            : 'background:#fee2e2; color:#dc2626; border: 1.5px solid #fca5a5; font-weight:800;';
+                        const cardStyle = 'background: #ffffff; border: 1.5px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.03);';
+                        const tagStyle = 'color: var(--primary); background: rgba(55,157,224,0.1); border: 1px solid rgba(55,157,224,0.2);';
 
                         return `
                             <div class="team-payment-card" style="border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; transition: all 0.2s ease; ${cardStyle}">
@@ -117,12 +106,9 @@ export async function refreshTournamentDetail() {
                                         <span style="font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px; ${tagStyle}">ĐỘI #${idx+1}</span>
                                         ${tm.group_name ? `<span style="font-size:11px; font-weight:800; color:var(--primary); background:#e0f2fe; padding:3px 8px; border-radius:6px;">${tm.group_name}</span>` : ''}
                                     </div>
-                                    <button class="btn btn-sm" style="padding:4px 10px; font-size:11px; ${btnStyle}" onclick="window.toggleTeamPaymentStatus(${tm.id || 0}, ${tm.p1_id || tm.player1_id || 0}, ${tm.p2_id || tm.player2_id || 0}, '${isPaid ? 'Chưa chuyển khoản' : 'Đã chuyển khoản'}', '${(tm.p1_name || 'VĐV 1') + ' & ' + (tm.p2_name || 'VĐV 2')}')">
-                                        ${isPaid ? '<i data-lucide="check"></i> Đã đóng tiền' : '<i data-lucide="x"></i> Chưa đóng tiền'}
-                                    </button>
                                 </div>
 
-                                <div style="display:flex; flex-direction:column; gap:8px; background:#ffffff; padding:10px 12px; border-radius:10px; border:1px solid ${isPaid ? '#dcfce7' : '#fee2e2'};">
+                                <div style="display:flex; flex-direction:column; gap:8px; background:#ffffff; padding:10px 12px; border-radius:10px; border:1px solid #e2e8f0;">
                                     <div style="display:flex; align-items:center; justify-content:space-between;">
                                         <div style="display:flex; align-items:center; gap:8px;">
                                             <img src="${p1Ava}" onerror="this.onerror=null;this.src='${fb1}';" style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0;">
@@ -181,10 +167,10 @@ export async function refreshTournamentDetail() {
 
                                 return `
                                     <div style="padding:12px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.03);">
-                                        <div style="font-size:10.5px; font-weight:800; color:var(--primary); margin-bottom:8px; display:flex; justify-content:space-between;">
+                                        <div style="font-size:10.5px; font-weight:800; color:var(--primary); margin-bottom:8px;">
                                             <span>TRẬN #${gmIdx+1}</span>
-                                            <span style="font-size:10px; font-weight:700; color:${gm.status === 'Đã chuyển khoản' ? '#16a34a' : '#dc2626'};">${gm.status}</span>
                                         </div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                                         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                                             <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
                                                 <div style="display:flex; align-items:center; gap:4px;">
