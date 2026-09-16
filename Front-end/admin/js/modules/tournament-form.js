@@ -9,7 +9,7 @@ import { teamPool, resetTeamPool, renderTeamPool, renderPlayerPickerList } from 
 import { groupBuilders, resetGroupBuilders, renderGroupBuilders } from './group-builder.js?v=35';
 import { bracketStages, resetBracketStages, renderBracketBuilders } from './bracket-builder.js?v=35';
 import { loadTournaments } from './tournaments.js?v=35';
-import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=35';
+import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=36';
 import { loadPlayers, cachedPlayers } from './players.js?v=35';
 
 export let editingTournamentId = null;

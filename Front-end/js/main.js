@@ -5,7 +5,7 @@
 import { calculateTournamentStatus, toast, svgAvatar, avatarOf, fmtDate } from './core/api.js?v=18';
 import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage, openAvatarZoom, closeAvatarZoom } from './modules/ranking.js?v=19';
 import { fetchTournaments } from './modules/tournaments.js?v=18';
-import { fetchTournamentDetail } from './modules/tournament-detail.js?v=18';
+import { fetchTournamentDetail } from './modules/tournament-detail.js?v=19';
 import { initSlider, goToSlide, nextSlide, prevSlide } from './modules/slider.js?v=18';
 
 // Expose handlers to window for inline HTML onclick attributes
@@ -126,8 +126,29 @@ export function closeFbModal(e) {
     }
 }
 
+export function openDuprModal() {
+    const modal = document.getElementById('modal-dupr-guide');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+export function closeDuprModal(e) {
+    if (e && e.target && (e.target.classList.contains('dupr-modal-box') || e.target.closest('.dupr-modal-box')) && !e.target.classList.contains('dupr-modal-close')) {
+        return;
+    }
+    const modal = document.getElementById('modal-dupr-guide');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
 window.joinFbGroup = joinFbGroup;
 window.closeFbModal = closeFbModal;
+window.openDuprModal = openDuprModal;
+window.closeDuprModal = closeDuprModal;
 
 // Close on Escape key
 window.addEventListener('keydown', (e) => {
@@ -135,6 +156,11 @@ window.addEventListener('keydown', (e) => {
         const modal = document.getElementById('modal-fb-group');
         if (modal && modal.classList.contains('active')) {
             modal.classList.remove('active');
+        }
+        const duprModal = document.getElementById('modal-dupr-guide');
+        if (duprModal && duprModal.classList.contains('active')) {
+            duprModal.classList.remove('active');
+            document.body.style.overflow = '';
         }
     }
 });

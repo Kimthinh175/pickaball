@@ -4,7 +4,7 @@
 
 import { apiRequest, calculateTournamentStatus } from '../core/api.js?v=35';
 import { showToast } from '../core/toast.js?v=35';
-import { setCurrentTournamentId, refreshTournamentDetail, currentTournamentId } from './tournament-detail.js?v=35';
+import { setCurrentTournamentId, refreshTournamentDetail, currentTournamentId } from './tournament-detail.js?v=36';
 
 export let cachedTournaments = [];
 

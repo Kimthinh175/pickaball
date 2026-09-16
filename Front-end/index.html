@@ -6,7 +6,7 @@
     <title>Bảng Xếp Hạng – PICKO247</title>
     <meta name="description" content="Bảng xếp hạng tuyển thủ Pickleball tại PICKO247 theo điểm trình tích lũy.">
     <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
-    <link rel="stylesheet" href="css/style.css?v=19">
+    <link rel="stylesheet" href="css/style.css?v=20">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -87,6 +87,14 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Nút xem cách tính điểm DUPR -->
+    <div class="dupr-action-wrap">
+        <button type="button" class="btn-dupr-guide" onclick="openDuprModal()">
+            <span style="font-size: 15px;">📊</span>
+            <span>CÁCH TÍNH ĐIỂM THEO DUPR</span>
+        </button>
     </div>
 
     <!-- Bảng xếp hạng đầy đủ -->
@@ -292,8 +300,22 @@
     </div>
 </div>
 
+<!-- DUPR Level Classification Lightbox Modal -->
+<div id="modal-dupr-guide" class="dupr-modal-overlay" onclick="closeDuprModal(event)">
+    <div class="dupr-modal-box">
+        <button class="dupr-modal-close" onclick="closeDuprModal(event)" title="Đóng">&times;</button>
+        <div class="dupr-modal-header">
+            <h3 class="dupr-modal-title">BẢNG PHÂN CẤP TRÌNH ĐỘ DUPR PICKLEBALL</h3>
+            <p class="dupr-modal-sub">Hệ thống xếp hạng & tiêu chí đánh giá trình độ Pickleball</p>
+        </div>
+        <div class="dupr-modal-body">
+            <img src="public/dupr-guide.jpg" alt="Bảng phân cấp trình độ DUPR Pickleball" class="dupr-modal-img">
+        </div>
+    </div>
+</div>
+
 <div id="toast"></div>
-<script type="module" src="js/main.js?v=22"></script>
+<script type="module" src="js/main.js?v=23"></script>
     <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

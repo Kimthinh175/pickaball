@@ -247,6 +247,34 @@ export async function refreshTournamentDetail() {
                 return pA - pB;
             });
 
+            const cleanNick = (nick, name) => {
+                if (nick && nick.trim()) return nick.trim();
+                if (name && name.trim()) {
+                    const match = name.match(/^([^(]+)\s*\([^)]+\)$/);
+                    return match ? match[1].trim() : name.trim();
+                }
+                return 'TBD';
+            };
+
+            const getBracketSlotLabel = (bm, slotNum) => {
+                if (!bm) return 'TBD';
+                if (slotNum === 1) {
+                    if (bm.t1_p1_nickname || bm.t1_p1_name) {
+                        const p1 = cleanNick(bm.t1_p1_nickname, bm.t1_p1_name);
+                        const p2 = cleanNick(bm.t1_p2_nickname, bm.t1_p2_name);
+                        return (bm.t1_p2_nickname || bm.t1_p2_name) ? `${p1} & ${p2}` : p1;
+                    }
+                    return cleanNick(null, bm.slot_1_label) || 'TBD';
+                } else {
+                    if (bm.t2_p1_nickname || bm.t2_p1_name) {
+                        const p1 = cleanNick(bm.t2_p1_nickname, bm.t2_p1_name);
+                        const p2 = cleanNick(bm.t2_p2_nickname, bm.t2_p2_name);
+                        return (bm.t2_p2_nickname || bm.t2_p2_name) ? `${p1} & ${p2}` : p1;
+                    }
+                    return cleanNick(null, bm.slot_2_label) || 'TBD';
+                }
+            };
+
             let bracketHtml = '<div class="bracket-tree-container" style="display:flex; align-items:stretch; overflow-x:auto; padding:20px 10px; gap:40px; min-height:480px;">';
 
             stageNames.forEach((stage, sIdx) => {
@@ -268,11 +296,11 @@ export async function refreshTournamentDetail() {
                                             ${bm.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (bm.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '')}
                                         </div>
                                         <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${bm.winner_id && bm.winner_id == 1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${bm.slot_1_label || 'TBD'}</span>
+                                            <span class="truncate">${getBracketSlotLabel(bm, 1)}</span>
                                             <span style="font-weight:900; color:${bm.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${bm.score_1 || 0}</span>
                                         </div>
                                         <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${bm.winner_id && bm.winner_id == 2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${bm.slot_2_label || 'TBD'}</span>
+                                            <span class="truncate">${getBracketSlotLabel(bm, 2)}</span>
                                             <span style="font-weight:900; color:${bm.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${bm.score_2 || 0}</span>
                                         </div>
                                     </div>
@@ -295,11 +323,11 @@ export async function refreshTournamentDetail() {
                                             ${m1.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (m1.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '')}
                                         </div>
                                         <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m1.winner_id && m1.winner_id == 1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${m1.slot_1_label || 'TBD'}</span>
+                                            <span class="truncate">${getBracketSlotLabel(m1, 1)}</span>
                                             <span style="font-weight:900; color:${m1.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m1.score_1 || 0}</span>
                                         </div>
                                         <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m1.winner_id && m1.winner_id == 2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${m1.slot_2_label || 'TBD'}</span>
+                                            <span class="truncate">${getBracketSlotLabel(m1, 2)}</span>
                                             <span style="font-weight:900; color:${m1.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m1.score_2 || 0}</span>
                                         </div>
                                     </div>
@@ -314,11 +342,11 @@ export async function refreshTournamentDetail() {
                                                 ${m2.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (m2.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '')}
                                             </div>
                                             <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m2.winner_id && m2.winner_id == 1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between;">
-                                                <span class="truncate">${m2.slot_1_label || 'TBD'}</span>
+                                                <span class="truncate">${getBracketSlotLabel(m2, 1)}</span>
                                                 <span style="font-weight:900; color:${m2.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m2.score_1 || 0}</span>
                                             </div>
                                             <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m2.winner_id && m2.winner_id == 2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between;">
-                                                <span class="truncate">${m2.slot_2_label || 'TBD'}</span>
+                                                <span class="truncate">${getBracketSlotLabel(m2, 2)}</span>
                                                 <span style="font-weight:900; color:${m2.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m2.score_2 || 0}</span>
                                             </div>
                                         </div>

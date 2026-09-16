@@ -20,7 +20,7 @@ import {
     refreshTournamentDetail,
     toggleTeamPaymentStatus,
     toggleMatchPaymentStatus
-} from './modules/tournament-detail.js?v=35';
+} from './modules/tournament-detail.js?v=36';
 
 import {
     teamPool,
