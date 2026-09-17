@@ -2,9 +2,9 @@
 // MODULE: PLAYERS & RANKINGS (PAGINATION)
 // ==========================================
 
-import { API_BASE, apiRequest } from '../core/api.js?v=35';
-import { showToast } from '../core/toast.js?v=35';
-import { svgAvatar } from '../core/avatar.js?v=35';
+import { API_BASE, apiRequest } from '../core/api.js?v=40';
+import { showToast } from '../core/toast.js?v=40';
+import { svgAvatar } from '../core/avatar.js?v=40';
 
 export let cachedPlayers = [];
 const PAGE_SIZE = 15;

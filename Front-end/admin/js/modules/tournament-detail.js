@@ -2,16 +2,21 @@
 // MODULE: TOURNAMENT DETAIL & TEAM PAYMENTS
 // ==========================================
 
-import { API_BASE, apiRequest } from '../core/api.js?v=35';
-import { showToast } from '../core/toast.js?v=35';
-import { svgAvatar } from '../core/avatar.js?v=35';
+import { API_BASE, apiRequest } from '../core/api.js?v=40';
+import { showToast } from '../core/toast.js?v=40';
+import { svgAvatar } from '../core/avatar.js?v=40';
 
-export let currentTournamentId = null;
-export let cachedBrackets = [];
-export let cachedTeams = [];
+window._adminCurrentTournamentId = window._adminCurrentTournamentId || null;
+window._adminCachedBrackets = window._adminCachedBrackets || [];
+window._adminCachedTeams = window._adminCachedTeams || [];
+
+export let currentTournamentId = window._adminCurrentTournamentId;
+export let cachedBrackets = window._adminCachedBrackets;
+export let cachedTeams = window._adminCachedTeams;
 
 export function setCurrentTournamentId(id) {
     currentTournamentId = id;
+    window._adminCurrentTournamentId = id;
 }
 
 export function getPlayerAvatarUrl(avatarPath, name) {
@@ -24,8 +29,9 @@ export function getPlayerAvatarUrl(avatarPath, name) {
 }
 
 export async function refreshTournamentDetail() {
-    if (!currentTournamentId) return;
-    const res = await apiRequest(`/tournaments/detail?id=${currentTournamentId}`);
+    const tid = currentTournamentId || window._adminCurrentTournamentId;
+    if (!tid) return;
+    const res = await apiRequest(`/tournaments/detail?id=${tid}`);
     if (!res || !res.data) return;
 
     const data = res.data;
@@ -37,6 +43,9 @@ export async function refreshTournamentDetail() {
 
     cachedBrackets = brackets;
     cachedTeams = teams;
+    window._adminCachedBrackets = brackets;
+    window._adminCachedTeams = teams;
+    window._adminCurrentTournamentId = tid;
 
     // Title & Description
     const titleEl = document.getElementById('detail-title');
@@ -294,7 +303,7 @@ export async function refreshTournamentDetail() {
                 const isW1 = (bm.winner_slot == 1 || bm.winner_id == 1);
                 const isW2 = (bm.winner_slot == 2 || bm.winner_id == 2);
                 return `
-                    <div onclick="window.openBracketMatchEditModal(${bm.id})" title="Nhấp để chọn đội hoặc nhập kết quả trận đấu" style="padding:10px 12px; background:#fff; border:1.5px solid ${isFinalMatch ? '#f59e0b' : '#e2e8f0'}; border-radius:10px; box-shadow:${isFinalMatch ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}; position:relative; z-index:2; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 12px rgba(55,157,224,0.18)';" onmouseout="this.style.transform='none'; this.style.boxShadow='${isFinalMatch ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}';">
+                    <div onclick="window.openBracketMatchEditModal('${bm.id}')" title="Nhấp để chọn đội hoặc nhập kết quả trận đấu" style="padding:10px 12px; background:#fff; border:1.5px solid ${isFinalMatch ? '#f59e0b' : '#e2e8f0'}; border-radius:10px; box-shadow:${isFinalMatch ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}; position:relative; z-index:2; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 12px rgba(55,157,224,0.18)';" onmouseout="this.style.transform='none'; this.style.boxShadow='${isFinalMatch ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}';">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                             <span style="font-size:10px; font-weight:800; color:${isFinalMatch ? '#d97706' : 'var(--primary)'}; background:${isFinalMatch ? '#fef3c7' : 'rgba(55,157,224,0.1)'}; border:1px solid ${isFinalMatch ? '#fde68a' : 'rgba(55,157,224,0.2)'}; padding:2px 6px; border-radius:4px;">
                                 ${isFinalMatch ? 'TRẬN CHUNG KẾT' : `TRẬN #${bm.match_order}`}
@@ -429,9 +438,11 @@ export async function toggleMatchPaymentStatus(matchId, newStatus) {
 }
 
 export function openBracketMatchEditModal(matchId) {
-    const bm = cachedBrackets.find(b => b.id == matchId);
+    const list = (cachedBrackets && cachedBrackets.length > 0) ? cachedBrackets : (window._adminCachedBrackets || []);
+    const bm = list.find(b => String(b.id) === String(matchId));
     if (!bm) {
-        showToast('Không tìm thấy thông tin trận đấu', 'error');
+        console.error('Bracket match not found for matchId:', matchId, 'Available brackets:', list);
+        showToast(`Không tìm thấy thông tin trận đấu #${matchId}`, 'error');
         return;
     }
 
@@ -453,8 +464,9 @@ export function openBracketMatchEditModal(matchId) {
     const sel1 = document.getElementById('bracket-edit-team1');
     const sel2 = document.getElementById('bracket-edit-team2');
 
+    const teamsList = (cachedTeams && cachedTeams.length > 0) ? cachedTeams : (window._adminCachedTeams || []);
     let teamOptionsHtml = `<option value="">-- Giữ nguyên nhãn hiện tại --</option>`;
-    cachedTeams.forEach((tm, idx) => {
+    teamsList.forEach((tm, idx) => {
         const p1Nick = tm.p1_nickname || tm.p1_name || (tm.player1 ? (tm.player1.nickname || tm.player1.name) : '');
         const p2Nick = tm.p2_nickname || tm.p2_name || (tm.player2 ? (tm.player2.nickname || tm.player2.name) : '');
         const teamLabel = (p1Nick && p2Nick) ? `${p1Nick} & ${p2Nick}` : (p1Nick || p2Nick || `Đội #${idx + 1}`);
@@ -512,7 +524,8 @@ export function closeBracketMatchEditModal() {
 export async function submitBracketMatchEdit(e) {
     if (e) e.preventDefault();
     const matchId = document.getElementById('bracket-edit-id')?.value;
-    if (!matchId || !currentTournamentId) {
+    const tId = currentTournamentId || window._adminCurrentTournamentId;
+    if (!matchId || !tId) {
         showToast('Thiếu thông tin giải đấu hoặc trận đấu', 'error');
         return;
     }
@@ -526,7 +539,7 @@ export async function submitBracketMatchEdit(e) {
     const winner_slot = document.getElementById('bracket-edit-winner')?.value || null;
 
     const payload = {
-        tournament_id: currentTournamentId,
+        tournament_id: tId,
         bracket_id: matchId,
         team1_id: team1_id ? parseInt(team1_id, 10) : null,
         team2_id: team2_id ? parseInt(team2_id, 10) : null,

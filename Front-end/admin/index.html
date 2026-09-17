@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pickaball Admin</title>
     <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
-    <link rel="stylesheet" href="css/admin.css?v=37">
+    <link rel="stylesheet" href="css/admin.css?v=40">
     <script>
         if (localStorage.getItem('admin_token')) {
             document.documentElement.classList.add('is-authenticated');
@@ -590,7 +590,7 @@
 </div>
 
 <!-- ===== MODAL NHẬP KẾT QUẢ TRẬN ĐẤU NHÁNH (BRACKET MATCH) ===== -->
-<div id="modal-bracket-match-edit" class="modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; z-index: 1050; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 16px; box-sizing: border-box;">
+<div id="modal-bracket-match-edit" class="modal-overlay">
     <div class="modal-container" style="max-width: 540px; width: 100%; max-height: calc(100vh - 32px); margin: auto; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.3); border-radius: 16px; overflow: hidden; background: #fff;">
         <div class="modal-header" style="flex-shrink: 0;">
             <h2 id="bracket-match-modal-title" style="display:flex; align-items:center; gap:8px; font-size:18px;">
@@ -680,7 +680,7 @@
 
 <div id="admin-toast"></div>
 
-<script type="module" src="js/main.js?v=39"></script>
+<script type="module" src="js/main.js?v=40"></script>
     <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

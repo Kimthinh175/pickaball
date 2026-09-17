@@ -2,10 +2,10 @@
 // MODULE: TOURNAMENT FINISH & RESULTS
 // ==========================================
 
-import { apiRequest } from '../core/api.js?v=35';
-import { showToast } from '../core/toast.js?v=35';
-import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=36';
-import { loadTournaments } from './tournaments.js?v=35';
+import { apiRequest } from '../core/api.js?v=40';
+import { showToast } from '../core/toast.js?v=40';
+import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=40';
+import { loadTournaments } from './tournaments.js?v=40';
 
 function getDefaultPointsForRank(rankName) {
     const lower = (rankName || '').toLowerCase();
@@ -19,11 +19,12 @@ function getDefaultPointsForRank(rankName) {
 let cachedTeamOptions = [];
 
 export async function openEndTournamentModal() {
-    if (!currentTournamentId) {
+    const tid = currentTournamentId || window._adminCurrentTournamentId;
+    if (!tid) {
         showToast('Chưa chọn giải đấu', 'error');
         return;
     }
-    const res = await apiRequest(`/tournaments/detail?id=${currentTournamentId}`);
+    const res = await apiRequest(`/tournaments/detail?id=${tid}`);
     if (!res || !res.data) {
         showToast('Không thể tải thông tin giải đấu', 'error');
         return;
@@ -211,7 +212,8 @@ export function addFinishPrizeRow() {
 
 export async function submitFinishTournament(e) {
     if (e) e.preventDefault();
-    if (!currentTournamentId) {
+    const tid = currentTournamentId || window._adminCurrentTournamentId;
+    if (!tid) {
         showToast('Chưa chọn giải đấu', 'error');
         return;
     }
@@ -251,7 +253,7 @@ export async function submitFinishTournament(e) {
     const applyPoints = document.getElementById('chk-auto-apply-points')?.checked ?? true;
 
     const payload = {
-        id: currentTournamentId,
+        id: tid,
         final_results: finalResults,
         apply_points: applyPoints
     };

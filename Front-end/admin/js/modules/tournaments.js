@@ -2,9 +2,9 @@
 // MODULE: TOURNAMENTS LIST & GENERAL
 // ==========================================
 
-import { apiRequest, calculateTournamentStatus } from '../core/api.js?v=35';
-import { showToast } from '../core/toast.js?v=35';
-import { setCurrentTournamentId, refreshTournamentDetail, currentTournamentId } from './tournament-detail.js?v=36';
+import { apiRequest, calculateTournamentStatus } from '../core/api.js?v=40';
+import { showToast } from '../core/toast.js?v=40';
+import { setCurrentTournamentId, refreshTournamentDetail, currentTournamentId } from './tournament-detail.js?v=40';
 
 export let cachedTournaments = [];
 

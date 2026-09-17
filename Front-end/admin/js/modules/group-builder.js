@@ -2,9 +2,9 @@
 // MODULE: GROUP BUILDER & AUTO DIVIDE
 // ==========================================
 
-import { showToast } from '../core/toast.js?v=35';
-import { svgAvatar } from '../core/avatar.js?v=35';
-import { teamPool } from './team-pool.js?v=35';
+import { showToast } from '../core/toast.js?v=40';
+import { svgAvatar } from '../core/avatar.js?v=40';
+import { teamPool } from './team-pool.js?v=40';
 
 export let groupBuilders = [];
 

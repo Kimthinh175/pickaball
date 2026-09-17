@@ -2,11 +2,11 @@
 // MODULE: TEAM POOL & 2v2 PLAYER PICKER
 // ==========================================
 
-import { API_BASE } from '../core/api.js?v=35';
-import { showToast } from '../core/toast.js?v=35';
-import { svgAvatar } from '../core/avatar.js?v=35';
-import { cachedPlayers } from './players.js?v=35';
-import { groupBuilders, renderGroupBuilders } from './group-builder.js?v=35';
+import { API_BASE } from '../core/api.js?v=40';
+import { showToast } from '../core/toast.js?v=40';
+import { svgAvatar } from '../core/avatar.js?v=40';
+import { cachedPlayers } from './players.js?v=40';
+import { groupBuilders, renderGroupBuilders } from './group-builder.js?v=40';
 
 export let teamPool = [];
 export let activeSlot = 1;

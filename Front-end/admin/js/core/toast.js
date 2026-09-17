@@ -7,8 +7,10 @@ export function showToast(message, type = 'info') {
     if (!container) return;
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
+    const icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : (type === 'warning' ? '⚠️' : 'ℹ️'));
     toast.innerHTML = `
-        <div class="toast-content">
+        <span style="font-size: 15px; line-height: 1;">${icon}</span>
+        <div class="toast-content" style="flex: 1;">
             <span>${message}</span>
         </div>
     `;
@@ -16,5 +18,5 @@ export function showToast(message, type = 'info') {
     setTimeout(() => {
         toast.classList.add('fade-out');
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 3200);
 }

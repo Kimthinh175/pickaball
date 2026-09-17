@@ -2,15 +2,15 @@
 // MODULE: TOURNAMENT FORM (CREATE & EDIT)
 // ==========================================
 
-import { apiRequest } from '../core/api.js?v=35';
-import { showToast } from '../core/toast.js?v=35';
-import { svgAvatar } from '../core/avatar.js?v=35';
-import { teamPool, resetTeamPool, renderTeamPool, renderPlayerPickerList } from './team-pool.js?v=35';
-import { groupBuilders, resetGroupBuilders, renderGroupBuilders } from './group-builder.js?v=35';
-import { bracketStages, resetBracketStages, renderBracketBuilders } from './bracket-builder.js?v=35';
-import { loadTournaments } from './tournaments.js?v=35';
-import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=36';
-import { loadPlayers, cachedPlayers } from './players.js?v=35';
+import { apiRequest } from '../core/api.js?v=40';
+import { showToast } from '../core/toast.js?v=40';
+import { svgAvatar } from '../core/avatar.js?v=40';
+import { teamPool, resetTeamPool, renderTeamPool, renderPlayerPickerList } from './team-pool.js?v=40';
+import { groupBuilders, resetGroupBuilders, renderGroupBuilders } from './group-builder.js?v=40';
+import { bracketStages, resetBracketStages, renderBracketBuilders } from './bracket-builder.js?v=40';
+import { loadTournaments } from './tournaments.js?v=40';
+import { currentTournamentId, refreshTournamentDetail } from './tournament-detail.js?v=40';
+import { loadPlayers, cachedPlayers } from './players.js?v=40';
 
 export let editingTournamentId = null;
 let isRepositioning = false;
@@ -122,14 +122,15 @@ export function closeCreateTournamentModal() {
 }
 
 export async function openEditCurrentTournamentModal() {
-    if (!currentTournamentId) {
+    const tid = currentTournamentId || window._adminCurrentTournamentId;
+    if (!tid) {
         showToast('Chưa chọn giải đấu để chỉnh sửa', 'error');
         return;
     }
     if (!cachedPlayers || cachedPlayers.length === 0) {
         await loadPlayers();
     }
-    const res = await apiRequest(`/tournaments/detail?id=${currentTournamentId}`);
+    const res = await apiRequest(`/tournaments/detail?id=${tid}`);
     if (!res || !res.data) {
         showToast('Không thể tải thông tin giải đấu', 'error');
         return;

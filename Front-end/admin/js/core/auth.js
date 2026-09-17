@@ -2,8 +2,8 @@
 // CORE AUTHENTICATION & LOGIN
 // ==========================================
 
-import { apiRequest } from './api.js?v=35';
-import { showToast } from './toast.js?v=35';
+import { apiRequest } from './api.js?v=40';
+import { showToast } from './toast.js?v=40';
 
 export function checkLogin(isLoggedIn, onLoginSuccess = null) {
     const loginSec = document.getElementById('login-section');
