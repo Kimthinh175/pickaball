@@ -99,13 +99,7 @@
 
     <!-- Bảng xếp hạng đầy đủ -->
     <div class="section">
-        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <span>Tất cả tuyển thủ</span>
-            <button type="button" class="btn-export-poster" onclick="window.exportLeaderboardPoster()" style="font-size: 13px; font-weight: 800; padding: 7px 14px; background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 3px 8px rgba(16,185,129,0.25); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='none'">
-                <span>📸</span>
-                <span>Xuất ảnh BXH (Poster)</span>
-            </button>
-        </div>
+        <div class="section-title">Tất cả tuyển thủ</div>
         
         <div class="filters">
             <input type="text" id="search-player" placeholder="Tìm kiếm theo tên..." class="search-bar">
@@ -147,21 +141,13 @@
                         <div class="player-cell" style="gap: 12px;">
                             <div class="skeleton skeleton-avatar" style="width: 40px; height: 40px; flex-shrink: 0;"></div>
                             <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
-                                <div class="skeleton skeleton-line" style="width: 45%; max-width: 160px; height: 15px;"></div>
-                                <div class="skeleton skeleton-line" style="width: 25%; max-width: 80px; height: 12px;"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><div class="skeleton skeleton-pill" style="width: 65px; height: 22px; margin-left: auto;"></div></td>
-                    <td><div class="skeleton skeleton-pill" style="width: 60px; height: 22px; margin: 0 auto;"></div></td>
-                </tr>
-                            <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
                                 <div class="skeleton skeleton-line" style="width: 55%; max-width: 180px; height: 15px;"></div>
                                 <div class="skeleton skeleton-line" style="width: 20%; max-width: 70px; height: 12px;"></div>
                             </div>
                         </div>
                     </td>
                     <td><div class="skeleton skeleton-pill" style="width: 65px; height: 22px; margin-left: auto;"></div></td>
+                    <td><div class="skeleton skeleton-pill" style="width: 60px; height: 22px; margin: 0 auto;"></div></td>
                 </tr>
                 <tr class="skeleton-row">
                     <td><div class="skeleton skeleton-pill" style="width: 22px; height: 22px; margin: 0 auto; border-radius: 50%;"></div></td>
@@ -175,6 +161,7 @@
                         </div>
                     </td>
                     <td><div class="skeleton skeleton-pill" style="width: 65px; height: 22px; margin-left: auto;"></div></td>
+                    <td><div class="skeleton skeleton-pill" style="width: 60px; height: 22px; margin: 0 auto;"></div></td>
                 </tr>
                 <tr class="skeleton-row">
                     <td><div class="skeleton skeleton-pill" style="width: 22px; height: 22px; margin: 0 auto; border-radius: 50%;"></div></td>
@@ -188,6 +175,7 @@
                         </div>
                     </td>
                     <td><div class="skeleton skeleton-pill" style="width: 65px; height: 22px; margin-left: auto;"></div></td>
+                    <td><div class="skeleton skeleton-pill" style="width: 60px; height: 22px; margin: 0 auto;"></div></td>
                 </tr>
                 <tr class="skeleton-row">
                     <td><div class="skeleton skeleton-pill" style="width: 22px; height: 22px; margin: 0 auto; border-radius: 50%;"></div></td>
@@ -201,6 +189,7 @@
                         </div>
                     </td>
                     <td><div class="skeleton skeleton-pill" style="width: 65px; height: 22px; margin-left: auto;"></div></td>
+                    <td><div class="skeleton skeleton-pill" style="width: 60px; height: 22px; margin: 0 auto;"></div></td>
                 </tr>
             </tbody>
         </table>
@@ -343,7 +332,7 @@
 </div>
 
 <div id="toast"></div>
-<script type="module" src="js/main.js?v=25"></script>
+<script type="module" src="js/main.js?v=26"></script>
     <script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>
