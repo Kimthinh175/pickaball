@@ -402,13 +402,19 @@ input:focus, select:focus, textarea:focus {
 
 /* ===== MODAL POPUP ===== */
 .modal-overlay {
-  position: fixed; inset: 0; z-index: 999;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw; height: 100vh;
+  inset: 0; z-index: 1050;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  padding: 16px;
   opacity: 0; pointer-events: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   transition: opacity 0.25s ease;
+  box-sizing: border-box;
 }
 .modal-overlay.active {
   opacity: 1; pointer-events: auto;
@@ -416,7 +422,8 @@ input:focus, select:focus, textarea:focus {
 .modal-container {
   background: #fff; border-radius: 16px;
   width: 100%; max-width: 900px;
-  max-height: 90vh;
+  max-height: calc(100vh - 32px);
+  margin: auto;
   display: flex; flex-direction: column;
   box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   border: 1px solid var(--border);
@@ -444,7 +451,7 @@ input:focus, select:focus, textarea:focus {
 .modal-close:hover { background: rgba(0,0,0,0.06); color: var(--text); }
 
 .modal-body {
-  padding: 28px; overflow-y: auto; flex: 1;
+  padding: 24px; overflow-y: auto; flex: 1 1 auto; min-height: 0;
 }
 
 .modal-footer {

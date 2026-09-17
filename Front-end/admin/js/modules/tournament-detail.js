@@ -495,7 +495,13 @@ export function openBracketMatchEditModal(matchId) {
     if (score2Input) score2Input.oninput = autoPickWinner;
     if (statusSelect) statusSelect.onchange = autoPickWinner;
 
-    document.getElementById('modal-bracket-match-edit')?.classList.add('active');
+    const modal = document.getElementById('modal-bracket-match-edit');
+    if (modal) {
+        modal.classList.add('active');
+        modal.scrollTop = 0;
+        const mBody = modal.querySelector('.modal-body');
+        if (mBody) mBody.scrollTop = 0;
+    }
     if (window.lucide) window.lucide.createIcons();
 }
 
