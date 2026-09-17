@@ -19,8 +19,11 @@ import {
     setCurrentTournamentId,
     refreshTournamentDetail,
     toggleTeamPaymentStatus,
-    toggleMatchPaymentStatus
-} from './modules/tournament-detail.js?v=36';
+    toggleMatchPaymentStatus,
+    openBracketMatchEditModal,
+    closeBracketMatchEditModal,
+    submitBracketMatchEdit
+} from './modules/tournament-detail.js?v=37';
 
 import {
     teamPool,
@@ -151,6 +154,9 @@ window.deleteCurrentTournament = deleteCurrentTournament;
 window.refreshTournamentDetail = refreshTournamentDetail;
 window.toggleTeamPaymentStatus = toggleTeamPaymentStatus;
 window.toggleMatchPaymentStatus = toggleMatchPaymentStatus;
+window.openBracketMatchEditModal = openBracketMatchEditModal;
+window.closeBracketMatchEditModal = closeBracketMatchEditModal;
+window.submitBracketMatchEdit = submitBracketMatchEdit;
 
 // Team Pool & 2v2 Slots
 window.setActiveSlot = setActiveSlot;

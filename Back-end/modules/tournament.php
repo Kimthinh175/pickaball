@@ -400,5 +400,19 @@ class tournament
 
         echo json_encode(["status" => "error", "message" => "Vui lòng chọn file ảnh để tải lên"]);
     }
+
+    public function updateBracketMatch($data)
+    {
+        $tournamentId = $data['tournament_id'] ?? 0;
+        $matchId = $data['bracket_id'] ?? ($data['id'] ?? 0);
+
+        if (empty($tournamentId) || empty($matchId)) {
+            echo json_encode(["status" => "error", "message" => "Thiếu thông tin giải đấu hoặc trận đấu"]);
+            return;
+        }
+
+        $res = BracketService::updateMatch($tournamentId, $matchId, $data);
+        echo json_encode($res);
+    }
 }
 ?>

@@ -19,7 +19,7 @@ export async function fetchRanking() {
         const data = await res.json();
 
         if (data.status !== 'success' || !data.data.length) {
-            list.innerHTML = `<tr><td colspan="3" class="empty">Chưa có dữ liệu tuyển thủ.</td></tr>`;
+            list.innerHTML = `<tr><td colspan="4" class="empty">Chưa có dữ liệu tuyển thủ.</td></tr>`;
             return;
         }
 
@@ -180,7 +180,7 @@ export async function fetchRanking() {
 
     } catch (e) {
         console.error(e);
-        list.innerHTML = `<tr><td colspan="3" class="empty">Không thể kết nối máy chủ.</td></tr>`;
+        list.innerHTML = `<tr><td colspan="4" class="empty">Không thể kết nối máy chủ.</td></tr>`;
     }
 }
 
@@ -198,7 +198,7 @@ export function renderRankingTable() {
     });
 
     if (filtered.length === 0) {
-        list.innerHTML = `<tr><td colspan="3" class="empty">Không tìm thấy tuyển thủ nào phù hợp.</td></tr>`;
+        list.innerHTML = `<tr><td colspan="4" class="empty">Không tìm thấy tuyển thủ nào phù hợp.</td></tr>`;
         renderPagination(0, 0);
         return;
     }
@@ -216,6 +216,16 @@ export function renderRankingTable() {
         const rankClass = globalIdx === 0 ? 'rk-1' : globalIdx === 1 ? 'rk-2' : globalIdx === 2 ? 'rk-3' : '';
         const rankDisplay = medal || (globalIdx + 1);
 
+        const diff = parseFloat(p.points_diff || 0);
+        let diffHtml = '';
+        if (diff > 0) {
+            diffHtml = `<span class="diff-badge diff-up" style="color: #16a34a; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; background: #dcfce7; padding: 3px 8px; border-radius: 6px; min-width: 68px;">▲ +${diff.toFixed(2)}</span>`;
+        } else if (diff < 0) {
+            diffHtml = `<span class="diff-badge diff-down" style="color: #dc2626; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; background: #fee2e2; padding: 3px 8px; border-radius: 6px; min-width: 68px;">▼ ${diff.toFixed(2)}</span>`;
+        } else {
+            diffHtml = `<span class="diff-badge diff-none" style="color: #64748b; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; min-width: 68px;">= 0.00</span>`;
+        }
+
         return `
             <tr onclick="window.openPlayerProfile(${p.id})" style="cursor:pointer;">
                 <td class="rk ${rankClass}">${rankDisplay}</td>
@@ -232,7 +242,8 @@ export function renderRankingTable() {
                         </div>
                     </div>
                 </td>
-                <td class="pts-col"><strong>${parseFloat(p.points || 0).toFixed(2)}</strong> điểm</td>
+                <td class="pts-col"><strong style="font-size: 14.5px;">${parseFloat(p.points || 0).toFixed(2)}</strong></td>
+                <td style="text-align: center;">${diffHtml}</td>
             </tr>
         `;
     }).join('');
@@ -371,6 +382,64 @@ export function openPlayerProfile(id) {
         if (bioBox) bioBox.style.display = 'none';
     }
 
+    // Load lịch sử biến động điểm
+    const historyList = document.getElementById('profile-history-list');
+    const historyLoading = document.getElementById('profile-history-loading');
+    if (historyList) {
+        historyList.innerHTML = '';
+        if (historyLoading) historyLoading.style.display = 'inline';
+
+        fetch(`${API_BASE}/players/rating-history?player_id=${id}`)
+            .then(r => r.json())
+            .then(res => {
+                if (historyLoading) historyLoading.style.display = 'none';
+                if (res && res.status === 'success' && res.data && res.data.length > 0) {
+                    historyList.innerHTML = res.data.map(log => {
+                        const diff = parseFloat(log.points_diff || 0);
+                        const isUp = diff > 0;
+                        const isDown = diff < 0;
+                        const sign = isUp ? '+' : '';
+                        const color = isUp ? '#16a34a' : (isDown ? '#dc2626' : '#64748b');
+                        const bg = isUp ? '#dcfce7' : (isDown ? '#fee2e2' : '#f1f5f9');
+                        const arrow = isUp ? '▲' : (isDown ? '▼' : '=');
+                        
+                        let dateStr = '';
+                        if (log.created_at) {
+                            try {
+                                const d = new Date(log.created_at);
+                                dateStr = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+                            } catch (e) {
+                                dateStr = log.created_at.substring(0, 10);
+                            }
+                        }
+
+                        return `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; border-bottom: 1px dashed #e2e8f0; gap: 8px;">
+                                <div style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
+                                    <span style="font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11.5px;">
+                                        ${log.reason || log.tournament_title || 'Cập nhật điểm'}
+                                    </span>
+                                    <span style="font-size: 10px; color: var(--muted);">${dateStr}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                                    <span style="font-size: 11px; color: var(--muted);">${parseFloat(log.old_points).toFixed(2)} → ${parseFloat(log.new_points).toFixed(2)}</span>
+                                    <span style="color: ${color}; background: ${bg}; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                                        ${arrow} ${sign}${diff.toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    historyList.innerHTML = '<div style="color: var(--muted); padding: 10px 0; font-style: italic; text-align: center;">Chưa có biến động điểm nào được ghi nhận.</div>';
+                }
+            })
+            .catch(() => {
+                if (historyLoading) historyLoading.style.display = 'none';
+                historyList.innerHTML = '<div style="color: var(--muted); padding: 10px 0; font-style: italic; text-align: center;">Không thể tải lịch sử điểm.</div>';
+            });
+    }
+
     modal.classList.add('active');
     if (window.lucide) window.lucide.createIcons();
 }
@@ -398,9 +467,152 @@ export function closeAvatarZoom(e) {
     if (modal) modal.classList.remove('active');
 }
 
+// 1-Click Export Leaderboard Poster
+export async function exportLeaderboardPoster() {
+    if (!cachedPlayers || cachedPlayers.length === 0) {
+        toast('Chưa có dữ liệu người chơi để xuất ảnh', 'error');
+        return;
+    }
+
+    toast('Đang khởi tạo ảnh Bảng xếp hạng...', 'info');
+
+    // Load html2canvas if needed
+    if (!window.html2canvas) {
+        try {
+            await new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                s.onload = resolve;
+                s.onerror = reject;
+                document.head.appendChild(s);
+            });
+        } catch (err) {
+            toast('Không thể tải thư viện xuất ảnh', 'error');
+            return;
+        }
+    }
+
+    // Build Poster Container
+    const topPlayers = cachedPlayers.slice(0, 15);
+    const posterEl = document.createElement('div');
+    posterEl.style = `
+        position: fixed;
+        left: -9999px;
+        top: 0;
+        width: 680px;
+        background: #ffffff;
+        font-family: 'Montserrat', sans-serif;
+        color: #1e293b;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        z-index: 99999;
+    `;
+
+    const now = new Date();
+    const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+
+    let rowsHtml = topPlayers.map((p, idx) => {
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}`;
+        const diff = parseFloat(p.points_diff || 0);
+        let diffBadge = '';
+        if (diff > 0) {
+            diffBadge = `<span style="color: #16a34a; background: #dcfce7; font-weight: 800; font-size: 13px; padding: 3px 8px; border-radius: 6px;">▲ +${diff.toFixed(2)}</span>`;
+        } else if (diff < 0) {
+            diffBadge = `<span style="color: #dc2626; background: #fee2e2; font-weight: 800; font-size: 13px; padding: 3px 8px; border-radius: 6px;">▼ ${diff.toFixed(2)}</span>`;
+        } else {
+            diffBadge = `<span style="color: #64748b; background: #f1f5f9; font-weight: 800; font-size: 13px; padding: 3px 8px; border-radius: 6px;">= 0.00</span>`;
+        }
+
+        const bgRow = (idx % 2 === 0) ? '#ffffff' : '#f8fafc';
+        const nameDisplay = p.nickname || p.name;
+        const subDisplay = p.nickname ? p.name : '';
+
+        return `
+            <div style="display: flex; align-items: center; padding: 10px 18px; background: ${bgRow}; border-bottom: 1px solid #f1f5f9;">
+                <div style="width: 50px; font-weight: 800; font-size: ${idx < 3 ? '18px' : '14px'}; text-align: center; color: #475569;">
+                    ${medal}
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; padding-right: 12px;">
+                    <img src="${avatarOf(p)}" crossorigin="anonymous" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; flex-shrink: 0;" onerror="this.src='${svgAvatar(nameDisplay)}'">
+                    <div style="display: flex; flex-direction: column; min-width: 0;">
+                        <span style="font-weight: 800; font-size: 14px; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nameDisplay}</span>
+                        ${subDisplay ? `<span style="font-size: 11px; color: #64748b;">${subDisplay}</span>` : ''}
+                    </div>
+                </div>
+                <div style="width: 100px; text-align: right; font-weight: 900; font-size: 16px; color: #0284c7; padding-right: 20px;">
+                    ${parseFloat(p.points || 0).toFixed(2)}
+                </div>
+                <div style="width: 110px; text-align: center;">
+                    ${diffBadge}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    posterEl.innerHTML = `
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; padding: 24px 24px 20px; text-align: center;">
+            <div style="font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #bae6fd; margin-bottom: 6px;">
+                🎾 PICKO 247 PICKLEBALL COMMUNITY
+            </div>
+            <h1 style="font-family: 'Paytone One', sans-serif; font-size: 24px; margin: 0 0 6px 0; letter-spacing: 0.5px;">
+                BẢNG XẾP HẠNG TUYỂN THỦ
+            </h1>
+            <div style="font-size: 12.5px; font-weight: 600; color: #e0f2fe;">
+                Điểm Trình Theo Chuẩn DUPR • Cập nhật: ${dateStr}
+            </div>
+        </div>
+
+        <!-- Table Head -->
+        <div style="display: flex; align-items: center; padding: 10px 18px; background: #f1f5f9; font-weight: 800; font-size: 12px; color: #475569; text-transform: uppercase; border-bottom: 1.5px solid #cbd5e1;">
+            <div style="width: 50px; text-align: center;">STT</div>
+            <div style="flex: 1; padding-left: 50px;">NGƯỜI CHƠI</div>
+            <div style="width: 100px; text-align: right; padding-right: 20px;">ĐIỂM SỐ</div>
+            <div style="width: 110px; text-align: center;">THAY ĐỔI</div>
+        </div>
+
+        <!-- Rows -->
+        <div>
+            ${rowsHtml}
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #f8fafc; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 700; color: #64748b; border-top: 1px solid #e2e8f0;">
+            <div>🌐 Trang chủ: <strong>picko247.com</strong></div>
+            <div>🔥 Tham gia nhóm Facebook: <strong>PICKO 247</strong></div>
+        </div>
+    `;
+
+    document.body.appendChild(posterEl);
+
+    try {
+        const canvas = await window.html2canvas(posterEl, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff'
+        });
+
+        const link = document.createElement('a');
+        link.download = `BXH_PICKO247_${dateStr.replace(/\//g, '-')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        toast('Đã tải ảnh Bảng xếp hạng thành công!', 'success');
+    } catch (err) {
+        console.error(err);
+        toast('Không thể xuất ảnh poster', 'error');
+    } finally {
+        posterEl.remove();
+    }
+}
+
 // Bind to window for global access
 window.openAvatarZoom = openAvatarZoom;
 window.closeAvatarZoom = closeAvatarZoom;
+window.openPlayerProfile = openPlayerProfile;
+window.closePlayerProfileModal = closePlayerProfileModal;
+window.exportLeaderboardPoster = exportLeaderboardPoster;
 
 // Close on Escape key
 window.addEventListener('keydown', (e) => {

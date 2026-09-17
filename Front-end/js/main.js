@@ -3,9 +3,9 @@
 // ==========================================
 
 import { calculateTournamentStatus, toast, svgAvatar, avatarOf, fmtDate } from './core/api.js?v=18';
-import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage, openAvatarZoom, closeAvatarZoom } from './modules/ranking.js?v=19';
+import { fetchRanking, renderMorePlayers, openPlayerProfile, closePlayerProfileModal, goToRankingPage, openAvatarZoom, closeAvatarZoom, exportLeaderboardPoster } from './modules/ranking.js?v=20';
 import { fetchTournaments } from './modules/tournaments.js?v=18';
-import { fetchTournamentDetail } from './modules/tournament-detail.js?v=19';
+import { fetchTournamentDetail } from './modules/tournament-detail.js?v=20';
 import { initSlider, goToSlide, nextSlide, prevSlide } from './modules/slider.js?v=18';
 
 // Expose handlers to window for inline HTML onclick attributes
@@ -21,6 +21,7 @@ window.closePlayerProfileModal = closePlayerProfileModal;
 window.openAvatarZoom = openAvatarZoom;
 window.closeAvatarZoom = closeAvatarZoom;
 window.goToRankingPage = goToRankingPage;
+window.exportLeaderboardPoster = exportLeaderboardPoster;
 
 window.goToSlide = goToSlide;
 window.nextSlide = nextSlide;

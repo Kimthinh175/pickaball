@@ -90,6 +90,7 @@ CREATE TABLE `players` (
   `nickname` varchar(100) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `points` decimal(10,2) DEFAULT 0.00,
+  `points_diff` decimal(5,2) DEFAULT 0.00,
   `gender` varchar(10) DEFAULT 'Nam',
   `profile` text DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -189,18 +190,24 @@ CREATE TABLE `tournament_brackets` (
   `tournament_id` int(11) DEFAULT NULL,
   `stage_name` varchar(100) NOT NULL,
   `match_order` int(11) DEFAULT 0,
+  `team1_id` int(11) DEFAULT NULL,
   `team1_p1_id` int(11) DEFAULT NULL,
   `team1_p2_id` int(11) DEFAULT NULL,
+  `team2_id` int(11) DEFAULT NULL,
   `team2_p1_id` int(11) DEFAULT NULL,
   `team2_p2_id` int(11) DEFAULT NULL,
   `slot_1_label` varchar(100) DEFAULT NULL,
   `slot_2_label` varchar(100) DEFAULT NULL,
   `winner_id` int(11) DEFAULT NULL,
+  `winner_slot` tinyint(4) DEFAULT NULL,
   `score_1` int(11) DEFAULT 0,
   `score_2` int(11) DEFAULT 0,
+  `score_detail` varchar(100) DEFAULT NULL,
   `status` varchar(50) DEFAULT 'pending',
   PRIMARY KEY (`id`),
   KEY `tournament_id` (`tournament_id`),
+  KEY `team1_id` (`team1_id`),
+  KEY `team2_id` (`team2_id`),
   KEY `team1_p1_id` (`team1_p1_id`),
   KEY `team1_p2_id` (`team1_p2_id`),
   KEY `team2_p1_id` (`team2_p1_id`),
@@ -210,8 +217,28 @@ CREATE TABLE `tournament_brackets` (
   CONSTRAINT `tournament_brackets_ibfk_2` FOREIGN KEY (`team1_p1_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
   CONSTRAINT `tournament_brackets_ibfk_3` FOREIGN KEY (`team1_p2_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
   CONSTRAINT `tournament_brackets_ibfk_4` FOREIGN KEY (`team2_p1_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `tournament_brackets_ibfk_5` FOREIGN KEY (`team2_p2_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `tournament_brackets_ibfk_6` FOREIGN KEY (`winner_id`) REFERENCES `players` (`id`) ON DELETE SET NULL
+  CONSTRAINT `tournament_brackets_ibfk_5` FOREIGN KEY (`team2_p2_id`) REFERENCES `players` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table: `player_rating_logs`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `player_rating_logs`;
+CREATE TABLE `player_rating_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) NOT NULL,
+  `tournament_id` int(11) DEFAULT NULL,
+  `match_id` int(11) DEFAULT NULL,
+  `bracket_id` int(11) DEFAULT NULL,
+  `old_points` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `new_points` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `points_diff` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `reason` varchar(255) DEFAULT '',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `player_id` (`player_id`),
+  KEY `tournament_id` (`tournament_id`),
+  CONSTRAINT `fk_rating_player` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

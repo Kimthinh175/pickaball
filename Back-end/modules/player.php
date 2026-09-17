@@ -60,10 +60,11 @@ class player
             return;
         }
 
-        // Fetch old avatar
-        $old_sql = "SELECT avatar FROM players WHERE id = :id";
+        // Fetch old avatar & points
+        $old_sql = "SELECT points, avatar FROM players WHERE id = :id";
         $old_player = database::ThucThiTraVe($old_sql, ['id' => $id]);
         $old_avatar = (count($old_player) > 0) ? $old_player[0]['avatar'] : '';
+        $old_points = (count($old_player) > 0) ? floatval($old_player[0]['points']) : 0.00;
 
         // Handle File Upload with Auto-Resize & Optimization (supports 4K/high-res)
         if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
@@ -94,7 +95,42 @@ class player
             'profile' => $profile
         ]);
 
+        $new_points = floatval($points);
+        $diff = round($new_points - $old_points, 2);
+        if ($diff != 0) {
+            database::ThucThi("UPDATE players SET points_diff = :diff WHERE id = :id", [
+                'diff' => $diff,
+                'id' => $id
+            ]);
+            database::ThucThi("INSERT INTO player_rating_logs (player_id, old_points, new_points, points_diff, reason) 
+                               VALUES (:pid, :old_pts, :new_pts, :diff, :reason)", [
+                'pid' => $id,
+                'old_pts' => $old_points,
+                'new_pts' => $new_points,
+                'diff' => $diff,
+                'reason' => 'Admin cập nhật điểm thủ công'
+            ]);
+        }
+
         echo json_encode(["status" => "success", "message" => "Cập nhật người chơi thành công"]);
+    }
+
+    public function getRatingHistory($data)
+    {
+        $playerId = intval($_GET['player_id'] ?? ($data['player_id'] ?? 0));
+        if (empty($playerId)) {
+            echo json_encode(["status" => "error", "message" => "Thiếu player_id"]);
+            return;
+        }
+
+        $sql = "SELECT l.*, t.title as tournament_title 
+                FROM player_rating_logs l 
+                LEFT JOIN tournaments t ON l.tournament_id = t.id 
+                WHERE l.player_id = :pid 
+                ORDER BY l.created_at DESC, l.id DESC 
+                LIMIT 50";
+        $logs = database::ThucThiTraVe($sql, ['pid' => $playerId]);
+        echo json_encode(["status" => "success", "data" => $logs]);
     }
 
     public function delete($data)

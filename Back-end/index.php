@@ -26,6 +26,7 @@ $router = new Router();
 
 // Public API
 $router->get('api/players', 'player', 'getAll');
+$router->get('api/players/rating-history', 'player', 'getRatingHistory');
 $router->get('api/tournaments', 'tournament', 'getAll');
 $router->get('api/tournaments/detail', 'tournament', 'getDetail');
 $router->get('api/banners', 'banner', 'getActive');
@@ -51,6 +52,7 @@ $router->delete('api/admin/tournaments', 'tournament', 'delete');
 $router->post('api/admin/tournaments/add-player', 'tournament', 'addPlayer');
 $router->post('api/admin/tournaments/remove-player', 'tournament', 'removePlayer');
 $router->post('api/admin/tournaments/placement', 'tournament', 'updatePlacement');
+$router->post('api/admin/tournaments/bracket/match', 'tournament', 'updateBracketMatch');
 $router->post('api/admin/matches/status', 'tournament', 'updateMatchStatus');
 $router->post('api/admin/tournaments/team-payment', 'tournament', 'updateTeamPaymentStatus');
 $router->post('api/admin/tournaments/finish', 'tournament', 'finishTournament');

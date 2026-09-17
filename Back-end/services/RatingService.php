@@ -28,6 +28,10 @@ class RatingService
                     'pid' => $pa['player_id']
                 ]);
             }
+            database::ThucThi("DELETE FROM player_rating_logs WHERE tournament_id = :tid", ['tid' => $id]);
+
+            $tourRow = database::ThucThiTraVe("SELECT title FROM tournaments WHERE id = :id", ['id' => $id]);
+            $tourTitle = !empty($tourRow) ? $tourRow[0]['title'] : "Giải đấu #{$id}";
 
             // 3. Ensure all players from tournament_teams & matches are in tournament_players
             $teamPlayers = database::ThucThiTraVe("SELECT DISTINCT player1_id as pid FROM tournament_teams WHERE tournament_id = :tid AND player1_id IS NOT NULL
@@ -109,9 +113,15 @@ class RatingService
                     if (!empty($pid)) {
                         $awardedPlayerIds[$pid] = true;
 
-                        // Cập nhật điểm cho từng Player
-                        database::ThucThi("UPDATE players SET points = ROUND(points + :pts, 2) WHERE id = :pid", [
-                            'pts' => $pts,
+                        // Lấy điểm hiện tại trước khi cộng/trừ
+                        $pRow = database::ThucThiTraVe("SELECT points FROM players WHERE id = :pid", ['pid' => $pid]);
+                        $oldPts = !empty($pRow) ? floatval($pRow[0]['points']) : 0.00;
+                        $newPts = round($oldPts + $pts, 2);
+
+                        // Cập nhật điểm cho từng Player kèm biến động điểm
+                        database::ThucThi("UPDATE players SET points = :new_pts, points_diff = :diff WHERE id = :pid", [
+                            'new_pts' => $newPts,
+                            'diff' => $pts,
                             'pid' => $pid
                         ]);
                         database::ThucThi("UPDATE tournament_players SET placement = :placement, points_awarded = :pts WHERE tournament_id = :tid AND player_id = :pid", [
@@ -120,16 +130,30 @@ class RatingService
                             'tid' => $id,
                             'pid' => $pid
                         ]);
+
+                        // Ghi vào bảng lịch sử rating logs
+                        database::ThucThi("INSERT INTO player_rating_logs (player_id, tournament_id, old_points, new_points, points_diff, reason) 
+                                           VALUES (:pid, :tid, :old_pts, :new_pts, :diff, :reason)", [
+                            'pid' => $pid,
+                            'tid' => $id,
+                            'old_pts' => $oldPts,
+                            'new_pts' => $newPts,
+                            'diff' => $pts,
+                            'reason' => "Giải đấu: {$tourTitle} ({$placementLabel})"
+                        ]);
                     }
                 }
             }
 
-            // 5. Cập nhật thành tích "Tham gia" cho các VĐV còn lại (không trừ điểm bừa bãi)
+            // 5. Cập nhật thành tích "Tham gia" cho các VĐV còn lại
             foreach ($allTourPlayers as $tp) {
                 $pid = $tp['player_id'];
                 if (!isset($awardedPlayerIds[$pid])) {
                     database::ThucThi("UPDATE tournament_players SET placement = 'Tham gia', points_awarded = 0 WHERE tournament_id = :tid AND player_id = :pid", [
                         'tid' => $id,
+                        'pid' => $pid
+                    ]);
+                    database::ThucThi("UPDATE players SET points_diff = 0.00 WHERE id = :pid AND points_diff IS NULL", [
                         'pid' => $pid
                     ]);
                 }

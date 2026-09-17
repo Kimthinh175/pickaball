@@ -7,6 +7,8 @@ import { showToast } from '../core/toast.js?v=35';
 import { svgAvatar } from '../core/avatar.js?v=35';
 
 export let currentTournamentId = null;
+export let cachedBrackets = [];
+export let cachedTeams = [];
 
 export function setCurrentTournamentId(id) {
     currentTournamentId = id;
@@ -32,6 +34,9 @@ export async function refreshTournamentDetail() {
     const matchups = data.matchups || [];
     const groups = data.groups || [];
     const brackets = data.brackets || [];
+
+    cachedBrackets = brackets;
+    cachedTeams = teams;
 
     // Title & Description
     const titleEl = document.getElementById('detail-title');
@@ -240,10 +245,20 @@ export async function refreshTournamentDetail() {
                 stagesMap[sName].push(b);
             });
 
-            const stagePriority = { 'vòng 1/16': 1, 'vòng 1/8': 2, 'tứ kết': 3, 'bán kết': 4, 'chung kết': 5, 'tranh hạng 3': 6 };
+            const stagePriority = { 
+                'vòng 1/64': 0, 
+                'vòng 1/32': 1, 
+                'vòng 1/16': 2, 
+                'vòng 1/8': 3, 
+                'tứ kết': 4, 
+                'bán kết': 5, 
+                'chung kết': 6, 
+                'tranh hạng 3': 7,
+                'tranh hạng ba': 7
+            };
             const stageNames = Object.keys(stagesMap).sort((a, b) => {
-                const pA = stagePriority[a.toLowerCase()] || (10 - stagesMap[a].length);
-                const pB = stagePriority[b.toLowerCase()] || (10 - stagesMap[b].length);
+                const pA = stagePriority[a.toLowerCase()] ?? (10 - stagesMap[a].length);
+                const pB = stagePriority[b.toLowerCase()] ?? (10 - stagesMap[b].length);
                 return pA - pB;
             });
 
@@ -275,6 +290,33 @@ export async function refreshTournamentDetail() {
                 }
             };
 
+            const renderMatchCardHtml = (bm, isFinalMatch) => {
+                const isW1 = (bm.winner_slot == 1 || bm.winner_id == 1);
+                const isW2 = (bm.winner_slot == 2 || bm.winner_id == 2);
+                return `
+                    <div onclick="window.openBracketMatchEditModal(${bm.id})" title="Nhấp để chọn đội hoặc nhập kết quả trận đấu" style="padding:10px 12px; background:#fff; border:1.5px solid ${isFinalMatch ? '#f59e0b' : '#e2e8f0'}; border-radius:10px; box-shadow:${isFinalMatch ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}; position:relative; z-index:2; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 12px rgba(55,157,224,0.18)';" onmouseout="this.style.transform='none'; this.style.boxShadow='${isFinalMatch ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}';">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:10px; font-weight:800; color:${isFinalMatch ? '#d97706' : 'var(--primary)'}; background:${isFinalMatch ? '#fef3c7' : 'rgba(55,157,224,0.1)'}; border:1px solid ${isFinalMatch ? '#fde68a' : 'rgba(55,157,224,0.2)'}; padding:2px 6px; border-radius:4px;">
+                                ${isFinalMatch ? 'TRẬN CHUNG KẾT' : `TRẬN #${bm.match_order}`}
+                            </span>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                ${bm.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (bm.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '<span style="font-size:9.5px; font-weight:700; color:#64748b; background:#f1f5f9; padding:1px 5px; border-radius:4px;">Chưa đấu</span>')}
+                                <span style="font-size:10px; font-weight:800; color:var(--primary); background:rgba(55,157,224,0.12); padding:1px 5px; border-radius:4px;">✏️ Nhập</span>
+                            </div>
+                        </div>
+                        <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${isW1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="truncate" style="flex:1; ${isW1 ? 'color:#15803d; font-weight:800;' : ''}">${getBracketSlotLabel(bm, 1)}</span>
+                            <span style="font-weight:900; color:${bm.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${bm.score_1 || 0}</span>
+                        </div>
+                        <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${isW2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="truncate" style="flex:1; ${isW2 ? 'color:#15803d; font-weight:800;' : ''}">${getBracketSlotLabel(bm, 2)}</span>
+                            <span style="font-weight:900; color:${bm.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${bm.score_2 || 0}</span>
+                        </div>
+                        ${bm.score_detail ? `<div style="font-size:10px; color:#475569; font-weight:700; text-align:center; margin-top:5px; background:#f1f5f9; border-radius:4px; padding:2px 4px;">Set: ${bm.score_detail}</div>` : ''}
+                    </div>
+                `;
+            };
+
             let bracketHtml = '<div class="bracket-tree-container" style="display:flex; align-items:stretch; overflow-x:auto; padding:20px 10px; gap:40px; min-height:480px;">';
 
             stageNames.forEach((stage, sIdx) => {
@@ -288,22 +330,7 @@ export async function refreshTournamentDetail() {
                         <div class="bracket-group" style="display:flex; flex-direction:column; flex:1; position:relative;">
                             ${stageMatches.map(bm => `
                                 <div class="bracket-match-wrap" style="display:flex; flex-direction:column; justify-content:center; flex:1; padding:8px 0;">
-                                    <div style="padding:10px 12px; background:#fff; border:1.5px solid ${isFinal ? '#f59e0b' : '#e2e8f0'}; border-radius:10px; box-shadow:${isFinal ? '0 4px 12px rgba(245,158,11,0.12)' : '0 1px 4px rgba(0,0,0,0.03)'}; position:relative; z-index:2;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                            <span style="font-size:10px; font-weight:800; color:${isFinal ? '#d97706' : 'var(--primary)'}; background:${isFinal ? '#fef3c7' : 'rgba(55,157,224,0.1)'}; border:1px solid ${isFinal ? '#fde68a' : 'rgba(55,157,224,0.2)'}; padding:2px 6px; border-radius:4px;">
-                                                ${isFinal ? 'TRẬN CHUNG KẾT' : `TRẬN #${bm.match_order}`}
-                                            </span>
-                                            ${bm.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (bm.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '')}
-                                        </div>
-                                        <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${bm.winner_id && bm.winner_id == 1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${getBracketSlotLabel(bm, 1)}</span>
-                                            <span style="font-weight:900; color:${bm.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${bm.score_1 || 0}</span>
-                                        </div>
-                                        <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${bm.winner_id && bm.winner_id == 2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${getBracketSlotLabel(bm, 2)}</span>
-                                            <span style="font-weight:900; color:${bm.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${bm.score_2 || 0}</span>
-                                        </div>
-                                    </div>
+                                    ${renderMatchCardHtml(bm, isFinal)}
                                 </div>
                             `).join('')}
                         </div>
@@ -317,39 +344,13 @@ export async function refreshTournamentDetail() {
                             <div class="bracket-group" style="display:flex; flex-direction:column; flex:1; position:relative;">
                                 <!-- Trận 1 -->
                                 <div class="bracket-match-wrap" style="display:flex; flex-direction:column; justify-content:center; flex:1; padding:8px 0;">
-                                    <div style="padding:10px 12px; background:#fff; border:1.5px solid #e2e8f0; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.03); position:relative; z-index:2;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                            <span style="font-size:10px; font-weight:800; color:var(--primary); background:rgba(55,157,224,0.1); border:1px solid rgba(55,157,224,0.2); padding:2px 6px; border-radius:4px;">TRẬN #${m1.match_order}</span>
-                                            ${m1.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (m1.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '')}
-                                        </div>
-                                        <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m1.winner_id && m1.winner_id == 1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${getBracketSlotLabel(m1, 1)}</span>
-                                            <span style="font-weight:900; color:${m1.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m1.score_1 || 0}</span>
-                                        </div>
-                                        <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m1.winner_id && m1.winner_id == 2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between;">
-                                            <span class="truncate">${getBracketSlotLabel(m1, 2)}</span>
-                                            <span style="font-weight:900; color:${m1.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m1.score_2 || 0}</span>
-                                        </div>
-                                    </div>
+                                    ${renderMatchCardHtml(m1, false)}
                                 </div>
 
                                 ${m2 ? `
                                     <!-- Trận 2 -->
                                     <div class="bracket-match-wrap" style="display:flex; flex-direction:column; justify-content:center; flex:1; padding:8px 0;">
-                                        <div style="padding:10px 12px; background:#fff; border:1.5px solid #e2e8f0; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.03); position:relative; z-index:2;">
-                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                                <span style="font-size:10px; font-weight:800; color:var(--primary); background:rgba(55,157,224,0.1); border:1px solid rgba(55,157,224,0.2); padding:2px 6px; border-radius:4px;">TRẬN #${m2.match_order}</span>
-                                                ${m2.status === 'finished' ? '<span style="font-size:9.5px; font-weight:800; color:#15803d; background:#dcfce7; padding:1px 5px; border-radius:4px;">Kết thúc</span>' : (m2.status === 'live' ? '<span style="font-size:9.5px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:1px 5px; border-radius:4px;">Đang đấu</span>' : '')}
-                                            </div>
-                                            <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m2.winner_id && m2.winner_id == 1 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between;">
-                                                <span class="truncate">${getBracketSlotLabel(m2, 1)}</span>
-                                                <span style="font-weight:900; color:${m2.score_1 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m2.score_1 || 0}</span>
-                                            </div>
-                                            <div style="font-size:12px; font-weight:700; padding:6px 8px; background:${m2.winner_id && m2.winner_id == 2 ? '#dcfce7; border:1px solid #86efac;' : '#f8fafc; border:1px solid #f1f5f9;'}; border-radius:6px; display:flex; justify-content:space-between;">
-                                                <span class="truncate">${getBracketSlotLabel(m2, 2)}</span>
-                                                <span style="font-weight:900; color:${m2.score_2 > 0 ? 'var(--primary)' : 'var(--muted)'}; margin-left:6px;">${m2.score_2 || 0}</span>
-                                            </div>
-                                        </div>
+                                        ${renderMatchCardHtml(m2, false)}
                                     </div>
                                     <!-- SVG Dây nối cho cặp 2 trận -->
                                     <svg class="bracket-svg-connector" viewBox="0 0 40 100" preserveAspectRatio="none" style="position:absolute; right:-40px; top:0; width:40px; height:100%; pointer-events:none; overflow:visible; z-index:1;">
@@ -426,3 +427,121 @@ export async function toggleMatchPaymentStatus(matchId, newStatus) {
         showToast(res?.message || 'Có lỗi xảy ra', 'error');
     }
 }
+
+export function openBracketMatchEditModal(matchId) {
+    const bm = cachedBrackets.find(b => b.id == matchId);
+    if (!bm) {
+        showToast('Không tìm thấy thông tin trận đấu', 'error');
+        return;
+    }
+
+    const titleEl = document.getElementById('bracket-match-modal-title');
+    if (titleEl) {
+        titleEl.innerHTML = `<i data-lucide="edit-3"></i> ${bm.stage_name} - Trận #${bm.match_order}`;
+    }
+
+    const idInput = document.getElementById('bracket-edit-id');
+    if (idInput) idInput.value = bm.id;
+
+    // Current labels
+    const s1Cur = document.getElementById('bracket-edit-slot1-current');
+    const s2Cur = document.getElementById('bracket-edit-slot2-current');
+    if (s1Cur) s1Cur.textContent = `Hiện tại: ${bm.slot_1_label || 'TBD'}`;
+    if (s2Cur) s2Cur.textContent = `Hiện tại: ${bm.slot_2_label || 'TBD'}`;
+
+    // Fill teams dropdown
+    const sel1 = document.getElementById('bracket-edit-team1');
+    const sel2 = document.getElementById('bracket-edit-team2');
+
+    let teamOptionsHtml = `<option value="">-- Giữ nguyên nhãn hiện tại --</option>`;
+    cachedTeams.forEach((tm, idx) => {
+        const p1Nick = tm.p1_nickname || tm.p1_name || (tm.player1 ? (tm.player1.nickname || tm.player1.name) : '');
+        const p2Nick = tm.p2_nickname || tm.p2_name || (tm.player2 ? (tm.player2.nickname || tm.player2.name) : '');
+        const teamLabel = (p1Nick && p2Nick) ? `${p1Nick} & ${p2Nick}` : (p1Nick || p2Nick || `Đội #${idx + 1}`);
+        teamOptionsHtml += `<option value="${tm.id}">${teamLabel}</option>`;
+    });
+
+    if (sel1) {
+        sel1.innerHTML = teamOptionsHtml;
+        if (bm.team1_id) sel1.value = bm.team1_id;
+    }
+    if (sel2) {
+        sel2.innerHTML = teamOptionsHtml;
+        if (bm.team2_id) sel2.value = bm.team2_id;
+    }
+
+    const score1Input = document.getElementById('bracket-edit-score1');
+    const score2Input = document.getElementById('bracket-edit-score2');
+    const detailInput = document.getElementById('bracket-edit-detail');
+    const statusSelect = document.getElementById('bracket-edit-status');
+    const winnerSelect = document.getElementById('bracket-edit-winner');
+
+    if (score1Input) score1Input.value = bm.score_1 || 0;
+    if (score2Input) score2Input.value = bm.score_2 || 0;
+    if (detailInput) detailInput.value = bm.score_detail || '';
+    if (statusSelect) statusSelect.value = bm.status || 'pending';
+    if (winnerSelect) winnerSelect.value = (bm.winner_slot || bm.winner_id || '');
+
+    // Setup auto-winner selection based on scores
+    const autoPickWinner = () => {
+        const s1 = parseInt(score1Input?.value || 0, 10);
+        const s2 = parseInt(score2Input?.value || 0, 10);
+        if (statusSelect?.value === 'finished') {
+            if (s1 > s2) winnerSelect.value = '1';
+            else if (s2 > s1) winnerSelect.value = '2';
+        }
+    };
+    if (score1Input) score1Input.oninput = autoPickWinner;
+    if (score2Input) score2Input.oninput = autoPickWinner;
+    if (statusSelect) statusSelect.onchange = autoPickWinner;
+
+    document.getElementById('modal-bracket-match-edit')?.classList.add('active');
+    if (window.lucide) window.lucide.createIcons();
+}
+
+export function closeBracketMatchEditModal() {
+    document.getElementById('modal-bracket-match-edit')?.classList.remove('active');
+}
+
+export async function submitBracketMatchEdit(e) {
+    if (e) e.preventDefault();
+    const matchId = document.getElementById('bracket-edit-id')?.value;
+    if (!matchId || !currentTournamentId) {
+        showToast('Thiếu thông tin giải đấu hoặc trận đấu', 'error');
+        return;
+    }
+
+    const team1_id = document.getElementById('bracket-edit-team1')?.value || null;
+    const team2_id = document.getElementById('bracket-edit-team2')?.value || null;
+    const score_1 = parseInt(document.getElementById('bracket-edit-score1')?.value || 0, 10);
+    const score_2 = parseInt(document.getElementById('bracket-edit-score2')?.value || 0, 10);
+    const score_detail = document.getElementById('bracket-edit-detail')?.value.trim() || '';
+    const status = document.getElementById('bracket-edit-status')?.value || 'pending';
+    const winner_slot = document.getElementById('bracket-edit-winner')?.value || null;
+
+    const payload = {
+        tournament_id: currentTournamentId,
+        bracket_id: matchId,
+        team1_id: team1_id ? parseInt(team1_id, 10) : null,
+        team2_id: team2_id ? parseInt(team2_id, 10) : null,
+        score_1: score_1,
+        score_2: score_2,
+        score_detail: score_detail,
+        status: status,
+        winner_slot: winner_slot ? parseInt(winner_slot, 10) : null
+    };
+
+    const res = await apiRequest('/admin/tournaments/bracket/match', 'POST', payload);
+    if (res && res.status === 'success') {
+        showToast(res.message || 'Cập nhật trận đấu thành công!', 'success');
+        closeBracketMatchEditModal();
+        await refreshTournamentDetail();
+    } else {
+        showToast(res?.message || 'Không thể cập nhật trận đấu', 'error');
+    }
+}
+
+// Bind to window for HTML inline access
+window.openBracketMatchEditModal = openBracketMatchEditModal;
+window.closeBracketMatchEditModal = closeBracketMatchEditModal;
+window.submitBracketMatchEdit = submitBracketMatchEdit;
