@@ -23,7 +23,7 @@ import {
     openBracketMatchEditModal,
     closeBracketMatchEditModal,
     submitBracketMatchEdit
-} from './modules/tournament-detail.js?v=38';
+} from './modules/tournament-detail.js?v=39';
 
 import {
     teamPool,
