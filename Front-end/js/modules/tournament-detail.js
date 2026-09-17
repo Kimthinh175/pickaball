@@ -475,6 +475,8 @@ export async function fetchTournamentDetail() {
                                             <path d="M 0,50 H 40" stroke="#94a3b8" stroke-width="2" fill="none" vector-effect="non-scaling-stroke" />
                                         </svg>
                                     `}
+                                </div>
+                            `;
                         }
                     }
 
